@@ -1,0 +1,137 @@
+//
+// Layouts
+// --------------------------------------------------
+
+// Container (centered, fixed-width layouts)
+.container {
+  .container-fixed();
+}
+
+// Fluid layouts (left aligned, with sidebar, min- & max-width content)
+.container-fluid {
+  padding-right: @gridGutterWidth;
+  padding-left: @gridGutterWidth;
+  .clearfix();
+}
+
+// Header 
+// -------------------------
+
+header {
+  margin-bottom: 10px;
+
+  .header-inner {
+    padding: 20px;
+    .clearfix();
+  }
+
+  .brand {
+    float: left;
+    width: 280px;
+    height: 74px;
+    background: transparent url(../img/logo.png) no-repeat;
+    text-indent: -9999px;
+  }
+  
+}
+
+// Footer 
+// -------------------------
+
+footer {
+  margin-top: 20px;
+  border-top: 3px solid @black;
+  border-bottom: 1px solid @black;
+}
+
+// Section
+// -------------------------
+
+.section {
+  margin-bottom: 20px;
+}
+
+// Page header
+// -------------------------
+
+.page-header {
+  
+  h1 {
+  }
+
+  .section.main & {
+
+    h1 {
+    }
+
+  }
+
+  .section.secondary & {
+
+    h1 {
+    }
+
+  }
+
+}
+
+// Page content
+// -------------------------
+
+.page-content {
+
+  .page-content-inner {
+    margin: 0;
+  }
+
+}
+
+// Page footer
+// -------------------------
+
+.page-footer {
+
+  .page-footer-inner {
+    padding: 0;
+    background: none;
+  }
+
+}
+
+// Sidebar
+// -------------------------
+
+.sidebar {
+
+  aside {
+    margin-bottom: 20px;
+    clear: both;
+  }
+
+}
+
+// Languages 
+// -------------------------
+
+.languages {
+  float: right;
+  margin-top: 8px;
+
+  ul {
+    list-style-type: none;
+    .clearfix();
+        
+    li {
+      float: left;
+      padding: 0 5px;
+      border-right: 1px solid @grayLight;
+      font-size: .8em;
+      line-height: 1;
+      
+      &:last-child {
+        border: 0;
+      }
+
+    }
+  }
+}

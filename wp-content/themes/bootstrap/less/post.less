@@ -1,0 +1,48 @@
+
+// hEntry
+// -------------------------
+
+.hentry {
+
+  .post-inner {
+    margin: 20px;
+  }
+
+  img {
+    &.alignleft,
+    &.alignright {
+      #grid > .fluid > .span(6);
+    }
+    &.alignleft {
+      float: left;
+      margin: 5px @fluidGridGutterWidth 5px 0;
+    }
+    &.alignright {
+      float: right;
+      margin: 5px 0 5px @fluidGridGutterWidth;
+    }
+    &.alignmiddle {
+      margin: 0 0 5px 0;
+    }
+  }
+
+  h3 {}
+
+  .meta {
+    font-family: @serifFontFamily;
+    font-style: italic;
+  }
+
+  .categories {
+    margin: 0;
+    font-size: .9em;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  // Post only
+  &.post {
+
+  }
+
+}

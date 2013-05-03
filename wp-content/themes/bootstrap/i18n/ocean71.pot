@@ -1,0 +1,289 @@
+# Copyright (C) 2013 We studio
+# This file is distributed under the same license as the Ocean71 package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Ocean71 0.1.0\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tags/ocean71\n"
+"POT-Creation-Date: 2013-03-06 13:59:01+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2013-03-06 15:19+0100\n"
+"Last-Translator: Lionel Gaillard <lionel.gaillard@wxrstudios.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: 404.php:14
+msgid "We're lost, Captain"
+msgstr "Nous sommes perdus, mon Capitaine"
+
+#: 404.php:15
+msgid "It seems we can't find what you're looking for. Perhaps searching, or one of the links below, can help."
+msgstr "Ce que vous cherchez ne se trouve plus ici. Peut-être que la recherche ou un des liens en dessous pourront vous aider."
+
+#: 404.php:27
+msgid "Most Used Categories"
+msgstr "Catégories les plus utilisées"
+
+#: archive-magazine.php:24
+msgid "Magazine Files"
+msgstr "Dossiers"
+
+#: archive.php:31
+msgid "Daily Archives: %s"
+msgstr "Archives par jour : %s"
+
+#: archive.php:33
+msgid "Monthly Archives: %s"
+msgstr "Archives par mois : %s"
+
+#: archive.php:33
+msgctxt "monthly archives date format"
+msgid "F Y"
+msgstr "F Y"
+
+#: archive.php:35
+msgid "Yearly Archives: %s"
+msgstr "Archives par année : %s"
+
+#: archive.php:35
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr "Y"
+
+#: archive.php:37
+msgid "Tag Archives: %s"
+msgstr "Archives par tag : %s"
+
+#: archive.php:55
+msgid "Blog Archives"
+msgstr "Archives"
+
+#: block-authors.php:21
+msgid "File led by:"
+msgstr "Dossier dirigé par :"
+
+#: block-authors.php:28
+msgid "They participated in this file:"
+msgstr "Il ont participé à ce dossier :"
+
+#: block-magazines.php:25
+msgid "Other files"
+msgstr "Autres dossiers"
+
+#: block-subscribe.php:2
+msgid "How to subscribe ?"
+msgstr "Comment s'abonner ?"
+
+#: block-subscribe.php:6
+#: block-subscribe.php:9
+msgid "subscribe.a.title"
+msgstr "Des reportages et récites d'expédition"
+
+#: block-subscribe.php:10
+msgid "subscribe.a.body"
+msgstr "Chaque mois, un "
+
+#: block-subscribe.php:15
+#: block-subscribe.php:18
+msgid "subscribe.b.title"
+msgstr ""
+
+#: block-subscribe.php:19
+msgid "subscribe.b.body"
+msgstr ""
+
+#: block-summary.php:2
+msgid "File summary"
+msgstr "Sommaire du dossier"
+
+#: block-summary.php:25
+#: functions.php:142
+msgid "No chapter"
+msgstr "Aucun chapitre"
+
+#: comments.php:15
+msgid "This post is password protected. Enter the password to view any comments."
+msgstr "Cet article est protégé par mot de passe. Entrez le mot de passe pour voir les commentaires."
+
+#: comments.php:24
+msgid "One comment on \"%2$s\""
+msgid_plural "%1$s comments on \"%2$s\""
+msgstr[0] "Un commentaire sur \"%2$s\""
+msgstr[1] "%1$s commentaires sur \"%2$s\""
+
+#: comments.php:47
+msgid "Comments are closed."
+msgstr "Les commentaires sont fermés"
+
+#: footer.php:6
+#: header.php:63
+msgid "Menu"
+msgstr "Menu"
+
+#: functions.php:140
+msgid "One chapter"
+msgid_plural "%d chapters"
+msgstr[0] "Un chapitre"
+msgstr[1] "%d chapitres"
+
+#: functions.php:363
+#: functions.php:377
+msgid "Search"
+msgstr "Recherche"
+
+#: functions.php:391
+msgid "Magazine's files"
+msgstr ""
+
+#: functions.php:392
+#: functions.php:447
+msgid "Magazine's file"
+msgstr ""
+
+#: functions.php:409
+msgid "Chapters"
+msgstr ""
+
+#: functions.php:410
+msgid "Chapter"
+msgstr ""
+
+#: functions.php:426
+msgid "Reporters"
+msgstr ""
+
+#: functions.php:427
+msgid "Reporter"
+msgstr ""
+
+#: functions.php:687
+msgid "Previous chapter"
+msgstr ""
+
+#: functions.php:687
+msgid "Previous chapters"
+msgstr ""
+
+#: functions.php:695
+msgid "Next chapter"
+msgstr ""
+
+#: functions.php:700
+msgid "Previous post"
+msgstr ""
+
+#: functions.php:701
+msgid "Next post"
+msgstr ""
+
+#: functions.php:703
+msgid "Newer posts"
+msgstr ""
+
+#: functions.php:706
+msgid "Older posts"
+msgstr ""
+
+#: functions.php:722
+msgid "Pingback:"
+msgstr ""
+
+#: functions.php:722
+#: functions.php:745
+msgid "Edit"
+msgstr ""
+
+#: functions.php:732
+msgid "%s says:"
+msgstr ""
+
+#: functions.php:735
+msgid "Your comment is awaiting moderation."
+msgstr ""
+
+#. translators: 1: date, 2: time
+#: functions.php:743
+msgid "%1$s at %2$s"
+msgstr ""
+
+#: functions.php:786
+msgid "Home"
+msgstr ""
+
+#: functions.php:896
+#: search.php:14
+msgid "Results for \"%s\""
+msgstr ""
+
+#: functions.php:900
+msgid "Posts tagged \"%s\""
+msgstr ""
+
+#: functions.php:906
+msgid "Articles posted by %s"
+msgstr ""
+
+#: functions.php:910
+msgid "Page not found"
+msgstr ""
+
+#: functions.php:928
+msgid "page %d"
+msgstr ""
+
+#: page-home.php:38
+msgid "Last file"
+msgstr ""
+
+#: page-home.php:80
+msgid "Magazine"
+msgstr ""
+
+#: page-home.php:115
+msgid "All Magazine's files"
+msgstr ""
+
+#: page-home.php:122
+msgid "Journal"
+msgstr ""
+
+#: page-home.php:147
+msgid "All posts"
+msgstr ""
+
+#: search.php:34
+msgid "No result"
+msgstr ""
+
+#. Theme Name of the plugin/theme
+msgid "Ocean71"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "We studio"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://www.we-studio.ch/"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Archive Journal"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Magazines"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Home page"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Page no sidebar"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Default Page"
+msgstr ""
+
