@@ -135,3 +135,53 @@ footer {
     }
   }
 }
+
+// Languages 
+// -------------------------
+
+.socials {
+  float: right;
+  margin-left: 20px;
+
+  ul {
+    margin: 0;
+    list-style-type: none;
+    .clearfix();
+  }
+
+  li {
+    float: left;
+    margin-right: 5px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  a {
+    display: block;
+    width: 24px;
+    height: 24px;
+    background: url(../img/social-icons.png) no-repeat;
+    text-indent: -9999px;
+
+    &.facebook  { background-position:    0   0; }
+    &.gplus     { background-position: -32px  0; }
+    &.twitter   { background-position: -64px  0; }
+    &.rss       { background-position: -96px  0; }
+    &.youtube   { background-position: -128px 0; }
+    &.instagram { background-position: -160px 0; }
+
+    &.facebook:hover  { background-position:    0   -32px; }
+    &.gplus:hover     { background-position: -32px  -32px; }
+    &.twitter:hover   { background-position: -64px  -32px; }
+    &.rss:hover       { background-position: -96px  -32px; }
+    &.youtube:hover   { background-position: -128px -32px; }
+    &.instagram:hover { background-position: -160px -32px; }
+
+  }
+
+  .navbar & {
+    padding: 8px 0;
+  }
+}
