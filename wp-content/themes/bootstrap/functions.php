@@ -158,13 +158,8 @@ function bootstrap_attachments($attachments)
 // Setup
 ////////////////////////////////
 
-/**
- * Setups theme
- */
-function bootstrap_after_setup_theme()
+function bootstrap_setup_supports()
 {
-    // Theme support
-
     add_theme_support('automatic-feed-links');
     add_theme_support('post-formats', array(
         'aside',
@@ -178,9 +173,12 @@ function bootstrap_after_setup_theme()
         'chat'
     ));
     add_theme_support('post-thumbnails');
+}
 
-    // Thumbnails
+add_action('after_setup_theme', 'bootstrap_setup_supports');
 
+function bootstrap_setup_thumbnails()
+{
     set_post_thumbnail_size(col_width(2)); // bootstrap-small
 
     add_image_size('bootstrap-1',               col_width(1));
@@ -195,38 +193,48 @@ function bootstrap_after_setup_theme()
     add_image_size('bootstrap-6-cropped',       col_width(6), col_width(4), true);
     add_image_size('bootstrap-8',               col_width(8));
     add_image_size('bootstrap-8-cropped',       col_width(8), col_width(6), true);
-    // add_image_size('bootstrap-9',               col_width(9));
-    // add_image_size('bootstrap-9-cropped',       col_width(9), col_width(6), true);
+    add_image_size('bootstrap-9',               col_width(9));
+    add_image_size('bootstrap-9-cropped',       col_width(9), col_width(6), true);
     add_image_size('bootstrap-12',              col_width(12));
     add_image_size('bootstrap-12-cropped',      col_width(12), col_width(4), true);
     add_image_size('bootstrap-12-cropped-tall', col_width(12), 500, true);
 
-    // i18n
-
-    load_theme_textdomain('bootstrap', get_template_directory() . '/i18n');
-
-    // Menus
-
-    register_nav_menus(array(
-        'main'   => __('Main', 'bootstrap'),
-        'footer' => __('Footer', 'bootstrap')
-    ));
-
-    // Styles
-    
-    wp_register_style('bootstrap', get_template_directory_uri().'/css/main.min.css', false ,'1.0.0', 'all');
-
-    // Scripts
-
-    wp_register_script('bootstrap', get_template_directory_uri().'/js/main.min.js', array('jquery'), '1.0.0', true);
-    // wp_register_script('text_resize', get_template_directory_uri().'/js/text-resize.js', array('jquery'), '1.0.0', true);
-
-    wp_register_script('google_map_api', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCY5DKsx5ZgPdBTF1Kk7Fzk1cKKWhStWrw&sensor=false', array(), true);
-    wp_register_script('access_map', get_template_directory_uri().'/js/access-map.js', array('jquery', 'google_map_api'), '1.0.0', true);
-
 }
 
-add_action('after_setup_theme', 'bootstrap_after_setup_theme');
+add_action('after_setup_theme', 'bootstrap_setup_thumbnails');
+
+function bootstrap_setup_i18n()
+{
+    load_theme_textdomain('bootstrap', get_template_directory() . '/i18n');
+}
+
+add_action('after_setup_theme', 'bootstrap_setup_i18n');
+
+function bootstrap_setup_menus()
+{
+    register_nav_menus(array(
+        'main'   => __('Main', 'bootstrap')
+    ));
+}
+
+add_action('after_setup_theme', 'bootstrap_setup_menus');
+
+function bootstrap_setup_styles()
+{
+    wp_register_style('bootstrap', get_template_directory_uri().'/css/main.min.css', false ,'1.0.0', 'all');
+}
+
+add_action('after_setup_theme', 'bootstrap_setup_styles');
+
+function bootstrap_setup_scripts()
+{
+    wp_register_script('bootstrap', get_template_directory_uri().'/js/main.min.js', array('jquery'), '1.0.0', true);
+    // wp_register_script('text_resize', get_template_directory_uri().'/js/text-resize.js', array('jquery'), '1.0.0', true);
+    wp_register_script('google_map_api', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCY5DKsx5ZgPdBTF1Kk7Fzk1cKKWhStWrw&sensor=false', array(), true);
+    wp_register_script('access_map', get_template_directory_uri().'/js/access-map.js', array('jquery', 'google_map_api'), '1.0.0', true);
+}
+
+add_action('after_setup_theme', 'bootstrap_setup_scripts');
 
 /**
  * Enqueues CSS files
@@ -493,25 +501,22 @@ function bootstrap_pager()
 {
     global $wp_query;
 
-    $output = '';
-
-    $output .= '<ul class="pager">';
+    echo '<ul class="pager">';
 
     if (is_single()) {
+        // These shits have no `get` versions
         previous_post_link('<li class="previous">%link</li>', '<i class="icon-arrow-left"></i> '.__('Previous post', 'bootstrap'));
         next_post_link('<li class="next">%link</li>', __('Next post', 'bootstrap').' <i class="icon-arrow-right"></i>');
     } elseif ($wp_query->max_num_pages > 1 && (is_home() || is_archive() || is_search())) {
         if ($previous_link = get_previous_posts_link(__('Newer posts', 'bootstrap').' <i class="icon-arrow-right"></i>')) {
-            $output .= '<li class="previous">'.$previous_link.'</li>';
+            echo '<li class="previous">'.$previous_link.'</li>';
         }
         if ($next_link = get_next_posts_link('<i class="icon-arrow-left"></i> '.__('Older posts', 'bootstrap'))) {
-            $output .= '<li class="next">'.$next_link.'</li>';
+            echo '<li class="next">'.$next_link.'</li>';
         }
     }
 
-    $output .= '</ul>';
-
-    echo $output;
+    echo '</ul>';
 }
 
 /**
