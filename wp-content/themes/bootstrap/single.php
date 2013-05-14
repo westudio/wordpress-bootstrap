@@ -35,7 +35,7 @@ while (have_posts()):
 <?php
 endwhile;
 ?>
-                </div><!-- /.span8 -->
+                </div><!-- /.main -->
 
                 <div class="span4 sidebar">
                     <?php get_sidebar('single'); ?>

@@ -54,16 +54,16 @@ endif;
 <?php
 while (have_posts()):
     the_post();
-                            get_template_part('loop', 'post');
+                            get_template_part('loop', get_post_type());
 endwhile;
 ?>
                             <?php bootstrap_pagination();?>
                         </div><!-- /.page-content-inner -->
                     </div><!-- /.page-content -->
-                </div><!-- /.span8 -->
+                </div><!-- /.main -->
 
                 <div class="span4 sidebar">
-                    <?php get_sidebar(); ?>
+                    <?php get_sidebar('archive'); ?>
                 </div>
 
             </div><!-- /.row-fluid -->

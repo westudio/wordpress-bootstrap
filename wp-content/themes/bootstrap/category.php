@@ -19,7 +19,7 @@ if (have_posts()):
     while (have_posts()):
         the_post();
 ?>
-                            <?php get_template_part('loop', 'post'); ?>
+                            <?php get_template_part('loop', get_post_type()); ?>
 <?php
     endwhile;
 endif;
@@ -31,9 +31,11 @@ endif;
                         <?php bootstrap_pagination();?>
                     </div>   
                     
-                </div><!-- /.span8 -->
+                </div><!-- /.main -->
                 
-                <?php get_sidebar(); ?>
+                <div class="span4 sidebar">
+                    <?php get_sidebar('category'); ?>
+                </div>
 
             </div><!-- /.row-fluid -->
         </div><!--/.container -->

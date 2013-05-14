@@ -34,7 +34,7 @@ endwhile;
 ?>
                         </div>
                     </div>
-                </div><!-- /.span12 -->
+                </div><!-- /.main -->
 
             </div><!-- /.row-fluid -->
         </div><!--/.container -->

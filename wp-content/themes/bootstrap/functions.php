@@ -239,24 +239,24 @@ add_action('after_setup_theme', 'bootstrap_setup_scripts');
 /**
  * Enqueues CSS files
  */
-function bootstrap_css_loader()
+function bootstrap_enqueue_styles()
 {
     wp_enqueue_style('bootstrap');
 }
 
-add_action('wp_enqueue_scripts', 'bootstrap_css_loader');
+add_action('wp_enqueue_scripts', 'bootstrap_enqueue_styles');
 
 /**
  * Enqueues JS files
  */
-function bootstrap_js_loader()
+function bootstrap_enqueue_scripts()
 {
     wp_enqueue_script('bootstrap');
     // wp_enqueue_script('text_resize');
     
 }
 
-add_action('wp_enqueue_scripts', 'bootstrap_js_loader');
+add_action('wp_enqueue_scripts', 'bootstrap_enqueue_scripts');
 
 /**
  * Defines TinyMCE settings

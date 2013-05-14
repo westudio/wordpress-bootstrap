@@ -34,7 +34,7 @@ endwhile;
 ?>
                         </div>
                     </div>
-                </div><!-- /.span8 -->
+                </div><!-- /.main -->
 
                 <div class="span4 sidebar">
                     <?php get_sidebar('page'); ?>
