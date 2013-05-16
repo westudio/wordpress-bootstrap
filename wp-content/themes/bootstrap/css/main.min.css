@@ -660,8 +660,8 @@ header .header-inner:after {
 
 header .brand {
   float: left;
-  width: 280px;
-  height: 74px;
+  width: 103px;
+  height: 103px;
   text-indent: -9999px;
   background: transparent url(../img/logo.png) no-repeat;
 }
@@ -721,6 +721,97 @@ footer {
 
 .languages ul li:last-child {
   border: 0;
+}
+
+.socials {
+  float: right;
+  margin-left: 20px;
+}
+
+.socials ul {
+  margin: 0;
+  list-style-type: none;
+  *zoom: 1;
+}
+
+.socials ul:before,
+.socials ul:after {
+  display: table;
+  line-height: 0;
+  content: "";
+}
+
+.socials ul:after {
+  clear: both;
+}
+
+.socials li {
+  float: left;
+  margin-right: 5px;
+}
+
+.socials li:last-child {
+  margin-right: 0;
+}
+
+.socials a {
+  display: block;
+  width: 24px;
+  height: 24px;
+  text-indent: -9999px;
+  background: url(../img/social-icons.png) no-repeat;
+}
+
+.socials a.facebook {
+  background-position: 0   0;
+}
+
+.socials a.gplus {
+  background-position: -32px 0;
+}
+
+.socials a.twitter {
+  background-position: -64px 0;
+}
+
+.socials a.rss {
+  background-position: -96px 0;
+}
+
+.socials a.youtube {
+  background-position: -128px 0;
+}
+
+.socials a.instagram {
+  background-position: -160px 0;
+}
+
+.socials a.facebook:hover {
+  background-position: 0 -32px;
+}
+
+.socials a.gplus:hover {
+  background-position: -32px -32px;
+}
+
+.socials a.twitter:hover {
+  background-position: -64px -32px;
+}
+
+.socials a.rss:hover {
+  background-position: -96px -32px;
+}
+
+.socials a.youtube:hover {
+  background-position: -128px -32px;
+}
+
+.socials a.instagram:hover {
+  background-position: -160px -32px;
+}
+
+.navbar .socials {
+  padding: 8px 0;
 }
 
 p {

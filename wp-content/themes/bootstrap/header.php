@@ -21,10 +21,10 @@ endif;
         <!-- Icons -->
         <link rel="shortcut icon" href="<?php bloginfo('template_url'); ?>/ico/favicon.ico" />
         <link rel="shortcut icon" href="<?php bloginfo('template_url'); ?>/ico/favicon.png" />
-        <link rel="apple-touch-icon" href="<?php bloginfo('template_url'); ?>/ico/apple-touch-icon-57x57.png" />
+        <!-- <link rel="apple-touch-icon" href="<?php bloginfo('template_url'); ?>/ico/apple-touch-icon-57x57.png" />
         <link rel="apple-touch-icon" sizes="72x72" href="<?php bloginfo('template_url'); ?>/ico/apple-touch-icon-72x72.png" />
         <link rel="apple-touch-icon" sizes="114x114" href="<?php bloginfo('template_url'); ?>/ico/apple-touch-icon-114x114.png" />
-        <link rel="apple-touch-icon" sizes="144x144" href="<?php bloginfo('template_url'); ?>/ico/apple-touch-icon-144x144.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="<?php bloginfo('template_url'); ?>/ico/apple-touch-icon-144x144.png" /> -->
 
         <!--[if lt IE 9]>
         <script src="<?php bloginfo('template_url'); ?>/js/vendors/html5shim/html5shiv.js"></script>

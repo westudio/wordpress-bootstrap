@@ -1,19 +1,7 @@
         <div class="container">
             <footer>
                 <div class="footer-inner">
-                    <div class="navbar">
-                        <div class="navbar-inner">
-                            <a class="btn btn-navbar btn-icon" data-toggle="collapse" data-target="footer .nav-collapse" title="<?php _e('Menu'); ?>" rel="tooltip" data-placement="left"><i class="icon-list icon-white"></i></a>
-
-                            <?php
-                            wp_nav_menu(array(
-                                'menu'    => 'footer',
-                                'menu_id' => 'footer-menu',
-                            ));
-                            ?>
-
-                        </div>
-                    </div>
+                    <p class="credits">&copy; Company <?php echo date('Y'); ?></p>
                 </div>
             </footer>
         </div> <!-- /container -->
