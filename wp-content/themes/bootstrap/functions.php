@@ -505,13 +505,13 @@ function bootstrap_pager()
 
     if (is_single()) {
         // These shits have no `get` versions
-        previous_post_link('<li class="previous">%link</li>', '<i class="icon-arrow-left"></i> '.__('Previous post', 'bootstrap'));
-        next_post_link('<li class="next">%link</li>', __('Next post', 'bootstrap').' <i class="icon-arrow-right"></i>');
+        previous_post_link('<li class="previous">%link</li>', '<i class="icon-chevron-left"></i> '.__('Previous post', 'bootstrap'));
+        next_post_link('<li class="next">%link</li>', __('Next post', 'bootstrap').' <i class="icon-chevron-right"></i>');
     } elseif ($wp_query->max_num_pages > 1 && (is_home() || is_archive() || is_search())) {
-        if ($previous_link = get_previous_posts_link(__('Newer posts', 'bootstrap').' <i class="icon-arrow-right"></i>')) {
+        if ($previous_link = get_previous_posts_link(__('Newer posts', 'bootstrap').' <i class="icon-chevron-left"></i>')) {
             echo '<li class="previous">'.$previous_link.'</li>';
         }
-        if ($next_link = get_next_posts_link('<i class="icon-arrow-left"></i> '.__('Older posts', 'bootstrap'))) {
+        if ($next_link = get_next_posts_link('<i class="icon-chevron-right"></i> '.__('Older posts', 'bootstrap'))) {
             echo '<li class="next">'.$next_link.'</li>';
         }
     }
