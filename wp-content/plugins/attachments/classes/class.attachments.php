@@ -14,7 +14,7 @@
 if( !defined( 'ABSPATH' ) ) exit;
 
 // Declare our class
-if ( !class_exists( 'Attachments' ) ) :
+if( !class_exists( 'Attachments' ) ) :
 
     /**
      * Main Attachments Class
@@ -22,8 +22,8 @@ if ( !class_exists( 'Attachments' ) ) :
      * @since 3.0
      */
 
-    class Attachments {
-
+    class Attachments
+    {
         private $version;                   // stores Attachments' version number
         private $url;                       // stores Attachments' URL
         private $dir;                       // stores Attachments' directory
@@ -33,7 +33,6 @@ if ( !class_exists( 'Attachments' ) ) :
         private $attachments;               // stores all of the Attachments for the given instance
 
         private $image_sizes        = array( 'full' );      // store all registered image sizes
-        private $default_instance   = true;                 // use the default instance?
         private $attachments_ref    = -1;                   // flags where a get() loop last did it's thing
         private $meta_key           = 'attachments';        // our meta key
         private $valid_filetypes    = array(                // what WordPress considers to be valid file types
@@ -56,10 +55,10 @@ if ( !class_exists( 'Attachments' ) ) :
             global $_wp_additional_image_sizes;
 
             // establish our environment variables
-
-            $this->version  = '3.4.2.1';
+            $this->version  = '3.5';
             $this->url      = ATTACHMENTS_URL;
             $this->dir      = ATTACHMENTS_DIR;
+            $plugin         = 'attachments/index.php';
 
             // includes
             include_once( ATTACHMENTS_DIR . 'upgrade.php' );
@@ -73,8 +72,14 @@ if ( !class_exists( 'Attachments' ) ) :
             // set our image sizes
             $this->image_sizes = array_merge( $this->image_sizes, get_intermediate_image_sizes() );
 
+            // add 'Extend' link
+            add_filter( "plugin_action_links_$plugin",  array( $this, 'plugin_settings_link' ) );
+
             // set up l10n
             add_action( 'plugins_loaded',               array( $this, 'l10n' ) );
+
+            // load extensions
+            add_action( 'plugins_loaded',               array( $this, 'load_extensions' ) );
 
             // hook into WP
             add_action( 'admin_enqueue_scripts',        array( $this, 'assets' ), 999, 1 );
@@ -96,6 +101,8 @@ if ( !class_exists( 'Attachments' ) ) :
             add_action( 'admin_head',                   array( $this, 'field_inits' ) );
             add_action( 'admin_print_footer_scripts',   array( $this, 'field_assets' ) );
 
+            add_action( 'admin_init',                   array( $this, 'admin_init' ) );
+
             // execution of actions varies depending on whether we're in the admin or not and an instance was passed
             if( is_admin() )
             {
@@ -108,6 +115,106 @@ if ( !class_exists( 'Attachments' ) ) :
                 $this->attachments = $this->get_attachments( $instance, $post_id );
             }
 
+        }
+
+
+
+        function plugin_settings_link( $links )
+        {
+            $extend_link = '<a href="https://mondaybynoon.com/members/plugins/#attachments">'. __( 'Extend', 'attachments' ) . '</a>';
+            array_unshift( $links, $extend_link );
+            return $links;
+        }
+
+
+
+        /**
+         * Callback for WordPress' admin_init action
+         *
+         * @since 3.4.3
+         */
+        function admin_init()
+        {
+            if( current_user_can( 'delete_posts' ) )
+                add_action( 'delete_post', array( $this, 'handle_wp_post_delete' ), 10 );
+        }
+
+
+
+        /**
+         * Getter for the existing fields
+         *
+         * @return array
+         * @since 3.5
+         */
+        function get_fields()
+        {
+            return $this->fields;
+        }
+
+
+
+        /**
+         * Callback for WordPress' delete_post action. Searches all saved Attachments
+         * data for any records using a deleted attachment. If found, the record is removed.
+         *
+         * @param int $pid Post ID
+         * @since 3.4.3
+         */
+        function handle_wp_post_delete( $pid )
+        {
+            // check to make sure it was an attachment
+            if( 'attachment' != get_post_type( $pid ) )
+                return;
+
+            // if a user deletes an attachment from the Media library (but it's been used
+            // in Attachments somewhere else) we need to clean that up...
+
+            // we hook into delete_post because the only other option is to filter
+            // each Attachment when retrieving Attachments via get_attachments()
+            // which could potentially be a ton of database calls
+
+            // so we're going to use the search class to find all instances
+            // for any occurrence of the deleted attachment (which has an ID of $pid)
+
+            if( is_array( $this->instances ) )
+            {
+                foreach( $this->instances as $instance => $details )
+                {
+                    $search_args = array(
+                      'instance'      => $instance,
+                      'attachment_id' => intval( $pid ),
+                    );
+
+                    $this->search( null, $search_args );
+
+                    if( $this->exist() )
+                    {
+                        // we've got a hit (e.g. an existing post uses the deleted attachment)
+                        while( $attachment = $this->get() )
+                        {
+                            $post_id = $attachment->post_id;
+
+                            // we'll use the post ID to snag the details
+                            $post_attachments = $this->get_attachments_metadata( $post_id );
+
+                            if( is_object( $post_attachments ) )
+                            {
+                                foreach( $post_attachments as $existing_instance => $existing_instance_attachments )
+                                    foreach( $existing_instance_attachments as $existing_instance_attachment_key => $existing_instance_attachment )
+                                        if( $pid == intval( $existing_instance_attachment->id ) )
+                                            unset( $post_attachments->{$existing_instance}[$existing_instance_attachment_key] );
+
+                                // saving routine assumes array from POST so we'll typecast it
+                                $post_attachments = (array) $post_attachments;
+
+                                // save the revised Attachments metadata
+                                $this->save_metadata( $post_id, $post_attachments );
+                            }
+                        }
+                    }
+                }
+            }
         }
 
 
@@ -125,13 +232,32 @@ if ( !class_exists( 'Attachments' ) ) :
 
 
         /**
+         * Getter for our URL
+         *
+         * @since 3.5
+         */
+        function get_url()
+        {
+            return $this->url;
+        }
+
+
+
+        /**
          * Register our textdomain for l10n
          *
          * @since 3.4.2
          */
         function l10n()
         {
-            load_plugin_textdomain( 'attachments', false, trailingslashit( ATTACHMENTS_DIR ) . 'languages/' );
+            load_plugin_textdomain( 'attachments', false, trailingslashit( ATTACHMENTS_DIR ) . 'languages' );
+        }
+
+
+
+        function load_extensions()
+        {
+            do_action( 'attachments_extension', $this );
         }
 
 
@@ -311,26 +437,52 @@ if ( !class_exists( 'Attachments' ) ) :
 
 
         /**
+         * Returns the width of the current Attachment if it's an image
+         *
+         * @since 3.5
+         */
+        function width( $size = 'thumbnail', $index = null )
+        {
+            $asset = $this->asset( $size, $index );
+            return $asset[1];
+        }
+
+
+
+        /**
+         * Returns the height of the current Attachment if it's an image
+         *
+         * @since 3.5
+         */
+        function height( $size = 'thumbnail', $index = null )
+        {
+            $asset = $this->asset( $size, $index );
+            return $asset[2];
+        }
+
+
+
+        /**
          * Returns the formatted filesize of the current Attachment
          *
          * @since 3.0
          */
-        function filesize( $index = null )
+        function filesize( $index = null, $size = null )
         {
             $index = is_null( $index ) ? $this->attachments_ref : intval( $index );
 
             if( !isset( $this->attachments[$index]->id ) )
                 return false;
 
-            $url        = wp_get_attachment_url( $this->attachments[$index]->id );
+            // if an image size is passed along, use that
+            $url        = is_string( $size ) ? $this->src( $size, $index ) : wp_get_attachment_url( $this->attachments[$index]->id );
             $uploads    = wp_upload_dir();
             $file_path  = str_replace( $uploads['baseurl'], $uploads['basedir'], $url );
 
             $formatted = '0 bytes';
             if( file_exists( $file_path ) )
-            {
                 $formatted = size_format( @filesize( $file_path ) );
-            }
+
             return $formatted;
         }
 
@@ -498,13 +650,29 @@ if ( !class_exists( 'Attachments' ) ) :
             {
                 foreach( $this->instances_for_post_type as $instance )
                 {
+                    // facilitate more fine-grained meta box positioning than post type
+                    $applicable         = apply_filters( "attachments_location_{$instance}", true, $instance );
+
+                    // obtain other details about instance
                     $instance_name      = $instance;
                     $instance           = (object) $this->instances[$instance];
                     $instance->name     = $instance_name;
                     $position           = isset($instance->position) ? $instance->position : 'normal';
                     $priority           = isset($instance->priority) ? $instance->priority : 'high';
 
-                    add_meta_box( 'attachments-' . $instance_name, __( esc_attr( $instance->label ) ), array( $this, 'meta_box_markup' ), $this->get_post_type(), $position, $priority, array( 'instance' => $instance, 'setup_nonce' => !$nonce_sent ) );
+                    if( $applicable )
+                        add_meta_box(
+                            'attachments-' . $instance_name,
+                            __( esc_attr( $instance->label ) ),
+                            array( $this, 'meta_box_markup' ),
+                            $this->get_post_type(),
+                            $position,
+                            $priority,
+                            array(
+                                'instance'      => $instance,
+                                'setup_nonce'   => !$nonce_sent
+                            )
+                        );
 
                     $nonce_sent = true;
                 }
@@ -562,12 +730,21 @@ if ( !class_exists( 'Attachments' ) ) :
                         title        = '<?php echo __( esc_attr( $instance->label ) ); ?>',
                         button       = '<?php echo __( esc_attr( $instance->modal_text ) ); ?>',
                         router       = '<?php echo __( esc_attr( $instance->router ) ); ?>',
-                        attachmentsframe;
+                        limit        = <?php echo intval( $instance->limit ); ?>,
+                        existing     = <?php echo ( isset( $instance->attachments ) && !empty( $instance->attachments ) ) ? count( $instance->attachments ): 0; ?>,
+                        attachmentsframe,
+                        editframe;
 
                     $element.on( 'click', '.attachments-invoke', function( event ) {
-                        var options, attachment;
+                        var attachment;
 
                         event.preventDefault();
+
+                        existing = $element.find('.attachments-container > .attachments-attachment').length;
+                        if( limit > -1 && existing >= limit ){
+                            alert('<?php _e( "Currently limited to", "attachments" ); ?> ' + limit);
+                            return false;
+                        }
 
                         // if the frame already exists, open it
                         if ( attachmentsframe ) {
@@ -576,7 +753,7 @@ if ( !class_exists( 'Attachments' ) ) :
                             return;
                         }
 
-                        // set our seetings
+                        // set our settings
                         attachmentsframe = wp.media({
 
                             title: title,
@@ -597,9 +774,9 @@ if ( !class_exists( 'Attachments' ) ) :
                         });
 
                         // set up our select handler
-                        attachmentsframe.on( 'select', function() {
+                        attachmentsframe.on( 'select', function(){
 
-                            selection = attachmentsframe.state().get('selection');
+                            var selection = attachmentsframe.state().get('selection');
 
                             if ( ! selection )
                                 return;
@@ -614,6 +791,11 @@ if ( !class_exists( 'Attachments' ) ) :
 
                             // loop through the selected files
                             selection.each( function( attachment ) {
+
+                                // make sure we respect the limit
+                                if( limit > -1 && existing >= limit ){
+                                    return;
+                                }
 
                                 // set our attributes to the template
                                 attachment.attributes.attachment_uid = attachments_uniqid( 'attachmentsjs' );
@@ -638,6 +820,9 @@ if ( !class_exists( 'Attachments' ) ) :
 
                                 // append the template
                                 $element.find('.attachments-container').<?php if( $instance->append ) : ?>append<?php else : ?>prepend<?php endif; ?>(template(templateData));
+
+                                // update the number of existing Attachments
+                                existing = $element.find('.attachments-container > .attachments-attachment').length;
 
                                 // if we're in a sidebar we DO want to show the fields which are normally hidden on load via CSS
                                 if($element.parents('#side-sortables')){
@@ -671,6 +856,64 @@ if ( !class_exists( 'Attachments' ) ) :
                         attachmentsframe.content.mode(router);
 
                     });
+
+                    $element.on( 'click', '.edit-attachment-asset', function( event ) {
+                        event.preventDefault();
+                        if ( editframe ) {
+                            editframe.open();
+                            editframe.content.mode(router);
+                            return;
+                        }
+                        editframe = wp.media({
+                            title: title,
+                            multiple: false,
+                            library: {
+                                type: '<?php echo esc_attr( implode( ",", $instance->filetype ) ); ?>'
+                            },
+                            button: {
+                                text: '<?php _e( "Change", 'attachments' ); ?>'
+                            }
+                        });
+                        editframe.on( 'select', function(){
+                            var selection = editframe.state().get('selection');
+
+                            if ( ! selection )
+                                return;
+
+                            selection.each( function( attachment ) {
+
+                                // update the ID
+                                $element.find('input.attachments-track-id').val(attachment.id);
+
+                                // update the thumbnail
+                                var updatedThumb = false;
+                                if(attachments_isset(attachment.attributes)){
+                                    if(attachments_isset(attachment.attributes.sizes)){
+                                        if(attachments_isset(attachment.attributes.sizes.thumbnail)){
+                                            if(attachments_isset(attachment.attributes.sizes.thumbnail.url)){
+                                                updatedThumb = true;
+                                                $element.find('.attachment-thumbnail img').attr('src',attachment.attributes.sizes.thumbnail.url);
+                                            }
+                                        }
+                                    }
+                                }
+                                if( !updatedThumb ){
+                                    $element.find('.attachment-thumbnail img').attr('src','');
+                                }
+
+                                // update the name
+                                $element.find('.attachment-details .filename').text(attachment.attributes.filename);
+
+                                // update the dimensions
+                                if(attachments_isset(attachment.attributes.width)&&attachments_isset(attachment.attributes.height)){
+                                    $element.find('.attachment-details .dimensions').html(attachment.attributes.width + ' &times; ' + attachment.attributes.height).show();
+                                }
+
+                            } );
+                        });
+                        editframe.open();
+                        editframe.content.mode(router);
+                    } );
 
                     $element.on( 'click', '.delete-attachment a', function( event ) {
 
@@ -845,7 +1088,7 @@ if ( !class_exists( 'Attachments' ) ) :
                         ),
                         array(
                             'name'      => 'caption',                       // unique field name
-                            'type'      => 'wysiwyg',                      // registered field type
+                            'type'      => 'wysiwyg',                       // registered field type
                             'label'     => __( 'Caption', 'attachments' ),  // label to display
                             'default'   => 'caption',                       // default value upon selection
                         ),
@@ -1060,7 +1303,7 @@ if ( !class_exists( 'Attachments' ) ) :
                 <div class="attachments-attachment attachments-attachment-<?php echo $instance; ?>">
                     <?php $array_flag = ( isset( $attachment->uid ) ) ? $attachment->uid : '{{ attachments.attachment_uid }}'; ?>
 
-                    <input type="hidden" name="attachments[<?php echo $instance; ?>][<?php echo $array_flag; ?>][id]" value="<?php echo isset( $attachment->id ) ? $attachment->id : '{{ attachments.id }}' ; ?>" />
+                    <input type="hidden" class="attachments-track-id" name="attachments[<?php echo $instance; ?>][<?php echo $array_flag; ?>][id]" value="<?php echo isset( $attachment->id ) ? $attachment->id : '{{ attachments.id }}' ; ?>" />
 
                     <?php
                         // since attributes can change over time (image gets replaced, cropped, etc.) we'll pull that info
@@ -1097,6 +1340,7 @@ if ( !class_exists( 'Attachments' ) ) :
                             <?php if( ( isset( $attachment->id ) && isset( $attachment->width ) ) || !isset( $attachment->id ) ) : ?>
                                 <div class="dimensions"><?php echo isset( $attachment->width ) ? $attachment->width : '{{ attachments.width }}' ; ?> &times; <?php echo isset( $attachment->height ) ? $attachment->height : '{{ attachments.height }}' ; ?></div>
                             <?php endif; ?>
+                            <div class="edit-attachment-asset"><a href="#"><?php _e( 'Change', 'attachments' ); ?></a></div>
                             <div class="delete-attachment"><a href="#"><?php _e( 'Remove', 'attachments' ); ?></a></div>
                             <div class="attachments-attachment-fields-toggle"><a href="#"><?php _e( 'Toggle Fields', 'attachments' ); ?></a></div>
                         </div>
@@ -1237,6 +1481,26 @@ if ( !class_exists( 'Attachments' ) ) :
             // if the user deleted all Attachments we won't have our key
             $attachments_meta = isset( $_POST['attachments'] ) ? $_POST['attachments'] : array();
 
+            $this->save_metadata( $post_id, $attachments_meta );
+
+            return $post_id;
+        }
+
+
+
+        /**
+         * Processes submitted fields and saves Attachments' post metadata
+         *
+         * @param int $post_id The post ID
+         * @param array $attachments_meta Multidimenaional array containing Attachments data
+         * @return bool
+         * @since 3.4.3
+         */
+        function save_metadata( $post_id = 0, $attachments_meta = null )
+        {
+            if( !is_array( $attachments_meta ) || !is_int( $post_id ) || intval( $post_id ) < 1 )
+                return false;
+
             // final data store
             $attachments = array();
 
@@ -1246,36 +1510,41 @@ if ( !class_exists( 'Attachments' ) ) :
                 // loop through each Attachment of this instance
                 foreach( $instance_attachments as $key => $attachment )
                 {
-                    // since we're using JSON for storage in the database, we need
-                    // to make sure that characters are encoded that would otherwise
-                    // break the JSON
-                    if( isset( $attachment['fields'] ) && is_array( $attachment['fields'] ) )
+                    $attachment_exists = get_post( $attachment['id'] );
+                    // make sure the attachment exists
+                    if( $attachment_exists )
                     {
-
-                        foreach( $attachment['fields'] as $key => $field_value )
+                        // since we're using JSON for storage in the database, we need
+                        // to make sure that characters are encoded that would otherwise
+                        // break the JSON
+                        if( isset( $attachment['fields'] ) && is_array( $attachment['fields'] ) )
                         {
-                            // take care of our returns
-                            $field_value = str_replace( "\r\n", "\n", $field_value );
-                            $field_value = str_replace( "\r", "\n", $field_value );
 
-                            // we dont want to strip out our newlines so we're going to flag them
-                            $field_value = str_replace("\n", "%%ATTACHMENTS_NEWLINE%%", $field_value );
+                            foreach( $attachment['fields'] as $key => $field_value )
+                            {
+                                // take care of our returns
+                                $field_value = str_replace( "\r\n", "\n", $field_value );
+                                $field_value = str_replace( "\r", "\n", $field_value );
 
-                            // slashes were already added so we're going to strip them
-                            $field_value = stripslashes_deep( $field_value );
+                                // we don't want to strip out our newlines so we're going to flag them
+                                $field_value = str_replace("\n", "%%ATTACHMENTS_NEWLINE%%", $field_value );
 
-                            // put back our newlines
-                            $field_value = str_replace("%%ATTACHMENTS_NEWLINE%%", "\\n", $field_value );
+                                // slashes were already added so we're going to strip them
+                                $field_value = stripslashes_deep( $field_value );
 
-                            // encode the whole thing
-                            $field_value = $this->encode_field_value( $field_value );
+                                // put back our newlines
+                                $field_value = str_replace("%%ATTACHMENTS_NEWLINE%%", "\\n", $field_value );
 
-                            // encode things properly
-                            $attachment['fields'][$key] = $field_value;
+                                // encode the whole thing
+                                $field_value = $this->encode_field_value( $field_value );
+
+                                // encode things properly
+                                $attachment['fields'][$key] = $field_value;
+                            }
                         }
-                    }
 
-                    $attachments[$instance][] = $attachment;
+                        $attachments[$instance][] = $attachment;
+                    }
                 }
             }
 
@@ -1285,15 +1554,13 @@ if ( !class_exists( 'Attachments' ) ) :
                 $attachments = version_compare( PHP_VERSION, '5.4.0', '>=' ) ? json_encode( $attachments, JSON_UNESCAPED_UNICODE ) : json_encode( $attachments );
 
                 // we're going to wipe out any existing Attachments meta (because we'll put it back)
-                update_post_meta( $post_id, $this->meta_key, $attachments );
+                return update_post_meta( $post_id, $this->meta_key, $attachments );
             }
             else
             {
                 // there are no attachments so we'll clean up the record
-                delete_post_meta( $post_id, $this->meta_key );
+                return delete_post_meta( $post_id, $this->meta_key );
             }
-
-            return $post_id;
         }
 
 
@@ -1308,7 +1575,7 @@ if ( !class_exists( 'Attachments' ) ) :
         function encode_field_value( $field_value = null )
         {
             if( is_null( $field_value ) )
-                return;
+                return false;
 
             if( is_object( $field_value ) )
             {
@@ -1357,10 +1624,15 @@ if ( !class_exists( 'Attachments' ) ) :
             elseif( is_null( $instance ) )
             {
                 // return them all, regardless of instance
-                if( is_array( $attachments_raw ) && count( $attachments_raw ) )
+                if( ( is_array( $attachments_raw ) && count( $attachments_raw ) ) || is_object( $attachments_raw ) )
+                {
+                    // cast an object if necessary
+                    if( is_object( $attachments_raw ) ) $attachments_raw = (array) $attachments_raw;
+
                     foreach( $attachments_raw as $instance => $attachments_unprocessed )
                         foreach( $attachments_unprocessed as $unprocessed_attachment )
                             $attachments[] = $this->process_attachment( $unprocessed_attachment, $instance );
+                }
             }
 
             // tack on the post ID for each attachment
@@ -1432,7 +1704,8 @@ if ( !class_exists( 'Attachments' ) ) :
         /**
          * Processes Attachment (including fields) in preparation for return
          * @param  object $attachment An Attachment object as it was stored as post metadata
-         * @return object             Post-processed Attachment data
+         * @param string $instance The applicable instance
+         * @return object Post-processed Attachment data
          *
          * @since 3.3
          */
@@ -1490,7 +1763,7 @@ if ( !class_exists( 'Attachments' ) ) :
         function decode_field_value( $field_value = null )
         {
             if( is_null( $field_value ) )
-                return;
+                return false;
 
             if( is_object( $field_value ) )
             {
