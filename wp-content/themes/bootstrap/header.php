@@ -27,7 +27,7 @@ endif;
         <link rel="apple-touch-icon" sizes="144x144" href="<?php bloginfo('template_url'); ?>/ico/apple-touch-icon-144x144.png" /> -->
 
         <!--[if lt IE 9]>
-        <script src="<?php bloginfo('template_url'); ?>/js/vendors/html5shim/html5shiv.js"></script>
+        <script src="<?php bloginfo('template_url'); ?>/js/vendor/html5shim/html5shiv.js"></script>
         <![endif]-->
 
         <?php wp_head(); ?>
@@ -40,6 +40,13 @@ endif;
 
                     <a class="brand" href="<?php echo home_url(); ?>" title="<?php echo esc_attr(get_bloginfo('name', 'display')); ?>" rel="home"><?php bloginfo('name'); ?></a>
 
+                    <div class="social">
+                        <ul>
+                            <li><a class="facebook" href="#" title="Facebook" target="_blank">Facebook</a></li>
+                            <li><a class="twitter" href="#" title="Twitter" target="_blank">Twitter</a></li>
+                            <li><a class="mail" href="#" title="E-mail">Contact</a></li>
+                        </ul>
+                    </div>
 <?php
 if (bootstrap_is_multilingual()):
 ?>

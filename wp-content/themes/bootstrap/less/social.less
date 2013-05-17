@@ -1,0 +1,51 @@
+
+// Social
+// -------------------------
+
+.social {
+
+  ul {
+    margin: 0;
+    list-style-type: none;
+    .clearfix();
+  }
+
+  li {
+    float: left;
+    margin-right: 5px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  a {
+    display: block;
+    width: 24px;
+    height: 24px;
+    background: @black url(../img/social-icons-white.png) no-repeat;
+    text-indent: -9999px;
+
+    &.facebook  { background-position:    0   0; }
+    &.gplus     { background-position: -32px  0; }
+    &.twitter   { background-position: -64px  0; }
+    &.yourube   { background-position: -96px  0; }
+    &.instagram { background-position: -128px 0; }
+    &.rss       { background-position: -160px 0; }
+    &.mail      { background-position: -192px 0; }
+
+    &.facebook:hover  { background-color: #3c5a9a; }
+    &.gplus:hover     { background-color: #f63e28; }
+    &.twitter:hover   { background-color: #2daae1; }
+    &.youtube:hover   { background-color: #da4237; }
+    &.instagram:hover { background-color: #517fa4; }
+    &.rss:hover       { background-color: #ff6000; }
+    &.mail:hover      { background-color: @gray; }
+
+  }
+
+  header & {
+    float: right;
+    margin-left: 20px;
+  }
+}
