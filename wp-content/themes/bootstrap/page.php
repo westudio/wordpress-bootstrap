@@ -1,11 +1,15 @@
 <?php
 
 /**
- * Template Name: Default Page
+ * Default Page
  */
 
 ?>
-<?php get_header(); ?>
+<?php
+if (bootstrap_has_layout()):
+    get_header();
+endif;
+?>
 
         <div class="container">
             <?php bootstrap_breadcrumbs(); ?>
@@ -15,32 +19,38 @@
             <div class="row-fluid">
 
                 <div class="span8 section main page">
+<?php
+while (have_posts()):
+    the_post();
+?>
                 	<div class="page-header">
                         <h1><?php the_title(); ?></h1>
                     </div>
                     <div class="page-content">
                         <div class="page-content-inner">
-<?php
-while (have_posts()):
-    the_post();
-?>
+
                             <div <?php post_class(); ?>>
                                 <div class="post-inner">
                                     <?php the_content();?>
                                 </div>
                             </div>
+
+                        </div>
+                    </div>
 <?php
 endwhile;
 ?>
-                        </div>
-                    </div>
                 </div><!-- /.main -->
 
-                <div class="span4 sidebar">
+                <div id="sidebar" class="span4">
                     <?php get_sidebar('page'); ?>
                 </div>
 
             </div><!-- /.row-fluid -->
         </div><!--/.container -->
 
-<?php get_footer(); ?>
+<?php
+if (bootstrap_has_layout()):
+    get_footer();
+endif;
+?>

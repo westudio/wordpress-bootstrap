@@ -1,4 +1,8 @@
-<?php get_header(); ?>
+<?php
+if (bootstrap_has_layout()):
+    get_header();
+endif;
+?>
 
         <div class="container">
             <?php bootstrap_breadcrumbs(); ?>
@@ -8,7 +12,7 @@
             
             <div class="row-fluid">
 
-                <div class="span8 section main single">
+                <div id="main" class="span8 section main single">
 <?php
 while (have_posts()):
     the_post();
@@ -35,13 +39,17 @@ while (have_posts()):
 <?php
 endwhile;
 ?>
-                </div><!-- /.main -->
+                </div><!-- /#main -->
 
-                <div class="span4 sidebar">
+                <div id="sidebar" class="span4">
                     <?php get_sidebar('single'); ?>
                 </div>
 
             </div><!-- /.row-fluid -->
         </div><!--/.container -->
 
-<?php get_footer(); ?>
+<?php
+if (bootstrap_has_layout()):
+    get_footer();
+endif;
+?>

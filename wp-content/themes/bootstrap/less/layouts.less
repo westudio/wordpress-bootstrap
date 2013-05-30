@@ -17,95 +17,86 @@
 // Header 
 // -------------------------
 
-header {
-  margin-bottom: 10px;
-
+#header {
   .header-inner {
-    padding: 20px;
     .clearfix();
   }
-
-  .brand {
-    float: left;
-    width: 103px;
-    height: 103px;
-    background: transparent url(../img/logo.png) no-repeat;
-    text-indent: -9999px;
-  }
-  
 }
 
-// Footer 
+// Brand 
 // -------------------------
 
-footer {
-  margin-top: 20px;
-  border-top: 3px solid @black;
-  border-bottom: 1px solid @black;
+.brand {
+  float: left;
+  width: 103px;
+  height: 103px;
+  background: transparent url(../img/logo.png) no-repeat;
+  text-indent: -9999px;
 }
 
-// Section
+// Sidebar 
 // -------------------------
 
-.section {
-  margin-bottom: 20px;
-}
-
-// Page header
-// -------------------------
-
-.page-header {
-  
-  h1 {
-  }
-
-  .section.main & {
-
-    h1 {
-    }
-
-  }
-
-  .section.secondary & {
-
-    h1 {
-    }
-
-  }
-
-}
-
-// Page content
-// -------------------------
-
-.page-content {
-
-  .page-content-inner {
-    margin: 0;
-  }
-
-}
-
-// Page footer
-// -------------------------
-
-.page-footer {
-
-  .page-footer-inner {
-    padding: 0;
-    background: none;
-  }
-
-}
-
-// Sidebar
-// -------------------------
-
-.sidebar {
+#sidebar {
 
   aside {
     margin-bottom: 20px;
     clear: both;
   }
 
+}
+
+// Footer 
+// -------------------------
+
+#footer {
+  margin-top: 20px;
+  
+  .footer-inner {
+    padding: 10px 0;
+  }
+  
+  .copyright {
+    float: left;
+    margin: 0;
+    font-size: .8em;
+    color: @grayLight;
+  }
+  
+  .credits {
+    float: right;
+    margin: 0;
+    font-size: .8em;
+    color: @grayLight;
+  }
+}
+
+// Page wrapper 
+// -------------------------
+
+.page-wrapper {
+    padding-top: @navbarHeight + @baseLineHeight;
+    min-height: 600px;
+}
+
+// Page header
+// -------------------------
+
+.page-header {
+}
+
+// Page content
+// -------------------------
+
+.page-content {
+  .page-content-inner {
+  }
+}
+
+// Page footer
+// -------------------------
+
+.page-footer {
+  .page-footer-inner {
+  }
 }

@@ -1,19 +1,9 @@
 <?php
 
-/**
- * Bootstrap_Walker_Nav_Menu
- */
-class Bootstrap_Walker_Nav_Menu extends Walker_Nav_Menu
-{
-    /** 
-     * {@inheritDoc}
-     */
-    function start_lvl(&$output, $depth = 0, $args = array())
-    {
-        $indent = str_repeat("\t", $depth);
-        $output .= $indent . '<ul class="dropdown-menu">' . PHP_EOL;
-    }
+require_once __DIR__ .'/Bootstrap_Walker_Nav_Menu.php';
 
+class Bootstrap_All_In_One_Nav_Walker_Nav_Menu extends Bootstrap_Walker_Nav_Menu
+{
     /** 
      * {@inheritDoc}
      */
@@ -53,6 +43,7 @@ class Bootstrap_Walker_Nav_Menu extends Walker_Nav_Menu
         $attributes .= ! empty($item->target)     ? ' target="' . esc_attr($item->target    ) .'"' : '';
         $attributes .= ! empty($item->xfn)        ? ' rel="' . esc_attr($item->xfn       ) .'"' : '';
         $attributes .= ! empty($item->url)        ? ' href="' . esc_attr($item->url       ) .'"' : '';
+        $attributes .= ! empty($item->url)        ? ' data-target="#' . bootstrap_url_to_slug($item->url) . '"' : '';
         $attributes .= ($args->has_children)      ? ' class="dropdown-toggle" data-toggle="dropdown"' : '';
  
         $item_output = $args->before;
@@ -63,50 +54,4 @@ class Bootstrap_Walker_Nav_Menu extends Walker_Nav_Menu
 
         $output .= apply_filters('walker_nav_menu_start_el', $item_output, $item, $depth, $args);
     }
- 
-    function display_element($element, &$children_elements, $max_depth, $depth=0, $args, &$output)
-    {
-        if (!$element)
-            return;
- 
-        $id_field = $this->db_fields['id'];
- 
-        //display this element
-        if (is_array($args[0]))
-            $args[0]['has_children'] = ! empty($children_elements[$element->$id_field]);
-        else if (is_object($args[0]))
-            $args[0]->has_children = ! empty($children_elements[$element->$id_field]);
-        $cb_args = array_merge(array(&$output, $element, $depth), $args);
-        call_user_func_array(array(&$this, 'start_el'), $cb_args);
- 
-        $id = $element->$id_field;
- 
-        // descend only when the depth is right and there are childrens for this element
-        if (($max_depth == 0 || $max_depth > $depth+1) && isset($children_elements[$id])) {
- 
-            foreach ($children_elements[ $id ] as $child) {
- 
-                if (!isset($newlevel)) {
-                    $newlevel = true;
-                    //start the child delimiter
-                    $cb_args = array_merge(array(&$output, $depth), $args);
-                    call_user_func_array(array(&$this, 'start_lvl'), $cb_args);
-                }
-                $this->display_element($child, $children_elements, $max_depth, $depth + 1, $args, $output);
-            }
-            unset($children_elements[ $id ]);
-        }
- 
-        if (isset($newlevel) && $newlevel) {
-            //end the child delimiter
-            $cb_args = array_merge(array(&$output, $depth), $args);
-            call_user_func_array(array(&$this, 'end_lvl'), $cb_args);
-        }
- 
-        //end this element
-        $cb_args = array_merge(array(&$output, $element, $depth), $args);
-        call_user_func_array(array(&$this, 'end_el'), $cb_args);
- 
-    }
- 
 }

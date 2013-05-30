@@ -1,6 +1,7 @@
 <?php
 
 require_once dirname(__FILE__) . '/classes/Bootstrap_Walker_Nav_Menu.php';
+require_once dirname(__FILE__) . '/classes/Bootstrap_All_In_One_Nav_Walker_Nav_Menu.php';
 
 ////////////////////////////////
 // Settings
@@ -11,6 +12,12 @@ require_once dirname(__FILE__) . '/classes/Bootstrap_Walker_Nav_Menu.php';
 define('BOOTSTRAP_IS_RESPONSIVE',      false);
 define('BOOTSTRAP_GRID_COLUMN_WIDTH',  BOOTSTRAP_IS_RESPONSIVE ? 70 : 60);
 define('BOOTSTRAP_GRID_GUTTER_WIDTH',  BOOTSTRAP_IS_RESPONSIVE ? 30 : 20);
+
+define('BOOTSTRAP_EXCERPT_LENGTH',     55);
+
+define('BOOTSTRAP_ARE_LINKS_ENABLED',  false);
+
+$_bootstrap_has_layout = true;
 
 // Attachments
 
@@ -150,6 +157,33 @@ function bootstrap_attachments($attachments)
             )
         )
     ));
+
+    $attachments->register('bootstrap_attachments', array(
+        'label'       => __('Attachments', 'bootstrap'),
+        'post_type'   => array('page', 'work'),
+        'position'    => 'normal',
+        'priority'    => 'high',
+        'filetype'    => null,
+        'note'        => null,
+        'append'      => true,
+        'button_text' => __('Attach files', 'bootstrap'),
+        'modal_text'  => __('Attach', 'bootstrap'),
+        'router'      => 'browse',
+        'fields'      => array(
+            array(
+                'name'    => 'title',
+                'type'    => 'text',
+                'label'   => __('Title', 'bootstrap'),
+                'default' => 'title',
+            ),
+            array(
+                'name'    => 'caption',
+                'type'    => 'text',
+                'label'   => __('Caption', 'bootstrap'),
+                'default' => 'caption',
+            )
+        )
+    ));
 }
 
 // add_action('attachments_register', 'bootstrap_attachments');
@@ -229,7 +263,7 @@ add_action('after_setup_theme', 'bootstrap_setup_styles');
 function bootstrap_setup_scripts()
 {
     wp_register_script('bootstrap', get_template_directory_uri().'/js/main.min.js', array('jquery'), '1.0.0', true);
-    // wp_register_script('text_resize', get_template_directory_uri().'/js/text-resize.js', array('jquery'), '1.0.0', true);
+    wp_register_script('text_resize', get_template_directory_uri().'/js/text-resize.js', array('jquery'), '1.0.0', true);
     wp_register_script('google_map_api', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCY5DKsx5ZgPdBTF1Kk7Fzk1cKKWhStWrw&sensor=false', array(), true);
     wp_register_script('access_map', get_template_directory_uri().'/js/access-map.js', array('jquery', 'google_map_api'), '1.0.0', true);
 }
@@ -287,19 +321,26 @@ function bootstrap_pre_get_posts($query)
 // Filters
 ////////////////////////////////
 
+function bootstrap_are_links_enabled()
+{
+    return BOOTSTRAP_ARE_LINKS_ENABLED;
+}
+
+add_filter('pre_option_link_manager_enabled', 'bootstrap_is_links_enabled');
+
+function bootstrap_excerpt_length()
+{
+    return BOOTSTRAP_EXCERPT_LENGTH;
+}
+
+add_filter('excerpt_length', 'bootstrap_excerpt_length');
+
 function bootstrap_excerpt_more()
 {
     return '&hellip;&nbsp;<a href="' . get_permalink() . '">'.__('Continue reading', 'bootstrap').'</a>';
 }
 
 add_filter('excerpt_more', 'bootstrap_excerpt_more');
-
-function bootstrap_excerpt_length()
-{
-    return 55;
-}
-
-add_filter('excerpt_length', 'bootstrap_excerpt_length');
 
 /**
  * Defines page menu arguments
@@ -324,9 +365,7 @@ function bootstrap_page_menu_args($args)
  */
 function bootstrap_nav_menu_args($args)
 {
-    $args['menu_class']      = 'nav';
-    $args['container_class'] = 'nav-collapse';
-    $args['walker']          = new Bootstrap_Walker_Nav_Menu();
+    $args['menu_class'] = 'nav';
 
     return $args;
 }
@@ -337,69 +376,67 @@ add_filter('wp_nav_menu_args', 'bootstrap_nav_menu_args', 10, 1);
 // Helpers
 ////////////////////////////////
 
-function bootstrap_find_attachments()
+function bootstrap_has_layout()
 {
+    global $_bootstrap_has_layout;
+    return $_bootstrap_has_layout;
+}
+
+function bootstrap_set_layout($flag = true)
+{
+    global $_bootstrap_has_layout;
+    $_bootstrap_has_layout = (bool) $flag;
+}
+
+function bootstrap_url_to_slug($url)
+{
+    $slug = trim(
+        str_replace(
+            array(home_url(), '/'),
+            array('',         '-'),
+            esc_attr($url)
+        ),
+        '/-'
+    );
+
+    if ('' == $slug) {
+        $slug = __('home', 'bootstrap');
+    }
+
+    return $slug;
+}
+
+function bootstrap_get_attachments()
+{
+    $name = 'bootstrap_attachments';
     static $attachments = null;
 
     if (null === $attachments) {
-        $instance = new Attachments('bootstrap_attachments');
+        $instance = new Attachments($name);
 
-        $attachments = $instance->get_attachments('bootstrap_attachments');
+        $attachments = $instance->get_attachments($name);
     }
 
     return $attachments;
 }
 
-function bootstrap_find_menu_items_associated_objects($menu)
+function bootstrap_get_gallery()
 {
-    $menu .= ICL_LANGUAGE_CODE == 'de' ? '-de' : '';
-    $objects = array();
-    $items = wp_get_nav_menu_items($menu);
+    $name = 'bootstrap_gallery';
+    static $attachments = null;
 
-    foreach ($items as $item) {
-        if ($item->object == 'page' || $item->object == 'post') {
-            $objects[] = get_post($item->object_id);
-        }
+    if (null === $attachments) {
+        $instance = new Attachments($name);
+
+        $attachments = $instance->get_attachments($name);
     }
 
-    return $objects;
+    return $attachments;
 }
 
 function bootstrap_navbar_search_form()
 {
     include dirname(__FILE__) . '/searchform-navbar.php';
-}
-
-/**
- * Is WPML plugin installed
- *
- * @return boolean
- */
-function bootstrap_is_multilingual()
-{
-    return function_exists('icl_get_languages');
-}
-
-/**
- * Prints languages list
- */
-function bootstrap_languages_list()
-{
-    $output = '';
-
-    if (bootstrap_is_multilingual()) {
-        $output .= '<ul>';
-        foreach (icl_get_languages() as $lang) {
-            if ($lang['language_code'] == ICL_LANGUAGE_CODE) {
-                $output .= '<li class="active"><a href="'.$lang['url'].'">'.strtoupper($lang['language_code']).'</a></li>';
-            } else {
-                $output .= '<li><a href="'.$lang['url'].'">'.strtoupper($lang['language_code']).'</a></li>';
-            }
-        }
-        $output .= '</ul>' . PHP_EOL;
-    }
-
-    echo $output;
 }
 
 function bootstrap_is_responsive()
@@ -550,7 +587,7 @@ function bootstrap_posted_on()
 
 /**
  * Displays title
- * 
+ *
  * @return string
  */
 function bootstrap_title($separator = ' - ')
@@ -558,8 +595,13 @@ function bootstrap_title($separator = ' - ')
   $output = '';
 
     if ($breadcrumbs = bootstrap_get_breadcrumbs()) {
+
         // Replace "Home" by project's name
         $breadcrumbs[0] = get_bloginfo('name');
+
+        if (is_front_page()) {
+            $breadcrumbs[] = get_bloginfo('description');
+        }
 
         // Write backwards
         $i = count($breadcrumbs);
@@ -597,7 +639,7 @@ function bootstrap_breadcrumbs()
 
 /**
  * Returns breadcrumbs
- * 
+ *
  * @return array
  */
 function bootstrap_get_breadcrumbs()
@@ -610,116 +652,119 @@ function bootstrap_get_breadcrumbs()
         // Home
         $breadcrumbs[] = sprintf('<a href="%s">%s</a>', home_url(), __('Home', 'bootstrap'));
 
-        switch (true) {
+        if (!is_front_page()) {
 
-            // Single custom post
-            case is_single() && !is_attachment() && get_post_type() != 'post':
-                // Type
-                $post_type = get_post_type_object(get_post_type());
-                $breadcrumbs[] = sprintf('<a href="%s">%s</a>', home_url().'/'.$post_type->rewrite['slug'], $post_type->labels->name);
-                // Categories
-                if ($categories = get_the_category()) {
-                    $links = array();
-                    foreach ($categories as $category) {
-                        $links[] = sprintf('<a href="%s">%s</a>', get_category_link($category->term_id), $category->name);
+            switch (true) {
+
+                // Single custom post
+                case is_single() && !is_attachment() && get_post_type() != 'post':
+                    // Type
+                    $post_type = get_post_type_object(get_post_type());
+                    $breadcrumbs[] = sprintf('<a href="%s">%s</a>', home_url().'/'.$post_type->rewrite['slug'], $post_type->labels->name);
+                    // Categories
+                    if ($categories = get_the_category()) {
+                        $links = array();
+                        foreach ($categories as $category) {
+                            $links[] = sprintf('<a href="%s">%s</a>', get_category_link($category->term_id), $category->name);
+                        }
+                        $breadcrumbs[] = implode(', ', $links);
                     }
-                    $breadcrumbs[] = implode(', ', $links);
-                }
-                // Title
-                $breadcrumbs[] = get_the_title();
-                break;
+                    // Title
+                    $breadcrumbs[] = get_the_title();
+                    break;
 
-            // Post
-            case is_single() && !is_attachment():
-                // Categories
-                if ($categories = get_the_category()) {
-                    $links = array();
-                    foreach ($categories as $category) {
-                        $links[] = sprintf('<a href="%s">%s</a>', get_category_link($category->term_id), $category->name);
+                // Post
+                case is_single() && !is_attachment():
+                    // Categories
+                    if ($categories = get_the_category()) {
+                        $links = array();
+                        foreach ($categories as $category) {
+                            $links[] = sprintf('<a href="%s">%s</a>', get_category_link($category->term_id), $category->name);
+                        }
+                        $breadcrumbs[] = implode(', ', $links);
                     }
-                    $breadcrumbs[] = implode(', ', $links);
-                }
-                // Title
-                $breadcrumbs[] = get_the_title();
-                break;
+                    // Title
+                    $breadcrumbs[] = get_the_title();
+                    break;
 
-            // Page
-            case is_page():
-                // Parents' titles
-                $parents = array();
-                $parent_id = $post->post_parent;
-                while ($parent_id) {
-                    $parent = get_page($parent_id);
-                    array_unshift($parents, sprintf('<a href="%s">%s</a>', get_permalink($parent), $parent->post_title));
-                    $parent_id = $parent->post_parent;
-                }
-                $breadcrumbs = array_merge($breadcrumbs, $parents);
-                // Title
-                $breadcrumbs[] = get_the_title();
-                break;
+                // Page
+                case is_page():
+                    // Parents' titles
+                    $parents = array();
+                    $parent_id = $post->post_parent;
+                    while ($parent_id) {
+                        $parent = get_page($parent_id);
+                        array_unshift($parents, sprintf('<a href="%s">%s</a>', get_permalink($parent), $parent->post_title));
+                        $parent_id = $parent->post_parent;
+                    }
+                    $breadcrumbs = array_merge($breadcrumbs, $parents);
+                    // Title
+                    $breadcrumbs[] = get_the_title();
+                    break;
 
-            // Attachment
-            case is_attachment():
-                // Parent's title
-                $parent = get_post($post->post_parent);
-                $breadcrumbs[] = sprintf('<a href="%s">%s</a>', get_permalink($parent), $parent->post_title);
-                // Title
-                $breadcrumbs[] = get_the_title();
-                break;
+                // Attachment
+                case is_attachment():
+                    // Parent's title
+                    $parent = get_post($post->post_parent);
+                    $breadcrumbs[] = sprintf('<a href="%s">%s</a>', get_permalink($parent), $parent->post_title);
+                    // Title
+                    $breadcrumbs[] = get_the_title();
+                    break;
 
-            // Category
-            case is_category():
-                // Title
-                $breadcrumbs[] = single_cat_title('', false);
-                break;
+                // Category
+                case is_category():
+                    // Title
+                    $breadcrumbs[] = single_cat_title('', false);
+                    break;
 
-            // Year
-            case is_year():
-                $breadcrumbs[] = get_the_time('Y');
-                break;
+                // Year
+                case is_year():
+                    $breadcrumbs[] = get_the_time('Y');
+                    break;
 
-            // Month
-            case is_month():
-                $breadcrumbs[] = sprintf('<a href="%s">%s</a>', get_year_link(get_the_time('Y')), get_the_time('Y'));
-                $breadcrumbs[] = get_the_time('F');
-                break;
+                // Month
+                case is_month():
+                    $breadcrumbs[] = sprintf('<a href="%s">%s</a>', get_year_link(get_the_time('Y')), get_the_time('Y'));
+                    $breadcrumbs[] = get_the_time('F');
+                    break;
 
-            // Day
-            case is_day():
-                $breadcrumbs[] = sprintf('<a href="%s">%s</a>', get_year_link(get_the_time('Y')), get_the_time('Y'));
-                $breadcrumbs[] = sprintf('<a href="%s">%s</a>', get_year_link(get_the_time('Y'), get_the_time('m')), get_the_time('F'));
-                $breadcrumbs[] = get_the_time('d');
-                break;
+                // Day
+                case is_day():
+                    $breadcrumbs[] = sprintf('<a href="%s">%s</a>', get_year_link(get_the_time('Y')), get_the_time('Y'));
+                    $breadcrumbs[] = sprintf('<a href="%s">%s</a>', get_year_link(get_the_time('Y'), get_the_time('m')), get_the_time('F'));
+                    $breadcrumbs[] = get_the_time('d');
+                    break;
 
-            // Search
-            case is_search():
-                $breadcrumbs[] = sprintf(__('Results for "%s"', 'bootstrap'), get_search_query());
-                break;
+                // Search
+                case is_search():
+                    $breadcrumbs[] = sprintf(__('Results for "%s"', 'bootstrap'), get_search_query());
+                    break;
 
-            // Tag
-            case is_tag():
-                $breadcrumbs[] = sprintf(__('Posts tagged "%s"', 'bootstrap'), single_tag_title('', false));
-                break;
+                // Tag
+                case is_tag():
+                    $breadcrumbs[] = sprintf(__('Posts tagged "%s"', 'bootstrap'), single_tag_title('', false));
+                    break;
 
-            // Author
-            case is_author():
-                global $author;
-                $userdata = get_userdata($author);
-                $breadcrumbs[] = sprintf(__('Articles posted by %s', 'bootstrap'), $userdata->display_name);
-                break;
+                // Author
+                case is_author():
+                    global $author;
+                    $userdata = get_userdata($author);
+                    $breadcrumbs[] = sprintf(__('Articles posted by %s', 'bootstrap'), $userdata->display_name);
+                    break;
 
-            // 404
-            case is_404():
-                $breadcrumbs[] = __('Page not found', 'bootstrap');
-                break;
+                // 404
+                case is_404():
+                    $breadcrumbs[] = __('Page not found', 'bootstrap');
+                    break;
 
-            // Custom post archive
-            case !is_single() && !is_page() && get_post_type() != 'post':
-                // Type
-                $post_type = get_post_type_object(get_post_type());
-                $breadcrumbs[] = $post_type->labels->name;
-                break;
+                // Custom post archive
+                case !is_single() && !is_page() && get_post_type() != 'post':
+                    // Type
+                    $post_type = get_post_type_object(get_post_type());
+                    $breadcrumbs[] = $post_type->labels->name;
+                    break;
 
+            }
         }
 
         // Page

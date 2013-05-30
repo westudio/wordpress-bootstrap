@@ -5,7 +5,11 @@
  */
 
 ?>
-<?php get_header(); ?>
+<?php
+if (bootstrap_has_layout()):
+    get_header();
+endif;
+?>
 
         <div class="container">
             <?php bootstrap_breadcrumbs(); ?>
@@ -13,7 +17,7 @@
 
         <div class="container">
 
-            <div class="section main not-found">
+            <div id="main" class="section main not-found">
 
                 <div class="page-content">
                     
@@ -41,8 +45,12 @@
                     </div>
                 </div>
 
-            </div><!-- /.main -->
+            </div><!-- /#main -->
 
         </div>
 
-<?php get_footer(); ?>
+<?php
+if (bootstrap_has_layout()):
+    get_footer();
+endif;
+?>

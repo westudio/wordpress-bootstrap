@@ -9,13 +9,12 @@
 
 wp_enqueue_script('access_map');
 
-get_header();
-
+if (bootstrap_has_layout()):
+    get_header();
+endif;
 ?>
-        <div class="container">
-            <div class="map">
-                <div id="map" class="map-inner"></div>
-            </div>
+        <div class="map">
+            <div id="map" class="map-inner"></div>
         </div>
 
         <div class="container">
@@ -70,4 +69,8 @@ endwhile;
                 });
             });
         </script>
-<?php get_footer(); ?>
+<?php
+if (bootstrap_has_layout()):
+    get_footer();
+endif;
+?>
