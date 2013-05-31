@@ -129,11 +129,14 @@ function bootstrap_register_sidebars()
 
 // add_action('init', 'bootstrap_register_sidebars');
 
+/**
+ * Registers attachements
+ */
 function bootstrap_attachments($attachments)
 {
     $attachments->register('bootstrap_attachments', array(
         'label'       => __('Attachments', 'bootstrap'),
-        'post_type'   => array('page', 'work'),
+        'post_type'   => array('page', 'post'),
         'position'    => 'normal',
         'priority'    => 'high',
         'filetype'    => null,
@@ -148,25 +151,19 @@ function bootstrap_attachments($attachments)
                 'type'    => 'text',
                 'label'   => __('Title', 'bootstrap'),
                 'default' => 'title',
-            ),
-            array(
-                'name'    => 'caption',
-                'type'    => 'text',
-                'label'   => __('Caption', 'bootstrap'),
-                'default' => 'caption',
             )
         )
     ));
 
-    $attachments->register('bootstrap_attachments', array(
-        'label'       => __('Attachments', 'bootstrap'),
-        'post_type'   => array('page', 'work'),
+    $attachments->register('bootstrap_gallery', array(
+        'label'       => __('Gallery', 'bootstrap'),
+        'post_type'   => array('page', 'post'),
         'position'    => 'normal',
         'priority'    => 'high',
-        'filetype'    => null,
+        'filetype'    => array('image'),
         'note'        => null,
         'append'      => true,
-        'button_text' => __('Attach files', 'bootstrap'),
+        'button_text' => __('Attach images', 'bootstrap'),
         'modal_text'  => __('Attach', 'bootstrap'),
         'router'      => 'browse',
         'fields'      => array(
@@ -186,7 +183,7 @@ function bootstrap_attachments($attachments)
     ));
 }
 
-// add_action('attachments_register', 'bootstrap_attachments');
+add_action('attachments_register', 'bootstrap_attachments');
 
 ////////////////////////////////
 // Setup
