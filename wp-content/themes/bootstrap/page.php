@@ -26,8 +26,8 @@ while (have_posts()):
                 	<div class="page-header">
                         <h1><?php the_title(); ?></h1>
                     </div>
-                    <div class="page-content">
-                        <div class="page-content-inner">
+                    <div class="page-body">
+                        <div class="page-body-inner">
 
                             <div <?php post_class(); ?>>
                                 <div class="post-inner">

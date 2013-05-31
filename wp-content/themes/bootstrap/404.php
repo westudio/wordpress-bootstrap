@@ -19,7 +19,7 @@ endif;
 
             <div id="main" class="section main not-found">
 
-                <div class="page-content">
+                <div class="page-body">
                     
                     <div class="hero-unit">
                         <h1><?php _e( 'Page not found', 'bootstrap' ); ?></h1>
@@ -27,7 +27,7 @@ endif;
                         <?php get_search_form(); ?>
                     </div>
 
-                    <div class="page-content-inner">
+                    <div class="page-body-inner">
                         <div class="row-fluid">
 
                             <div class="span6">

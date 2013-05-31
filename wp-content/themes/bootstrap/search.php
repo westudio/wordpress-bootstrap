@@ -23,8 +23,8 @@ endif;
                         <h1><?php printf(__('Results for "%s"', 'bootstrap'), get_search_query()); ?></h1>
                     </div>
 
-                    <div class="page-content">
-                        <div class="page-content-inner">
+                    <div class="page-body">
+                        <div class="page-body-inner">
 
 <?php
 if (have_posts()):
