@@ -212,12 +212,16 @@ textarea {
 }
 
 body {
-  margin: 0;
+  margin: 60px 0 0 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 20px;
   color: #333333;
   background-color: #ffffff;
+}
+
+body.page-template-page-all-in-one-php {
+  margin-top: 0;
 }
 
 a {
@@ -638,27 +642,22 @@ a:focus {
   clear: both;
 }
 
-header {
-  margin-bottom: 10px;
-}
-
-header .header-inner {
-  padding: 20px;
+#header .header-inner {
   *zoom: 1;
 }
 
-header .header-inner:before,
-header .header-inner:after {
+#header .header-inner:before,
+#header .header-inner:after {
   display: table;
   line-height: 0;
   content: "";
 }
 
-header .header-inner:after {
+#header .header-inner:after {
   clear: both;
 }
 
-header .brand {
+.brand {
   float: left;
   width: 103px;
   height: 103px;
@@ -666,28 +665,36 @@ header .brand {
   background: transparent url(../img/logo.png) no-repeat;
 }
 
-footer {
-  margin-top: 20px;
-  border-top: 3px solid #000000;
-  border-bottom: 1px solid #000000;
-}
-
-.section {
-  margin-bottom: 20px;
-}
-
-.page-content .page-content-inner {
-  margin: 0;
-}
-
-.page-footer .page-footer-inner {
-  padding: 0;
-  background: none;
-}
-
-.sidebar aside {
+#sidebar aside {
   margin-bottom: 20px;
   clear: both;
+}
+
+#footer {
+  margin-top: 20px;
+}
+
+#footer .footer-inner {
+  padding: 10px 0;
+}
+
+#footer .copyright {
+  float: left;
+  margin: 0;
+  font-size: .8em;
+  color: #999999;
+}
+
+#footer .credits {
+  float: right;
+  margin: 0;
+  font-size: .8em;
+  color: #999999;
+}
+
+.page-wrapper {
+  min-height: 600px;
+  padding-top: 60px;
 }
 
 p {
@@ -4033,10 +4040,6 @@ a.badge:focus {
   line-height: 30px;
 }
 
-.hentry .post-inner {
-  margin: 20px;
-}
-
 .hentry img.alignleft,
 .hentry img.alignright {
   width: 48.93617021276595%;
@@ -4057,7 +4060,7 @@ a.badge:focus {
   margin: 0 0 5px 0;
 }
 
-.hentry .meta {
+.hentry .date {
   font-family: Georgia, "Times New Roman", Times, serif;
   font-style: italic;
 }
@@ -4067,6 +4070,158 @@ a.badge:focus {
   font-size: .9em;
   font-weight: bold;
   text-transform: uppercase;
+}
+
+.map .map-inner {
+  height: 300px;
+}
+
+.map .map-inner img {
+  max-width: none;
+}
+
+.video {
+  display: block;
+  width: 100%;
+  background: #000000;
+}
+
+.span12 .video {
+  height: 529px;
+}
+
+.span11 .video {
+  height: 484px;
+}
+
+.span10 .video {
+  height: 439px;
+}
+
+.span9 .video {
+  height: 394px;
+}
+
+.span8 .video {
+  height: 349px;
+}
+
+.span7 .video {
+  height: 304px;
+}
+
+.span6 .video {
+  height: 259px;
+}
+
+.span5 .video {
+  height: 214px;
+}
+
+.span4 .video {
+  height: 169px;
+}
+
+.span3 .video {
+  height: 124px;
+}
+
+.span2 .video {
+  height: 79px;
+}
+
+.span1 .video {
+  height: 34px;
+}
+
+@media (min-width: 1200px) {
+  .span12 .video {
+    height: 659px;
+  }
+  .span11 .video {
+    height: 602px;
+  }
+  .span10 .video {
+    height: 546px;
+  }
+  .span9 .video {
+    height: 490px;
+  }
+  .span8 .video {
+    height: 434px;
+  }
+  .span7 .video {
+    height: 377px;
+  }
+  .span6 .video {
+    height: 321px;
+  }
+  .span5 .video {
+    height: 265px;
+  }
+  .span4 .video {
+    height: 209px;
+  }
+  .span3 .video {
+    height: 152px;
+  }
+  .span2 .video {
+    height: 96px;
+  }
+  .span1 .video {
+    height: 40px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+  .span12 .video {
+    height: 408px;
+  }
+  .span11 .video {
+    height: 373px;
+  }
+  .span10 .video {
+    height: 338px;
+  }
+  .span9 .video {
+    height: 303px;
+  }
+  .span8 .video {
+    height: 268px;
+  }
+  .span7 .video {
+    height: 233px;
+  }
+  .span6 .video {
+    height: 198px;
+  }
+  .span5 .video {
+    height: 164px;
+  }
+  .span4 .video {
+    height: 129px;
+  }
+  .span3 .video {
+    height: 94px;
+  }
+  .span2 .video {
+    height: 59px;
+  }
+  .span1 .video {
+    height: 24px;
+  }
+}
+
+@media (max-width: 767px) {
+  .video {
+    height: 431.4375px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .video {
+    height: 270px !important;
+  }
 }
 
 .languages ul {
@@ -4097,7 +4252,7 @@ a.badge:focus {
   margin-right: 0;
 }
 
-.topbar .languages {
+header .languages {
   float: right;
   margin-left: 20px;
 }
@@ -4192,7 +4347,7 @@ a.badge:focus {
   background-color: #555555;
 }
 
-.topbar .social {
+header .social {
   float: right;
   margin-left: 20px;
 }
