@@ -18,13 +18,15 @@ endif;
         <div class="container">
             <div class="row-fluid">
 
-                <div id="main" class="span8 section main index">
-                    <div class="page-header">
-                        <h1><?php echo get_bloginfo('name'); ?></h1>
-                    </div>
+                <div id="main" class="span8">
 
-                    <div class="page-body">
-                        <div class="page-body-inner">
+                    <div class="page index">
+
+                        <div class="page-header">
+                            <h1><?php echo get_bloginfo('name'); ?></h1>
+                        </div>
+
+                        <div class="page-body">
 
 <?php
 if (have_posts()):
@@ -39,20 +41,19 @@ if (have_posts()):
 endif;
 ?>
 
-                        </div><!-- /.page-content-inner -->
-                    </div><!-- /.page-content -->
+                        </div><!-- /.page-body -->
 
-                    <div class="page-footer">
-                        <div class="page-footer-inner">
+                        <div class="page-footer">
                             <?php bootstrap_pagination();?>
-                        </div>
-                    </div><!-- /.page-footer -->
+                        </div><!-- /.page-footer -->
+
+                    </div><!-- /.page -->
 
                 </div><!-- /#main -->
 
                 <div id="sidebar" class="span4">
                     <?php get_sidebar(); ?>
-                </div>
+                </div><!-- /#sidebar -->
 
             </div><!-- /.row-fluid -->
 

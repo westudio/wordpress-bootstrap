@@ -9,41 +9,38 @@ endif;
         </div><!--/.container -->
 
         <div class="container">
-            
             <div class="row-fluid">
 
-                <div id="main" class="span8 section main single">
+                <div id="main" class="span8">
+
 <?php
 while (have_posts()):
     the_post();
 ?>
-                    <div class="page-header">
-                        <h1><?php the_title(); ?></h1>
-                    </div>
 
-                    <div class="page-body">
-                        <div class="page-body-inner">
-                            <div <?php post_class(); ?>>
-                                <div class="post-inner">
-                                    <?php the_content();?>
-                                </div>
-                            </div>       
-                        </div>
-                    </div>
+                    <div <?php post_class(); ?>>
 
-                    <div class="page-footer">
-                        <div class="page-footer-inner">
-                            <?php bootstrap_pager(); ?>
+                        <div class="page-header">
+                            <h1><?php the_title(); ?></h1>
                         </div>
-                    </div>
+
+                        <div class="page-body">
+                            <div class="content">
+                                <?php the_content(); ?>
+                            </div>
+                        </div>
+
+                    </div><!-- /.page -->
+
 <?php
 endwhile;
 ?>
+
                 </div><!-- /#main -->
 
                 <div id="sidebar" class="span4">
-                    <?php get_sidebar('single'); ?>
-                </div>
+                    <?php get_sidebar('page'); ?>
+                </div><!-- /#sidebar -->
 
             </div><!-- /.row-fluid -->
         </div><!--/.container -->

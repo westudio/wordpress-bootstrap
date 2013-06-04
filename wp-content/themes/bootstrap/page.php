@@ -18,33 +18,36 @@ endif;
         <div class="container">
             <div class="row-fluid">
 
-                <div class="span8 section main page">
+                <div id="main" class="span8">
+
 <?php
 while (have_posts()):
     the_post();
 ?>
-                	<div class="page-header">
-                        <h1><?php the_title(); ?></h1>
-                    </div>
-                    <div class="page-body">
-                        <div class="page-body-inner">
 
-                            <div <?php post_class(); ?>>
-                                <div class="post-inner">
-                                    <?php the_content();?>
-                                </div>
-                            </div>
+                    <div <?php post_class(); ?>>
 
+                        <div class="page-header">
+                            <h1><?php the_title(); ?></h1>
                         </div>
-                    </div>
+
+                        <div class="page-body">
+                            <div class="content">
+                                <?php the_content(); ?>
+                            </div>
+                        </div>
+
+                    </div><!-- /.page -->
+
 <?php
 endwhile;
 ?>
-                </div><!-- /.main -->
+
+                </div><!-- /#main -->
 
                 <div id="sidebar" class="span4">
                     <?php get_sidebar('page'); ?>
-                </div>
+                </div><!-- /#sidebar -->
 
             </div><!-- /.row-fluid -->
         </div><!--/.container -->

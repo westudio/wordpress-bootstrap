@@ -1,43 +1,49 @@
 <?php
 
 /**
- * Home page
+ * Template Name: Home Page
  */
 
 ?>
 <?php
-
-the_post();
-
 if (bootstrap_has_layout()):
     get_header();
 endif;
 ?>
-<code>page-home</code>
 
         <div class="container">
             <div class="row-fluid">
 
-                <div class="span8 section main page home">
-                    <div class="page-header">
-                        <h1><?php the_title(); ?></h1>
-                    </div>
-                    <div class="page-body">
-                        <div class="page-body-inner">
+                <div id="main" class="span8">
 
-                            <div <?php post_class(); ?>>
-                                <div class="post-inner">
-                                    <?php the_content();?>
-                                </div>
-                            </div>
+<?php
+while (have_posts()):
+    the_post();
+?>
 
+                    <div <?php post_class('home'); ?>>
+
+                        <div class="page-header">
+                            <h1><?php the_title(); ?></h1>
                         </div>
-                    </div>
-                </div><!-- /.main -->
 
-                <div class="span4 sidebar">
-                    <?php get_sidebar('page'); ?>
-                </div>
+                        <div class="page-body">
+                            <div class="content">
+                                <?php the_content(); ?>
+                            </div>
+                        </div>
+
+                    </div><!-- /.page -->
+
+<?php
+endwhile;
+?>
+
+                </div><!-- /#main -->
+
+                <div id="sidebar" class="span4">
+                    <?php get_sidebar('home'); ?>
+                </div><!-- /#sidebar -->
 
             </div><!-- /.row-fluid -->
         </div><!--/.container -->

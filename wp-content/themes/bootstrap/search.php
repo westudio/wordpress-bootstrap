@@ -18,13 +18,15 @@ endif;
         <div class="container">
             <div class="row-fluid">
 
-                <div id="main" class="span8 section main search">
-                    <div class="page-header">
-                        <h1><?php printf(__('Results for "%s"', 'bootstrap'), get_search_query()); ?></h1>
-                    </div>
+                <div id="main" class="span8">
 
-                    <div class="page-body">
-                        <div class="page-body-inner">
+                    <div class="page search">
+
+                        <div class="page-header">
+                            <h1><?php printf(__('Results for "%s"', 'bootstrap'), get_search_query()); ?></h1>
+                        </div>
+
+                        <div class="page-body">
 
 <?php
 if (have_posts()):
@@ -39,31 +41,27 @@ if (have_posts()):
 else:
 ?>
 
-                            <div class="hentry">
-                                <div class="post-inner">
-                                    <div class="alert alert-info">
-                                        <p><?php _e('No result', 'bootstrap'); ?></p>
-                                    </div>
-                                </div>
+                            <div class="alert alert-info">
+                                <p><?php _e('No result', 'bootstrap'); ?></p>
                             </div>
 
 <?php
 endif;
 ?>
-                        </div><!-- /.page-content-inner -->
-                    </div><!-- /.page-content -->
 
-                    <div class="page-footer">
-                        <div class="page-footer-inner">
+                        </div><!-- /.page-content -->
+
+                        <div class="page-footer">
                             <?php bootstrap_pagination();?>
-                        </div>
-                    </div><!-- /.page-footer -->
+                        </div><!-- /.page-footer -->
+
+                    </div><!-- /.page -->
 
                 </div><!-- /#main -->
                 
                 <div id="sidebar" class="span4">
                     <?php get_sidebar('search'); ?>
-                </div>
+                </div><!-- /#sidebar -->
 
             </div><!-- /.row-fluid -->
         </div><!--/.container -->

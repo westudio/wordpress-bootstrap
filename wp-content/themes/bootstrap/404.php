@@ -17,17 +17,22 @@ endif;
 
         <div class="container">
 
-            <div id="main" class="section main not-found">
+            <div id="main">
 
-                <div class="page-body">
-                    
-                    <div class="hero-unit">
-                        <h1><?php _e( 'Page not found', 'bootstrap' ); ?></h1>
-                        <p><?php _e( 'It seems we can\'t find what you\'re looking for. Perhaps searching, or one of the links below, can help.', 'bootstrap' ); ?></p>
-                        <?php get_search_form(); ?>
-                    </div>
+                <div class="page not-found">
 
-                    <div class="page-body-inner">
+                    <div class="page-body">
+
+                        <div class="hero-unit">
+
+                            <h1><?php _e( 'Page not found', 'bootstrap' ); ?></h1>
+                            <p><?php _e( 'It seems than what you\'re looking for is no longer here.', 'bootstrap' ); ?></p>
+                            <p><?php _e( 'Perhaps searching, or one of the links below, can help.', 'bootstrap' ); ?></p>
+
+                            <?php get_search_form(); ?>
+
+                        </div>
+
                         <div class="row-fluid">
 
                             <div class="span6">
@@ -42,12 +47,14 @@ endif;
                             </div><!--/.span6 -->
 
                         </div><!-- /.row-fluid -->
-                    </div>
-                </div>
+
+                    </div><!-- /.page-body -->
+
+                </div><!-- /.page -->
 
             </div><!-- /#main -->
 
-        </div>
+        </div><!--/.container -->
 
 <?php
 if (bootstrap_has_layout()):
