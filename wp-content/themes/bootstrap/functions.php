@@ -284,7 +284,7 @@ function bootstrap_enqueue_scripts()
 {
     wp_enqueue_script('bootstrap');
     // wp_enqueue_script('text_resize');
-    
+
 }
 
 add_action('wp_enqueue_scripts', 'bootstrap_enqueue_scripts');
@@ -303,7 +303,7 @@ function bootstrap_tiny_mce_before_init($settings)
     return $settings;
 }
 
-// add_filter('tiny_mce_before_init', 'bootstrap_tiny_mce_before_init');  
+// add_filter('tiny_mce_before_init', 'bootstrap_tiny_mce_before_init');
 
 function bootstrap_pre_get_posts($query)
 {
@@ -362,7 +362,16 @@ function bootstrap_page_menu_args($args)
  */
 function bootstrap_nav_menu_args($args)
 {
-    $args['menu_class'] = 'nav';
+    $args['fallback_cb'] = false;
+    $args['container'] = false;
+
+    if ($args['menu_class'] == 'menu') {
+        $args['menu_class'] = 'nav';
+    }
+
+    if ($args['walker'] == '') {
+        $args['walker'] = new Bootstrap_Walker_Nav_Menu();
+    }
 
     return $args;
 }

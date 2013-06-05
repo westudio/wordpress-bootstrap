@@ -52,15 +52,13 @@ endif;
 
                     <?php get_template_part('block', 'languages'); ?>
 
-                    <div id="main-menu">
+                    <nav id="main-menu" class="nav-collapse">
                         <?php
                         wp_nav_menu(array(
-                            'menu'            => 'main',
-                            'container_class' => 'nav-collapse',
-                            'walker'          => new Bootstrap_All_In_One_Nav_Walker_Nav_Menu()
+                            'menu' => 'main'
                         ));
                         ?>
-                    </div>
+                    </nav>
 
                 </div><!-- /container -->
             </div><!-- /.navbar-inner -->
