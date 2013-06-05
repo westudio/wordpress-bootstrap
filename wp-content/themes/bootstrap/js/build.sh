@@ -14,8 +14,8 @@ FILES=(
     "vendor/bootstrap/affix.js"
     "vendor/blueimp/load-image.js"
     "vendor/blueimp/modal-gallery.js"
-    "vendor/flesler/jquery.scrollTo.js"
-    "all-in-one-nav.js"
+    # "vendor/flesler/jquery.scrollTo.js"
+    # "all-in-one-nav.js"
     "main.js"
 )
 CMD="uglifyjs -nc"

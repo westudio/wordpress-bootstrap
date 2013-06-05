@@ -23,7 +23,8 @@
     display: block;
     width: 24px;
     height: 24px;
-    background: @black url(../img/social-icons-white.png) no-repeat;
+    .border-radius(12px);
+    background: @linkColor url(../img/social-icons-white.png) no-repeat;
     text-indent: -9999px;
 
     &.facebook  { background-position:    0   0; }
@@ -47,5 +48,9 @@
   header & {
     float: right;
     margin-left: 20px;
+  }
+
+  .navbar & {
+    .navbarVerticalAlign(24px);
   }
 }
