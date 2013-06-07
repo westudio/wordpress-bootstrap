@@ -50,15 +50,15 @@ if ($attachments = bootstrap_get_gallery()):
 ?>
         </div>
 
-        <a class="carousel-control left btn btn-icon" href="#carousel" data-slide="prev"><i class="icon-chevron-left"></i></a>
-        <a class="carousel-control right btn btn-icon" href="#carousel" data-slide="next"><i class="icon-chevron-right"></i></a>
+        <a class="carousel-control left" href="#carousel" data-slide="prev">&lt;</a>
+        <a class="carousel-control right" href="#carousel" data-slide="next">&gt;</a>
 
         <ol class="carousel-indicators">
 <?php
         foreach ($attachments as $i => $attachment):
 ?>
             <li data-target="#carousel" data-slide-to="<?php echo $i ?>" class="<?php echo ($i == 0 ? ' active' : ''); ?>">
-                <?php echo wp_get_attachment_image($attachment->id, 'bootstrap-2-square'); ?>
+                <?php // echo wp_get_attachment_image($attachment->id, 'bootstrap-2-square'); ?>
             </li>
 <?php
         endforeach;

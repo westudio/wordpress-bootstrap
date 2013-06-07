@@ -9,7 +9,7 @@ endif;
             <div class="footer-inner">
                 <div class="container">
                     <p class="copyright">&copy; <?php echo get_bloginfo('name'); ?> <?php echo date('Y'); ?></p>
-                    <p class="credits"><?php printf(__('Website by %s'), '<a href="http://we-studio.ch" target="_blank">We studio</a>') ?></p>
+                    <p class="credits"><?php printf(__('Website by %s', 'bootstrap'), '<a href="http://we-studio.ch" target="_blank">We studio</a>') ?></p>
                 </div> <!-- /container -->
             </div>
         </footer>

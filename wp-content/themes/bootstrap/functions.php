@@ -17,7 +17,9 @@ define('BOOTSTRAP_EXCERPT_LENGTH',     55);
 
 define('BOOTSTRAP_ARE_LINKS_ENABLED',  false);
 
-$_bootstrap_has_layout = true;
+$_bootstrap_settings = array(
+    'has_layout' => true
+);
 
 // Attachments
 
@@ -323,7 +325,7 @@ function bootstrap_are_links_enabled()
     return BOOTSTRAP_ARE_LINKS_ENABLED;
 }
 
-add_filter('pre_option_link_manager_enabled', 'bootstrap_is_links_enabled');
+add_filter('pre_option_link_manager_enabled', 'bootstrap_are_links_enabled');
 
 function bootstrap_excerpt_length()
 {
@@ -382,16 +384,40 @@ add_filter('wp_nav_menu_args', 'bootstrap_nav_menu_args', 10, 1);
 // Helpers
 ////////////////////////////////
 
+function bootstrap_get($key, $default = null)
+{
+    global $_bootstrap_settings;
+
+    if (array_key_exists($key, $_bootstrap_settings)) {
+        return $_bootstrap_settings[$key];
+    } elseif (($const = 'BOOTSTRAP_' . strtoupper($key)) && defined($const)) {
+        return constant($const);
+    }
+
+    return $default;
+}
+
+function bootstrap_set($key, $value)
+{
+    global $_bootstrap_settings;
+
+    if (array_key_exists($key, $_bootstrap_settings)) {
+        return $_bootstrap_settings[$key] = $value;
+    } elseif (defined('BOOTSTRAP_' . strtoupper($key))) {
+        throw new Exception('"'.$key.'" is a constant setting');
+    }
+
+    throw new Exception('"'.$key.'" is not an existing setting');
+}
+
 function bootstrap_has_layout()
 {
-    global $_bootstrap_has_layout;
-    return $_bootstrap_has_layout;
+    return bootstrap_get('has_layout');
 }
 
 function bootstrap_set_layout($flag = true)
 {
-    global $_bootstrap_has_layout;
-    $_bootstrap_has_layout = (bool) $flag;
+    return bootstrap_set('has_layout', (bool) $flag);
 }
 
 function bootstrap_url_to_slug($url)
