@@ -212,29 +212,37 @@ add_action('after_setup_theme', 'bootstrap_setup_supports');
 
 function bootstrap_setup_thumbnails()
 {
-    set_post_thumbnail_size(col_width(2)); // bootstrap-small
+    set_post_thumbnail_size(col_width(3), col_width(2), true);
 
-    add_image_size('bootstrap-1',               col_width(1));
-    add_image_size('bootstrap-1-square',        col_width(1), col_width(1), true);
-    add_image_size('bootstrap-2',               col_width(2));
-    add_image_size('bootstrap-2-square',        col_width(2), col_width(2), true);
-    add_image_size('bootstrap-3',               col_width(3));
-    add_image_size('bootstrap-3-square',        col_width(3), col_width(3), true);
-    add_image_size('bootstrap-4',               col_width(4));
-    add_image_size('bootstrap-4-cropped',       col_width(4), col_width(4), true);
-    add_image_size('bootstrap-6',               col_width(6));
-    add_image_size('bootstrap-6-cropped',       col_width(6), col_width(4), true);
-    add_image_size('bootstrap-8',               col_width(8));
-    add_image_size('bootstrap-8-cropped',       col_width(8), col_width(6), true);
-    add_image_size('bootstrap-9',               col_width(9));
-    add_image_size('bootstrap-9-cropped',       col_width(9), col_width(6), true);
-    add_image_size('bootstrap-12',              col_width(12));
-    add_image_size('bootstrap-12-cropped',      col_width(12), col_width(4), true);
-    add_image_size('bootstrap-12-cropped-tall', col_width(12), 500, true);
-
+    add_image_size('bootstrap-1',          col_width(1));
+    add_image_size('bootstrap-1-square',   col_width(1), col_width(1), true);
+    add_image_size('bootstrap-2',          col_width(2));
+    add_image_size('bootstrap-2-square',   col_width(2), col_width(2), true);
+    add_image_size('bootstrap-3',          col_width(3));
+    add_image_size('bootstrap-3-cropped',  col_width(3), col_width(2), true);
+    add_image_size('bootstrap-3-square',   col_width(3), col_width(3), true);
+    add_image_size('bootstrap-4',          col_width(4));
+    add_image_size('bootstrap-4-cropped',  col_width(4), col_width(4), true);
+    add_image_size('bootstrap-6',          col_width(6));
+    add_image_size('bootstrap-6-cropped',  col_width(6), col_width(4), true);
+    add_image_size('bootstrap-8',          col_width(8));
+    add_image_size('bootstrap-8-cropped',  col_width(8), col_width(6), true);
+    add_image_size('bootstrap-9',          col_width(9));
+    add_image_size('bootstrap-9-cropped',  col_width(9), col_width(6), true);
+    add_image_size('bootstrap-12',         col_width(12));
+    add_image_size('bootstrap-12-cropped', col_width(12), col_width(4), true);
 }
 
 add_action('after_setup_theme', 'bootstrap_setup_thumbnails');
+
+function bootstrap_content_thumbnail_sizes($sizes)
+{
+    return array(
+        'bootstrap-6-cropped' => __('Medium', 'bootstrap')
+    );
+}
+
+// add_filter('image_size_names_choose', 'bootstrap_content_thumbnail_sizes');
 
 function bootstrap_setup_i18n()
 {
