@@ -1,7 +1,7 @@
 <?php
 
 require_once dirname(__FILE__) . '/classes/Bootstrap_Walker_Nav_Menu.php';
-require_once dirname(__FILE__) . '/classes/Bootstrap_All_In_One_Nav_Walker_Nav_Menu.php';
+// require_once dirname(__FILE__) . '/classes/Bootstrap_All_In_One_Nav_Walker_Nav_Menu.php';
 
 ////////////////////////////////
 // Settings

@@ -1510,6 +1510,8 @@ if( !class_exists( 'Attachments' ) ) :
                 // loop through each Attachment of this instance
                 foreach( $instance_attachments as $key => $attachment )
                 {
+                    $attachment = (array) $attachment;
+
                     $attachment_exists = get_post( $attachment['id'] );
                     // make sure the attachment exists
                     if( $attachment_exists )
