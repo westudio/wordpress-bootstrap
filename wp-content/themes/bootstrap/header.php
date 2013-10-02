@@ -19,7 +19,7 @@ endif;
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="author" content="We studio" />
 
-        <title><?php bootstrap_title(); ?></title>
+        <title><?php bootstrap_page_title(); ?></title>
 
         <link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
 

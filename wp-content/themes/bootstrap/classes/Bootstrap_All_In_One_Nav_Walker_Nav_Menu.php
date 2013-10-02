@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ .'/Bootstrap_Walker_Nav_Menu.php';
+require_once dirname(__FILE__) .'/Bootstrap_Walker_Nav_Menu.php';
 
 class Bootstrap_All_In_One_Nav_Walker_Nav_Menu extends Bootstrap_Walker_Nav_Menu
 {
