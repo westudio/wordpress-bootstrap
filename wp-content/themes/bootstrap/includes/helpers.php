@@ -253,7 +253,7 @@ function bootstrap_posted_on()
  * @param  boolean $strip_tags
  * @return string
  */
-function bootstrap_page_title($separator = ' - ', $reverse = true, $strip_tags = true)
+function bootstrap_page_title($separator = ' - ', $reverse = true)
 {
     $items = bootstrap_get_breadcrumbs();
 
@@ -268,9 +268,7 @@ function bootstrap_page_title($separator = ' - ', $reverse = true, $strip_tags =
         $items[] = get_bloginfo('description');
     }
 
-    if ($strip_tags) {
-        $items = array_map('strip_tags', $items);
-    }
+    $items = array_map('strip_tags', $items);
 
     if ($reverse) {
         $items = array_reverse($items);
@@ -287,7 +285,7 @@ function bootstrap_page_title($separator = ' - ', $reverse = true, $strip_tags =
  * @param  boolean $strip_tags
  * @return string
  */
-function bootstrap_title($separator = ' - ', $reverse = true, $strip_tags = true)
+function bootstrap_title($separator = ' - ', $reverse = false, $strip_tags = false)
 {
     $items = bootstrap_get_breadcrumbs();
 

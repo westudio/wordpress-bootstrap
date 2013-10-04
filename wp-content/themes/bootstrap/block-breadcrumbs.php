@@ -7,7 +7,7 @@ if ($breadcrumbs = bootstrap_get_breadcrumbs()):
     foreach ($breadcrumbs as $i => $item):
         if ($i != $last):
 ?>
-    <li><?php echo $item; ?><span class="divider">&gt;</span></li>
+    <li><?php echo $item; ?></li>
 <?php
         else:
 ?>

@@ -1,27 +1,31 @@
-<?php 
+<?php
 
-if (!function_exists('icl_get_languages')):
+if (!function_exists('icl_get_languages') || !defined('ICL_LANGUAGE_CODE')):
     return;
 endif;
 
-?>
-<div class="languages">
-    <ul>
-<?php
-foreach (icl_get_languages() as $lang):
-    $code = $lang['language_code'];
-    $url  = $lang['url'];
+$languages = icl_get_languages();
 
-    if ($code == ICL_LANGUAGE_CODE):
+if ($languages):
+?>
+<ul class="languages">
+<?php
+    foreach ($languages as $lang):
+        $code = $lang['language_code'];
+        $url  = $lang['url'];
+
+        if ($code == ICL_LANGUAGE_CODE):
 ?>
     <li class="active"><a href="<?php echo $url; ?>"><?php echo strtoupper($code); ?></a></li>
 <?php
-    else:
+        else:
 ?>
     <li><a href="<?php echo $url; ?>"><?php echo strtoupper($code); ?></a></li>
 <?php
-    endif;
-endforeach;
+        endif;
+    endforeach;
 ?>
-    </ul>
-</div><!-- /.languages -->
+</ul>
+<?php
+endif;
+?>

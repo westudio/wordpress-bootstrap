@@ -12,7 +12,7 @@
 // Constants
 // ---------
 
-define('BOOTSTRAP_VERSION',            '1.0.3');
+define('BOOTSTRAP_VERSION',            '1.1.0');
 define('BOOTSTRAP_IS_RESPONSIVE',      true);
 define('BOOTSTRAP_GRID_COLUMN_WIDTH',  BOOTSTRAP_IS_RESPONSIVE ? 70 : 60);
 define('BOOTSTRAP_GRID_GUTTER_WIDTH',  BOOTSTRAP_IS_RESPONSIVE ? 30 : 20);

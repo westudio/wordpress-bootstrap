@@ -1,28 +1,33 @@
-
-// Languages 
-// -------------------------
+//
+// Languages
+// --------------------------------------------------
 
 .languages {
+  margin: 0 0 0 -10px;
+  padding: 0;
+  list-style-type: none;
+  .clearfix();
 
-  ul {
-    margin: 0;
-    list-style-type: none;
-    .clearfix();
-        
-    li {
-      float: left;
-      margin-right: 5px;
-      font-size: .8em;
-      line-height: 24px;
+  li {
+    float: left;
+    margin-left: 10px;
 
-      &:last-child {
-        margin-right: 0;
+    a, span {
+      text-decoration: none;
+      color: @navbar-default-link-color;
+    }
+
+    &.active {
+      a, span {
+        color: @navbar-default-link-hover-color;
       }
     }
   }
 
-  header & {
+  // Navbar
+  .navbar & {
     float: right;
-    margin-left: 20px;
+    margin-left: 10px;
+    .navbar-vertical-align(@line-height-computed);
   }
 }

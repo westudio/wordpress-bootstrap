@@ -40,26 +40,21 @@ endif;
     </head>
     <body <?php body_class(); ?>>
 
-        <header id="header" class="navbar navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
+        <header id="header" class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="<?php echo home_url(); ?>" title="<?php echo esc_attr(get_bloginfo('name', 'display')); ?>" rel="home"><?php bloginfo('name'); ?></a>
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><?php _e('Menu', 'bootstrap'); ?></button>
+                </div><!-- /.navbar-inner -->
 
-                    <a class="brand" href="<?php echo home_url(); ?>" title="<?php echo esc_attr(get_bloginfo('name', 'display')); ?>" rel="home"><?php bloginfo('name'); ?></a>
+                <nav id="main-menu" class="collapse navbar-collapse">
+                    <?php
+                    wp_nav_menu(array(
+                        'menu' => 'main',
+                        'menu_class' => 'nav navbar-nav'
+                    ));
+                    ?>
+                </nav>
 
-                    <a class="btn btn-navbar btn-icon" data-toggle="collapse" data-target="header .nav-collapse" title="<?php _e('Menu', 'bootstrap'); ?>" rel="tooltip" data-placement="left"><i class="icon-list"></i></a>
-
-                    <?php get_template_part('block', 'social'); ?>
-
-                    <?php get_template_part('block', 'languages'); ?>
-
-                    <nav id="main-menu" class="nav-collapse">
-                        <?php
-                        wp_nav_menu(array(
-                            'menu' => 'main'
-                        ));
-                        ?>
-                    </nav>
-
-                </div><!-- /container -->
-            </div><!-- /.navbar-inner -->
+            </div><!-- /container -->
         </header>
