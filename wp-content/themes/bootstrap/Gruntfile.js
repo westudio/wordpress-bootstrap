@@ -39,8 +39,6 @@ module.exports = function (grunt) {
           // 'vendor/bootstrap/js/scrollspy.js',
           // 'vendor/bootstrap/js/tab.js',
           // 'vendor/bootstrap/js/affix.js',
-          // 'vendor/blueimp/load-image/load-image.js',
-          // 'vendor/blueimp/modal-gallery/modal-gallery.js',
           // 'vendor/flesler/jquery.scrollTo.js',
           // 'js/single-page.js',
           'js/js.js'

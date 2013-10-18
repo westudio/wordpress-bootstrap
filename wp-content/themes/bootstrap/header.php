@@ -16,7 +16,7 @@ endif;
 <!--[if gt IE 8]><!--><html class="no-js" <?php language_attributes(); ?>><!--<![endif]-->
     <head>
         <meta charset="<?php bloginfo('charset'); ?>" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="author" content="We studio" />
 
         <title><?php bootstrap_page_title(); ?></title>
@@ -24,18 +24,22 @@ endif;
         <link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
 
         <!-- Icons -->
-        <link rel="shortcut icon" href="<?php bloginfo('template_url'); ?>/ico/favicon.ico" type="image/x-icon" />
-        <link rel="shortcut icon" href="<?php bloginfo('template_url'); ?>/ico/favicon.png" type="image/png" />
-        <!-- <link rel="apple-touch-icon" href="<?php bloginfo('template_url'); ?>/ico/apple-touch-icon-57x57.png" />
-        <link rel="apple-touch-icon" sizes="72x72" href="<?php bloginfo('template_url'); ?>/ico/apple-touch-icon-72x72.png" />
-        <link rel="apple-touch-icon" sizes="114x114" href="<?php bloginfo('template_url'); ?>/ico/apple-touch-icon-114x114.png" />
-        <link rel="apple-touch-icon" sizes="144x144" href="<?php bloginfo('template_url'); ?>/ico/apple-touch-icon-144x144.png" /> -->
+        <link rel="shortcut icon" href="<?php echo get_template_directory_uri(); ?>/ico/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="<?php echo get_template_directory_uri(); ?>/ico/favicon.png" type="image/png" />
+        <!-- <link rel="apple-touch-icon" href="<?php echo get_template_directory_uri(); ?>/ico/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="<?php echo get_template_directory_uri(); ?>/ico/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="<?php echo get_template_directory_uri(); ?>/ico/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="<?php echo get_template_directory_uri(); ?>/ico/apple-touch-icon-144x144.png" /> -->
 
         <!--[if lt IE 9]>
-        <script src="<?php bloginfo('template_url'); ?>/js/vendor/html5shim/html5shiv.js"></script>
+        <script src="<?php echo get_template_directory_uri(); ?>/vendor/html5shim/html5shiv.js"></script>
         <![endif]-->
 
         <?php wp_head(); ?>
+
+        <!--[if lt IE 9]>
+        <script src="<?php echo get_template_directory_uri(); ?>/vendor/scottjehl/respond/respond.min.js"></script>
+        <![endif]-->
 
     </head>
     <body <?php body_class(); ?>>
