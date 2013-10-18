@@ -1,6 +1,6 @@
 {
   "name": "wordpress-bootstrap",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Wordpress bootstrap theme",
   "author": {
     "name": "We studio",
@@ -23,7 +23,6 @@
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-uglify": "~0.2.4",
-    "grunt-contrib-concat": "~0.3.0",
     "grunt-recess": "~0.4.0"
   }
 }

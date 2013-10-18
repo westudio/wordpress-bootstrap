@@ -21,16 +21,18 @@ module.exports = function (grunt) {
         dest: 'css/<%= pkg.name %>.min.css'
       }
     },
-    concat: {
+    uglify: {
       dist: {
         options: {
-          separator: ';'
+          banner: '<%= banner %>',
+          compress: true
         },
         src: [
           'vendor/bootstrap/js/transition.js',
           // 'vendor/bootstrap/js/alert.js',
           // 'vendor/bootstrap/js/button.js',
           // 'vendor/bootstrap/js/carousel.js',
+          // 'vendor/rygine/looper/src/looper.js',
           'vendor/bootstrap/js/collapse.js',
           // 'vendor/bootstrap/js/dropdown.js',
           // 'vendor/bootstrap/js/modal.js',
@@ -43,27 +45,14 @@ module.exports = function (grunt) {
           // 'js/single-page.js',
           'js/js.js'
         ],
-        dest: 'js/<%= pkg.name %>.js'
-      }
-    },
-    uglify: {
-      dist: {
-        options: {
-          banner: '<%= banner %>',
-          compress: true
-        },
-        files: {
-          'js/<%= pkg.name %>.min.js': ['js/<%= pkg.name %>.js']
-        }
+        dest: 'js/<%= pkg.name %>.min.js'
       }
     }
   });
 
   grunt.loadNpmTasks('grunt-recess');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-concat');
 
-  grunt.registerTask('dev', ['recess', 'concat']);
-  grunt.registerTask('default', ['recess', 'concat', 'uglify']);
+  grunt.registerTask('default', ['recess', 'uglify']);
 
 };
