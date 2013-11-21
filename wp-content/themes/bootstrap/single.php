@@ -9,9 +9,9 @@ endif;
         </div><!--/.container -->
 
         <div class="container">
-            <div class="row-fluid">
+            <div class="row">
 
-                <div id="main" class="span8">
+                <div id="main" class="col-sm-8">
 
 <?php
 while (have_posts()):
@@ -38,11 +38,11 @@ endwhile;
 
                 </div><!-- /#main -->
 
-                <div id="sidebar" class="span4">
+                <div id="sidebar" class="col-sm-4">
                     <?php get_sidebar('page'); ?>
                 </div><!-- /#sidebar -->
 
-            </div><!-- /.row-fluid -->
+            </div><!-- /.row -->
         </div><!--/.container -->
 
 <?php

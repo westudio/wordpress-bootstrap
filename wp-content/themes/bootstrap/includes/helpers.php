@@ -103,7 +103,7 @@ function bootstrap_get_gallery()
 
 function bootstrap_navbar_search_form()
 {
-    include dirname(__FILE__) . '/searchform-navbar.php';
+    include dirname(__FILE__) . '/../searchform-navbar.php';
 }
 
 /**
@@ -228,7 +228,7 @@ function bootstrap_pager($in_same_category = false)
 function bootstrap_comment($comment, $args, $depth)
 {
     ob_start();
-    include dirname(__FILE__) . '/comment.php';
+    include dirname(__FILE__) . '/../comment.php';
 
     return ob_get_clean();
 }
@@ -257,9 +257,7 @@ function bootstrap_page_title($separator = ' - ', $reverse = true)
 {
     $items = bootstrap_get_breadcrumbs();
 
-    if (is_front_page()) {
-        array_shift($items);
-    }
+    array_shift($items);
 
     // Project's name
     array_unshift($items, get_bloginfo('name'));
@@ -309,7 +307,7 @@ function bootstrap_title($separator = ' - ', $reverse = false, $strip_tags = fal
  */
 function bootstrap_get_breadcrumbs()
 {
-    global $post;
+    global $post, $wp_query;
     static $breadcrumbs = array();
 
     if (!$breadcrumbs) {
@@ -378,6 +376,26 @@ function bootstrap_get_breadcrumbs()
                     $breadcrumbs[] = get_the_title();
                     break;
 
+                // Category
+                case is_category():
+                    // Type
+                    $post_type = get_post_type_object(get_post_type());
+                    $breadcrumbs[] = sprintf('<a href="%s">%s</a>', get_post_type_archive_link(get_post_type()), $post_type->labels->name);
+                    // Category
+                    $breadcrumbs[] = single_cat_title('', false);
+                    break;
+
+                // Taxonomy
+                case is_tax():
+                    // Type
+                    $term = get_queried_object();
+                    $taxonomy = get_taxonomy($term->taxonomy);
+                    $post_type = $taxonomy->object_type[0];
+                    $breadcrumbs[] = sprintf('<a href="%s">%s</a>', get_post_type_archive_link($post_type), $taxonomy->labels->name);
+                    // Taxonomy
+                    $breadcrumbs[] = single_term_title('', false);
+                    break;
+
                 // Attachment
                 case is_attachment():
                     // Parent's title
@@ -385,12 +403,6 @@ function bootstrap_get_breadcrumbs()
                     $breadcrumbs[] = sprintf('<a href="%s">%s</a>', get_permalink($parent), $parent->post_title);
                     // Title
                     $breadcrumbs[] = get_the_title();
-                    break;
-
-                // Category
-                case is_category():
-                    // Title
-                    $breadcrumbs[] = single_cat_title('', false);
                     break;
 
                 // Year
@@ -433,8 +445,8 @@ function bootstrap_get_breadcrumbs()
                     $breadcrumbs[] = __('Page not found', 'bootstrap');
                     break;
 
-                // Custom post archive
-                case !is_single() && !is_page() && get_post_type() != 'post':
+                // Archive
+                case is_archive():
                     // Type
                     $post_type = get_post_type_object(get_post_type());
                     $breadcrumbs[] = $post_type->labels->name;

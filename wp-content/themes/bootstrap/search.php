@@ -16,14 +16,14 @@ endif;
         </div><!--/.container -->
 
         <div class="container">
-            <div class="row-fluid">
+            <div class="row">
 
-                <div id="main" class="span8">
+                <div id="main" class="col-sm-8">
 
                     <div class="page search">
 
                         <div class="page-header">
-                            <h1><?php printf(__('Results for "%s"', 'bootstrap'), get_search_query()); ?></h1>
+                            <h1><?php bootstrap_title(); ?></h1>
                         </div>
 
                         <div class="page-body">
@@ -58,12 +58,12 @@ endif;
                     </div><!-- /.page -->
 
                 </div><!-- /#main -->
-                
-                <div id="sidebar" class="span4">
+
+                <div id="sidebar" class="col-sm-4">
                     <?php get_sidebar('search'); ?>
                 </div><!-- /#sidebar -->
 
-            </div><!-- /.row-fluid -->
+            </div><!-- /.row -->
         </div><!--/.container -->
 
 <?php

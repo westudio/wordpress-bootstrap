@@ -16,9 +16,9 @@ endif;
         </div><!--/.container -->
 
         <div class="container">
-            <div class="row-fluid">
+            <div class="row">
 
-                <div id="main" class="span8">
+                <div id="main" class="col-sm-8">
 
                     <div class="page index">
 
@@ -51,11 +51,11 @@ endif;
 
                 </div><!-- /#main -->
 
-                <div id="sidebar" class="span4">
+                <div id="sidebar" class="col-sm-4">
                     <?php get_sidebar(); ?>
                 </div><!-- /#sidebar -->
 
-            </div><!-- /.row-fluid -->
+            </div><!-- /.row -->
 
 <?php
 if (bootstrap_has_layout()):
