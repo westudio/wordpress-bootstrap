@@ -11,14 +11,14 @@ module.exports = function (grunt) {
       ' */',
       ''
     ].join('\n'),
-    recess: {
+    less: {
       dist: {
         options: {
           banner: '<%= banner %>',
           compress: true
         },
-        src: ['less/<%= pkg.name %>.less'],
-        dest: 'css/<%= pkg.name %>.min.css'
+        src: ['less/main.less'],
+        dest: 'css/main.min.css'
       }
     },
     uglify: {
@@ -45,14 +45,14 @@ module.exports = function (grunt) {
           // 'js/single-page.js',
           'js/js.js'
         ],
-        dest: 'js/<%= pkg.name %>.min.js'
+        dest: 'js/main.min.js'
       }
     }
   });
 
-  grunt.loadNpmTasks('grunt-recess');
+  grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-uglify');
 
-  grunt.registerTask('default', ['recess', 'uglify']);
+  grunt.registerTask('default', ['less', 'uglify']);
 
 };

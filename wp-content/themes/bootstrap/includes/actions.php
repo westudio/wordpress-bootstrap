@@ -168,23 +168,23 @@ function bootstrap_setup_thumbnails()
 {
     set_post_thumbnail_size(col_width(3), col_width(2), true);
 
-    add_image_size('bootstrap-1',          col_width(1));
-    add_image_size('bootstrap-1-square',   col_width(1), col_width(1), true);
-    add_image_size('bootstrap-2',          col_width(2));
-    add_image_size('bootstrap-2-square',   col_width(2), col_width(2), true);
-    add_image_size('bootstrap-3',          col_width(3));
-    add_image_size('bootstrap-3-cropped',  col_width(3), col_width(2), true);
-    add_image_size('bootstrap-3-square',   col_width(3), col_width(3), true);
-    add_image_size('bootstrap-4',          col_width(4));
-    add_image_size('bootstrap-4-cropped',  col_width(4), col_width(4), true);
-    add_image_size('bootstrap-6',          col_width(6));
-    add_image_size('bootstrap-6-cropped',  col_width(6), col_width(4), true);
-    add_image_size('bootstrap-8',          col_width(8));
-    add_image_size('bootstrap-8-cropped',  col_width(8), col_width(6), true);
-    add_image_size('bootstrap-9',          col_width(9));
-    add_image_size('bootstrap-9-cropped',  col_width(9), col_width(6), true);
-    add_image_size('bootstrap-12',         col_width(12));
-    add_image_size('bootstrap-12-cropped', col_width(12), col_width(4), true);
+    add_image_size('bootstrap-1',    col_width(1));
+    add_image_size('bootstrap-1-1',  col_width(1), col_width(1), true);
+    add_image_size('bootstrap-2',    col_width(2));
+    add_image_size('bootstrap-2-2',  col_width(2), col_width(2), true);
+    add_image_size('bootstrap-3',    col_width(3));
+    add_image_size('bootstrap-3-2',  col_width(3), col_width(2), true);
+    add_image_size('bootstrap-3-3',  col_width(3), col_width(3), true);
+    add_image_size('bootstrap-4',    col_width(4));
+    add_image_size('bootstrap-4-4',  col_width(4), col_width(4), true);
+    add_image_size('bootstrap-6',    col_width(6));
+    add_image_size('bootstrap-6-4',  col_width(6), col_width(4), true);
+    add_image_size('bootstrap-8',    col_width(8));
+    add_image_size('bootstrap-8-6',  col_width(8), col_width(6), true);
+    add_image_size('bootstrap-9',    col_width(9));
+    add_image_size('bootstrap-9-6',  col_width(9), col_width(6), true);
+    add_image_size('bootstrap-12',   col_width(12));
+    add_image_size('bootstrap-12-4', col_width(12), col_width(4), true);
 }
 
 add_action('after_setup_theme', 'bootstrap_setup_thumbnails');
@@ -208,7 +208,7 @@ add_action('after_setup_theme', 'bootstrap_setup_menus');
 function bootstrap_setup_styles()
 {
     // wp_register_style('fonts', 'http://fast.fonts.net/cssapi/XXX.css', false , BOOTSTRAP_VERSION, 'all');
-    wp_register_style('bootstrap', get_template_directory_uri().'/css/wordpress-bootstrap.min.css', false , BOOTSTRAP_VERSION, 'all');
+    wp_register_style('bootstrap', get_template_directory_uri().'/css/main.min.css', false , BOOTSTRAP_VERSION, 'all');
 }
 
 add_action('after_setup_theme', 'bootstrap_setup_styles');
@@ -226,9 +226,9 @@ add_action('init', 'bootstrap_setup_jquery');
 
 function bootstrap_setup_scripts()
 {
-    wp_register_script('bootstrap', get_template_directory_uri().'/js/wordpress-bootstrap.min.js', array('jquery'), BOOTSTRAP_VERSION, true);
-    wp_register_script('google_map_api', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCY5DKsx5ZgPdBTF1Kk7Fzk1cKKWhStWrw&sensor=false', array(), true);
-    wp_register_script('access_map', get_template_directory_uri().'/js/access-map.js', array('jquery', 'google_map_api'), '1.0.0', true);
+    wp_register_script('bootstrap', get_template_directory_uri().'/js/main.min.js', array('jquery'), BOOTSTRAP_VERSION, true);
+    // wp_register_script('google_map_api', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCY5DKsx5ZgPdBTF1Kk7Fzk1cKKWhStWrw&sensor=false', array(), true);
+    // wp_register_script('access_map', get_template_directory_uri().'/js/access-map.js', array('jquery', 'google_map_api'), '1.0.0', true);
 }
 
 add_action('after_setup_theme', 'bootstrap_setup_scripts');

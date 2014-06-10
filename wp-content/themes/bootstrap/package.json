@@ -1,7 +1,7 @@
 {
   "name": "wordpress-bootstrap",
   "version": "1.2.2",
-  "description": "Wordpress bootstrap theme",
+  "description": "Bootstrap theme and some useful plugins for Wordpress",
   "author": {
     "name": "We studio",
     "url": "http://we-studio.ch"
@@ -22,7 +22,7 @@
   ],
   "devDependencies": {
     "grunt": "~0.4.1",
-    "grunt-contrib-uglify": "~0.2.4",
-    "grunt-recess": "~0.4.0"
+    "grunt-contrib-less": "^0.11.1",
+    "grunt-contrib-uglify": "~0.2.4"
   }
 }
