@@ -1,16 +1,16 @@
 <?php 
 /*
 Plugin Name: WPML Translation Analytics
-Plugin URI: http://wpml.org/
+Plugin URI: https://wpml.org/
 Description: Shows the status of translation projects and displays warnings when 
-    completion time may not be met. <a href="http://wpml.org">Documentation</a>.
+    completion time may not be met. <a href="https://wpml.org">Documentation</a>.
 Author: ICanLocalize
-Author URI: http://wpml.org
-Version: 1.0.1
+Author URI: https://wpml.org
+Version: 1.0.4
 */
 if(defined('WPML_TRANSLATION_ANALYTICS_VERSION')) return;
 
-define('WPML_TRANSLATION_ANALYTICS_VERSION', '1.0.1');
+define('WPML_TRANSLATION_ANALYTICS_VERSION', '1.0.4');
 define('WPML_TRANSLATION_ANALYTICS_PATH', dirname(__FILE__));
 
 require WPML_TRANSLATION_ANALYTICS_PATH . '/inc/constants.inc';

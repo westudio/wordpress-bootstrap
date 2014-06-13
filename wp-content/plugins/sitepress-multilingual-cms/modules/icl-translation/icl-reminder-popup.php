@@ -5,7 +5,7 @@
     // NOTE: this is also used for other popup links to ICanLocalize
 
     global $wpdb;
-    	
+        
     $target = $_GET['target'];    
     $auto_resize = isset($_GET['auto_resize']) && $_GET['auto_resize'];
     $unload_cb = isset($_GET['unload_cb']) ? $_GET['unload_cb'] : false;
@@ -70,7 +70,7 @@
                     $this->save_settings($iclsettings);
                 }else{
                     printf(__('<p>In order to enable ICanLocalize translation, your site needs to be on a public server (not localhost). Please <a%s>contact us</a> for support. </p><p>Show <a%s>debug information</a>.</p>', 'sitepress'), 
-                        ' target="_blank" href="http://wpml.org/?page_id=5255"', 
+                        ' target="_blank" href="https://wpml.org/?page_id=5255"',
                         ' a href="admin.php?page='.ICL_PLUGIN_FOLDER.'/menu/troubleshooting.php&icl_action=icl-connection-test&data='.base64_encode(serialize($user)).'#icl-connection-test"');
                     exit;                
                 }
@@ -78,7 +78,15 @@
         }else{
             
             $iclsettings['language_pairs'] = $this->settings['language_pairs'];
-            $iclsettings['language_pairs'][$from_lang][$to_lang] = 1;
+            $iclsettings['language_pairs'][$from_lang][$to_lang] = 1;    
+            
+            // languages pair clean up            
+            
+            foreach($iclsettings['language_pairs'][$from_lang] as $tol => $val){
+                if(empty($lang_server[$tol])){
+                    unset($iclsettings['language_pairs'][$from_lang][$tol]);
+                }
+            }
             $this->save_settings($iclsettings);
             
             // update account - add language pair
@@ -105,7 +113,7 @@
         if(empty($website_details)){
             echo '<p class="error">';
             printf(__('There was a problem connecting to ICanLocalize. Please close this window and try again. If the problem persists please <a%s>contact us</a>.', 'sitepress'), 
-                ' target="_blank" href="http://wpml.org/?page_id=5255"');
+                ' target="_blank" href="https://wpml.org/?page_id=5255"');
             echo '</p>';
             exit;
         }
@@ -132,22 +140,30 @@
     
     $support_mode = isset($_GET['support']) ? $_GET['support'] : '';
     
+    /*
     if ($support_mode == '1') {
         $iclq = new ICanLocalizeQuery($this->settings['support_site_id'], $this->settings['support_access_key']);
     } else {
         $iclq = new ICanLocalizeQuery($this->settings['site_id'], $this->settings['access_key']);
     }
     $session_id = $iclq->get_current_session(true, $support_mode == '1');
+    */
+    if(isset($this->settings['site_id']) && isset($this->settings['access_key'])){
+        $iclq = new ICanLocalizeQuery($this->settings['site_id'], $this->settings['access_key']);
+        $session_id = $iclq->get_current_session(true, $support_mode == '1');
+    }else{
+        $session_id = '';
+    }
     
     $admin_lang = $this->get_admin_language();
     
-	
-	if (isset($_GET['code'])) {
-		$add = '&code=' . urlencode($_GET['code']);
-	}else{
+    
+    if (isset($_GET['code'])) {
+        $add = '&code=' . urlencode($_GET['code']);
+    }else{
         $add = '';
     }
-	
+    
     if (strpos($target, '?') === false) {
         $target .= '?';
     } else {
@@ -170,6 +186,14 @@
     <a id="icl_reminder_dismiss" href="#" onclick="<?php echo $on_click?>"><?php _e('Dismiss', 'sitepress')?></a>
     <br />
     <br />
-<?php endif; ?> 
-<iframe src="<?php echo $target;?>" style="width:100%; height:92%" onload="<?php if($auto_resize):?>jQuery('#TB_window').css('width','90%').css('margin-left', '-45%');<?php endif; ?><?php if($unload_cb):?>jQuery('#TB_window').unbind('unload').bind('tb_unload', <?php echo esc_js($unload_cb) ?>);<?php endif; ?>">
+<?php endif; ?>
+
+<iframe src="<?php echo $target;?>" style="width:100%; height:92%" onload="
+    <?php if($auto_resize):?>
+        jQuery('#TB_window').css('width','90%').css('margin-left', '-45%');
+    <?php endif; ?>
+    <?php if($unload_cb):?>
+        jQuery('#TB_window').unbind('unload').bind('tb_unload', function(){<?php echo esc_js($unload_cb)?>();});
+    <?php endif; ?>
+">
 

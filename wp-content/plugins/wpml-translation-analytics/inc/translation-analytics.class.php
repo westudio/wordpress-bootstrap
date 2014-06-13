@@ -50,13 +50,17 @@ class WPML_Translation_Analytics{
      * Menu item to appear under WPML menu.
      */
     function menu(){
-        $top_page = apply_filters('icl_menu_main_page',
+	    if(!defined('ICL_PLUGIN_PATH')) return;
+		global $sitepress;
+		if(!isset($sitepress) || (method_exists($sitepress,'get_setting') && !$sitepress->get_setting( 'setup_complete' ))) return;
+
+		$top_page = apply_filters('icl_menu_main_page',
         basename(ICL_PLUGIN_PATH).'/menu/languages.php');
         add_submenu_page(
             $top_page, 
             __('Translation Analytics','wpml-translation-analytics'),
             __('Translation Analytics','wpml-translation-analytics'),
-            'manage_options', WPML_TRANSLATION_ANALYTICS_FOLDER.'/menu/main.php'
+            'wpml_manage_translation_analytics', WPML_TRANSLATION_ANALYTICS_FOLDER.'/menu/main.php'
         );               
     }
     
@@ -242,8 +246,9 @@ class WPML_Translation_Analytics{
      * Called by the scheduled cron event.
      */
     function send_translation_snapshots(){
-        require_once ICL_PLUGIN_PATH 
-            . '/inc/translation-management/pro-translation.class.php';
+	    if(!defined('ICL_PLUGIN_PATH')) return;
+
+        require_once ICL_PLUGIN_PATH . '/inc/translation-management/pro-translation.class.php';
         global $sitepress, $sitepress_settings;
         
         if (isset($sitepress_settings['site_id'])) {
@@ -290,6 +295,7 @@ class WPML_Translation_Analytics{
      * @return array The retrieved jobs
      */
     function get_translation_jobs($service = 'local'){
+	    if(!defined('ICL_PLUGIN_PATH')) return;
         require_once ICL_PLUGIN_PATH . '/inc/translation-management/translation-management.class.php';
         
         global $wpdb;
@@ -316,31 +322,35 @@ class WPML_Translation_Analytics{
         );
     
         foreach($jobs as $job){
-            $job->elements = $wpdb->get_results($wpdb->prepare(
+            $job->elements = $wpdb->get_results(
                 "SELECT * FROM {$wpdb->prefix}icl_translate
                     WHERE job_id = $job->job_id  AND field_translate = 1
                     ORDER BY tid ASC"
-            ));
+            );
         $job->original_post_type = $wpdb->get_var($wpdb->prepare("
         SELECT element_type
         FROM {$wpdb->prefix}icl_translations
-        WHERE trid=%d AND language_code='%s'",
+        WHERE trid=%d AND language_code=%s",
         $job->trid, $job->source_language_code));
         }
         return $jobs;
     }
-   
-    /**
-     *  Updates the number of words (total and finished).
-     *
-     *  @param array $total_word_count The word count for each language pair
-     *  @param string $from The language id of the original language
-     *  @oaram string $to The language id of the translation language
-     *  @param string $content The translation content
-     *  @param boolean $finished Indicates if the content translation is done
-     *
-     *  @param int The word count for the translation
-     */ 
+
+	/**
+	 *  Updates the number of words (total and finished).
+	 *
+	 * @param array   $total_word_count The word count for each language pair
+	 * @param string  $from             The language id of the original language
+	 *
+	 * @param         int               The word count for the translation
+	 *
+	 * @param string  $content          The translation content
+	 * @param boolean $finished         Indicates if the content translation is done
+	 *
+	 * @oaram string $to The language id of the translation language
+	 *
+	 * @return array
+	 */
     function update_word_count(&$total_word_count, $from, $to, $content, $finished){
         require_once ICL_PLUGIN_PATH . '/inc/wpml-api.php';
         $word_count = wpml_get_word_count($content);
@@ -432,7 +442,7 @@ class WPML_Translation_Analytics{
         <?php printf(__(
             'WPML Translation Analytics is enabled but not effective.
         It requires <a href="%s">WPML</a> in order to work.',
-            'wpml-translation-analytics'), 'http://wpml.org/'); ?></p></div>
+            'wpml-translation-analytics'), 'https://wpml.org/'); ?></p></div>
         <?php
     }
     
@@ -444,7 +454,7 @@ class WPML_Translation_Analytics{
         <div class="message error"><p>
         <?php printf(__('WPML Translation Management is enabled but not effective.
         It is not compatible with  <a href="%s">WPML</a> versions prior 2.0.5.',
-            'wpml-translation-analytics'), 'http://wpml.org/'); ?></p></div>
+            'wpml-translation-analytics'), 'https://wpml.org/'); ?></p></div>
         <?php
     }
 }

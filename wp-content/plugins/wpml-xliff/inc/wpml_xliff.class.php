@@ -5,8 +5,9 @@ class WPML_xliff{
 
 
     function __construct($ext = false){
-		// For xliff upload or download we need to make sure other plugins are loaded first.
-        add_action('init', array($this,'init'), (isset($_POST['xliff_upload']) || (isset($_GET['wpml_xliff_action']) && $_GET['wpml_xliff_action'] == 'download')) ? 100 : 10);
+			// For xliff upload or download we need to make sure other plugins are loaded first.
+			$init_priority = ( isset( $_POST[ 'xliff_upload' ] ) || ( isset( $_GET[ 'wpml_xliff_action' ] ) && $_GET[ 'wpml_xliff_action' ] == 'download' ) ) ? 1501 : 10;
+			add_action('init', array($this,'init'), $init_priority );
     }
 
     function __destruct(){
@@ -24,7 +25,7 @@ class WPML_xliff{
         // Check if WPML is active. If not display warning message and don't load WPML-media
         if(!defined('ICL_SITEPRESS_VERSION')){
             add_action('admin_notices', array($this, '_no_wpml_warning'));
-            return false;            
+            return false;
         }elseif(version_compare(ICL_SITEPRESS_VERSION, '2.0.5', '<')){
             add_action('admin_notices', array($this, '_old_wpml_warning'));
             return false;            
@@ -34,13 +35,14 @@ class WPML_xliff{
 
 	        add_action('admin_head',array($this,'js_scripts'));  
 	
-			global $sitepress, $sitepress_settings, $pagenow;
+			global $sitepress, $sitepress_settings;
 			
 			if (1 < count($sitepress->get_active_languages())) {
-				//add_action('admin_menu', array($this,'menu'));
-				
+
 				add_filter('WPML_translation_queue_actions', array($this, 'translation_queue_add_actions'));
-				add_action('WPML_translation_queue_do_actions_export_xliff', array($this, 'translation_queue_do_actions_export_xliff'), 10, 1);
+				add_action('WPML_translation_queue_do_actions_export_xliff_12', array($this, 'translation_queue_do_actions_export_xliff'), 10, 1);
+				add_action('WPML_translation_queue_do_actions_export_xliff_11', array($this, 'translation_queue_do_actions_export_xliff'), 10, 1);
+				add_action('WPML_translation_queue_do_actions_export_xliff_10', array($this, 'translation_queue_do_actions_export_xliff'), 10, 1);
 				
 				add_action('WPML_translator_notification', array($this, 'translator_notification'), 10, 0);
 				
@@ -70,6 +72,8 @@ class WPML_xliff{
 				$sitepress_settings['include_xliff_in_notification'] = $include_xliff;
 			}
 		}
+
+		return true;
     }
 	
 	function new_job_notification($mail, $job_id) {
@@ -101,7 +105,7 @@ class WPML_xliff{
 	function new_job_notification_body($body, $tj_url) {
 		
 		if (strpos($body, __(' - An xliff file is attached.', 'wpml-xliff')) !== FALSE) {
-			$body = str_replace(sprintf(__('You can view your other translation jobs here: %s', 'sitepress'), $tj_url), sprintf(__('To return the completed translation and view other translation jobs, go here: %s', 'wpml-xliff'), $tj_url) . "\n" . sprintf(__('For help, see translator guidelines: %s', 'wpml-xliff'), 'http://wpml.org/?page_id=8021'), $body);
+			$body = str_replace(sprintf(__('You can view your other translation jobs here: %s', 'sitepress'), $tj_url), sprintf(__('To return the completed translation and view other translation jobs, go here: %s', 'wpml-xliff'), $tj_url) . "\n" . sprintf(__('For help, see translator guidelines: %s', 'wpml-xliff'), 'https://wpml.org/?page_id=8021'), $body);
 		}
 		
 		return $body;		
@@ -164,16 +168,26 @@ class WPML_xliff{
 	
 	
 	
-	function get_xliff_file($job_id) {
-		global $iclTranslationManagement, $wpdb;
+	function get_xliff_file( $job_id, $xliff_version = '1.2' ) {
+		global $iclTranslationManagement;
 		
 		$new_line = "\n";
 		
 		$job = $iclTranslationManagement->get_translation_job((int)$job_id, false, false, 1); // don't include not-translatable and don't auto-assign
 		
 		$xliff_file = '<?xml version="1.0" encoding="utf-8" standalone="no"?>' . $new_line;
-		$xliff_file .= '<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">' . $new_line;
-		$xliff_file .= '<xliff version="1.0">' . $new_line;
+
+
+		if ( 0 == strcmp( $xliff_version, '1.0' ) ){
+			//add DOCTYPE only for version 1.0
+			$xliff_file .= '<!DOCTYPE xliff PUBLIC "-//XLIFF//DTD XLIFF//EN" "http://www.oasis-open.org/committees/xliff/documents/xliff.dtd">' . $new_line;
+			$xliff_namespace = '';
+		}else{
+			//for other versions add namespace
+			$xliff_namespace = 'xmlns="urn:oasis:names:tc:xliff:document:'.$xliff_version.'"';
+		}
+
+		$xliff_file .= '<xliff version="'.$xliff_version.'" '.$xliff_namespace .'>'. $new_line;
 		$xliff_file .= '   <file original="' . $job_id . '-'. md5($job_id . $job->original_doc_id) . '" source-language="' . $job->source_language_code . '" target-language="' . $job->language_code . '" datatype="plaintext">' . $new_line;
 		$xliff_file .= '      <header />' . $new_line;
 		$xliff_file .= '      <body>' . $new_line;
@@ -217,7 +231,7 @@ class WPML_xliff{
 					$field_data = str_replace("\n", '<br class="xliff-newline" />', $field_data);
 					$field_data_translated = str_replace("\n", '<br class="xliff-newline" />', $field_data_translated);
 
-					$xliff_file .= '         <trans-unit resname="' . $element->field_type. '" restype="String" datatype="text|html" id="' . $element->field_type. '">' . $new_line;
+					$xliff_file .= '         <trans-unit resname="' . $element->field_type. '" restype="string" datatype="html" id="' . $element->field_type. '">' . $new_line;
 
 					$xliff_file .= '            <source><![CDATA[' . $field_data . ']]></source>' . $new_line;
 					
@@ -230,7 +244,7 @@ class WPML_xliff{
 
 		$xliff_file .= '      </body>' . $new_line;
 		$xliff_file .= '   </file>' . $new_line;
-		$xliff_file .= '</xliff>' . $new_line;
+		$xliff_file .= '</xliff>';
 		
 		return $xliff_file;
 	}
@@ -241,14 +255,34 @@ class WPML_xliff{
 		
 		$data = $_GET['xliff_export_data'];
 		$data = unserialize(base64_decode($data));
-		
+
+		//by default set xliff version to 1.2
+		$xliff_version = '1.2';
+		//check for required xliff version from action name
+		if ( isset( $data['action2'] )) {
+			$xliff_action = $data['action2'];
+			//we are looking for action in format: export_xliff_VERSION
+			if (strpos($xliff_action, 'export_xliff_') === 0){
+				switch( ltrim( $xliff_action, 'export_xliff_') ){
+
+					case '10' : $xliff_version = '1.0';
+								break;
+					case '11' : $xliff_version = '1.1';
+								break;
+					case '12' : $xliff_version = '1.2';
+								break;
+				}
+			}
+		};
+
+
 		require_once(WPML_XLIFF_PATH . '/inc/CreateZipFile.inc.php');
 	
 		$archive = new CreateZipFile();
 		
 		$job_ids = array();
 		foreach ($data['job'] as $job_id => $dummy) {
-			$xliff_file = $this->get_xliff_file($job_id);
+			$xliff_file = $this->get_xliff_file($job_id, $xliff_version);
 			
 			// assign the job to this translator
 			$rid = $wpdb->get_var("SELECT rid FROM {$wpdb->prefix}icl_translate_job WHERE job_id={$job_id}");
@@ -385,7 +419,7 @@ class WPML_xliff{
 				$source = (string)$node->source;
 				$target = (string)$node->target;
 				
-				foreach ($job->elements as $index => $element) {
+				foreach ($job->elements as $element) {
 					if ($element->field_type == $type) {
 						$target = str_replace('<br class="xliff-newline" />', "\n", $target);
 						if ($element->field_format == 'csv_base64') {
@@ -415,7 +449,9 @@ class WPML_xliff{
 	}
 	
 	function translation_queue_add_actions($actions) {
-		$actions['export_xliff'] = __('Export XLIFF', 'wpml-xliff');
+		$actions['export_xliff_12'] = __('Export XLIFF 1.2', 'wpml-xliff');
+		$actions['export_xliff_11'] = __('Export XLIFF 1.1', 'wpml-xliff');
+		$actions['export_xliff_10'] = __('Export XLIFF 1.0', 'wpml-xliff');
 		
 		return $actions;
 	}
@@ -447,6 +483,7 @@ class WPML_xliff{
 	}
 	
     function menu(){
+	    if(!defined('ICL_PLUGIN_PATH')) return;
         $top_page = apply_filters('icl_menu_main_page', basename(ICL_PLUGIN_PATH).'/menu/languages.php');
 		
         add_submenu_page($top_page,
@@ -465,14 +502,14 @@ class WPML_xliff{
     function _no_wpml_warning(){
         ?>
         <div class="message error"><p><?php printf(__('WPML XLIFF is enabled but not effective. It requires <a href="%s">WPML</a> in order to work.', 'wpml-translation-management'), 
-            'http://wpml.org/'); ?></p></div>
+            'https://wpml.org/'); ?></p></div>
         <?php
     }
     
     function _old_wpml_warning(){
         ?>
         <div class="message error"><p><?php printf(__('WPML XLIFF is enabled but not effective. It is not compatible with  <a href="%s">WPML</a> versions prior 2.0.5.', 'wpml-translation-management'), 
-            'http://wpml.org/'); ?></p></div>
+            'https://wpml.org/'); ?></p></div>
         <?php
     }
 	
@@ -501,6 +538,9 @@ class WPML_xliff{
 
     function js_scripts(){
 		global $pagenow;
+
+		if(!defined('WPML_TM_FOLDER')) return;
+
 		if ($pagenow == 'admin.php' && isset($_GET['page']) && $_GET['page'] == WPML_TM_FOLDER . '/menu/translations-queue.php') {
 	        $form_data = '<br /><form enctype="multipart/form-data" method="post" id="translation-xliff-upload" action="">';
 			$form_data .= '<table class="widefat"><thead><tr><th>' . __('Import XLIFF', 'wpml-xliff') . '</th></tr></thead><tbody><tr><td>';
@@ -535,4 +575,9 @@ class WPML_xliff{
 		<?php
 		
 	}
+}
+
+global $WPML_xliff, $sitepress;
+if(isset($sitepress) && !isset($WPML_xliff)) {
+	$WPML_xliff = new WPML_xliff();
 }

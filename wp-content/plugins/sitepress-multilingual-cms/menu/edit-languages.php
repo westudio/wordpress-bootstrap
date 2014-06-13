@@ -4,7 +4,7 @@ class SitePress_EditLanguages {
 	var $active_languages;
 	var $upload_dir;
 	var $is_writable = false;
-	var $required_fields = array('code' => '', 'english_name' => '', 'translations' => 'array', 'flag' => '', 'default_locale' => '');
+	var $required_fields = array('code' => '', 'english_name' => '', 'translations' => 'array', 'flag' => '', 'default_locale' => '', 'tag' => '');
 	var $add_validation_failed = false;
     private $built_in_languages = array();
     private $error = '';
@@ -12,7 +12,9 @@ class SitePress_EditLanguages {
 
 	function __construct() {
         
-		require_once ICL_PLUGIN_PATH . '/inc/lang-data.php';
+		$langs_names = icl_get_languages_names();
+		$lang_codes = icl_get_languages_codes();
+        $lang_locales = icl_get_languages_locales();
         $this->built_in_languages = array_values($lang_codes);
         
         if(isset($_GET['action']) && $_GET['action'] == 'delete-language' && wp_create_nonce('delete-language' . @intval($_GET['id'])) == $_GET['icl_nonce']){
@@ -99,6 +101,7 @@ For each language, you need to enter the following information:
 					<th><?php _e('Flag', 'sitepress'); ?></th>
 					<th><?php _e('Default locale', 'sitepress'); ?></th>
                     <th><?php _e('Encode URLs', 'sitepress'); ?></th>
+                    <th><?php _e('Language tag', 'sitepress'); ?></th>
                     <th>&nbsp;</th>
                 </tr>
             </thead>
@@ -113,6 +116,7 @@ For each language, you need to enter the following information:
 					<th><?php _e('Flag', 'sitepress'); ?></th>
                     <th><?php _e('Default locale', 'sitepress'); ?></th>
 					<th><?php _e('Encode URLs', 'sitepress'); ?></th>
+                    <th><?php _e('Language tag', 'sitepress'); ?></th>
                     <th>&nbsp;</th>
                 </tr>
             </tfoot>        
@@ -154,6 +158,7 @@ For each language, you need to enter the following information:
             $lang['default_locale'] = isset($_POST['icl_edit_languages']['add']['default_locale']) ? $_POST['icl_edit_languages']['add']['default_locale'] : '';
             $lang['flag'] = '';
             $lang['from_template'] = true;
+            $lang['tag'] = isset($_POST['icl_edit_languages']['add']['tag']) ? $_POST['icl_edit_languages']['add']['tag'] : '';
         }
         ?>
 		
@@ -179,6 +184,8 @@ For each language, you need to enter the following information:
                             <option value="1" <?php if(!empty($lang['encode_url'])): ?>selected="selected"<?php endif;?>><?php _e('Yes', 'sitepress') ?></option>
                         </select>
                     </td>
+                    
+                    <td><input type="text" name="icl_edit_languages[<?php echo $lang['id']; ?>][tag]" value="<?php echo $lang['tag']; ?>" /></td>
                     
                     <td>
                         <?php if(!$add && !in_array($lang['code'], $this->built_in_languages)): ?>
@@ -233,6 +240,7 @@ For each language, you need to enter the following information:
 	function get_active_languages() {
 		global $sitepress, $wpdb;
 		$this->active_languages = $sitepress->get_active_languages(true);        
+        
 		foreach ($this->active_languages as $lang) {
 			foreach ($this->active_languages as $lang_translation) {
 				$this->active_languages[$lang['code']]['translation'][$lang_translation['id']] = $sitepress->get_display_language_name($lang['code'], $lang_translation['code']);
@@ -242,12 +250,13 @@ For each language, you need to enter the following information:
 			$this->active_languages[$lang['code']]['from_template'] = $flag->from_template;
 			$this->active_languages[$lang['code']]['default_locale'] = $wpdb->get_var("SELECT default_locale FROM {$wpdb->prefix}icl_languages WHERE code='".$lang['code']."'");
             $this->active_languages[$lang['code']]['encode_url'] = $lang['encode_url'];
+            $this->active_languages[$lang['code']]['tag'] = $lang['tag'];
 		}
         
         
 	}
 
-	function insert_main_table($code, $english_name, $default_locale, $major = 0, $active = 0, $encode_url = 0) {
+	function insert_main_table($code, $english_name, $default_locale, $major = 0, $active = 0, $encode_url = 0, $tag = '') {
 		global $wpdb;
         return $wpdb->insert($wpdb->prefix . 'icl_languages', array(
             'code'          => $code,
@@ -255,13 +264,14 @@ For each language, you need to enter the following information:
             'default_locale'=> $default_locale,
             'major'         => $major,
             'active'        => $active,
-            'encode_url'    => $encode_url
+            'encode_url'    => $encode_url,
+            'tag'           => $tag
         ));
 	}
 
-	function update_main_table($id, $code, $default_locale, $encode_url){
+	function update_main_table($id, $code, $default_locale, $encode_url, $tag){
 		global $wpdb;
-        $wpdb->update($wpdb->prefix . 'icl_languages', array('code' => $code, 'default_locale' => $default_locale, 'encode_url'=>$encode_url), array('ID' => $id));		
+        $wpdb->update($wpdb->prefix . 'icl_languages', array('code' => $code, 'default_locale' => $default_locale, 'encode_url'=>$encode_url, 'tag' => $tag), array('ID' => $id));		
 	}
 
 	function insert_translation($name, $language_code, $display_language_code) {
@@ -312,7 +322,7 @@ For each language, you need to enter the following information:
 			$data = $this->sanitize($data);
 			
 				// Update main table.
-			$this->update_main_table($id, $data['code'], $data['default_locale'], $data['encode_url']);
+			$this->update_main_table($id, $data['code'], $data['default_locale'], $data['encode_url'], $data['tag']);
             
             if($wpdb->get_var("SELECT code FROM {$wpdb->prefix}icl_locale_map WHERE code='{$data['code']}'")){
                 $wpdb->update($wpdb->prefix.'icl_locale_map', array('locale'=>$data['default_locale']), array('code'=>$data['code']));
@@ -376,7 +386,7 @@ For each language, you need to enter the following information:
 		if (!$this->add_validation_failed) {
 			unset($_POST['icl_edit_languages']['add']);
 		}
-			// Reser active languages.
+			// Reset active languages.
 		$this->get_active_languages();
 	}
 
@@ -384,12 +394,14 @@ For each language, you need to enter the following information:
 		global $sitepress, $wpdb;
 		
 			// Insert main table.
-		if (!$this->insert_main_table($data['code'], $data['english_name'], $data['default_locale'], 0, 1, $data['encode_url'])) {
+		if (!$this->insert_main_table($data['code'], $data['english_name'], $data['default_locale'], 0, 1, $data['encode_url'], $data['tag'])) {
 			$this->error(__('Adding language failed.', 'sitepress'));
 			return false;
 		}
-        
-        // add locale map
+
+		$default_language = $sitepress->get_default_language();
+
+		// add locale map
         if($wpdb->get_var("SELECT code FROM {$wpdb->prefix}icl_locale_map WHERE code='{$data['code']}'")){
             $wpdb->update($wpdb->prefix.'icl_locale_map', array('locale'=>$data['default_locale']), array('code'=>$data['code']));
         }else{
@@ -471,8 +483,8 @@ For each language, you need to enter the following information:
 		$sitepress->set_default_categories($default_categories);
 		
 		//update translations table
-		$default_category_trid = $sitepress->get_element_trid($default_categories[$sitepress->get_default_language()], 'tax_category');
-        $sitepress->set_element_language_details($tmp['term_taxonomy_id'], 'tax_category', $default_category_trid, $data['code'], $sitepress->get_default_language());
+		$default_category_trid = $sitepress->get_element_trid($default_categories[ $default_language ], 'tax_category');
+        $sitepress->set_element_language_details($tmp['term_taxonomy_id'], 'tax_category', $default_category_trid, $data['code'], $default_language );
 		
 	}
 
@@ -539,11 +551,11 @@ For each language, you need to enter the following information:
                 
                 $translation_ids = $wpdb->get_col($wpdb->prepare("SELECT translation_id FROM {$wpdb->prefix}icl_translations WHERE language_code=%s", $lang->code));
                 if($translation_ids){
-                    $rids = $wpdb->get_col("SELECT rid FROM {$wpdb->prefix}icl_translation_status WHERE translation_id IN (" . join($translation_ids) . ")");
+                    $rids = $wpdb->get_col("SELECT rid FROM {$wpdb->prefix}icl_translation_status WHERE translation_id IN (" . join(',', $translation_ids) . ")");
                     if($rids){
-                        $job_ids = $wpdb->get_col("SELECT job_id FROM {$wpdb->prefix}icl_translate_job WHERE rid IN (" . join($rids) . ")");    
+                        $job_ids = $wpdb->get_col("SELECT job_id FROM {$wpdb->prefix}icl_translate_job WHERE rid IN (" . join(',', $rids) . ")");
                         if($job_ids){
-                            $wpdb->query("DELETE FROM {$wpdb->prefix}icl_translate WHERE job_id IN (" . join($job_ids) . ")");    
+                            $wpdb->query("DELETE FROM {$wpdb->prefix}icl_translate WHERE job_id IN (" . join(',', $job_ids) . ")");
                         }
                     }    
                 }
@@ -609,10 +621,10 @@ For each language, you need to enter the following information:
 		foreach ($data as $key => $value) {
 			if (is_array($value)) {
 				foreach ($value as $k => $v) {
-					$data[$key][$k] = $wpdb->escape($v);
+					$data[$key][$k] = esc_sql($v);
 				}
 			}
-			$data[$key] = $wpdb->escape($value);
+			$data[$key] = esc_sql($value);
 		}
 		return $data;
 	}
@@ -643,6 +655,15 @@ For each language, you need to enter the following information:
         $validated = is_array($fileinfo) && in_array($fileinfo['mime'], array('image/gif', 'image/jpeg', 'image/png')) && $fileinfo['0'] > 0;
         
 		if ($validated && move_uploaded_file($_FILES['icl_edit_languages']['tmp_name'][$id]['flag_file'], $target_path) ) {
+            
+            if(function_exists('wp_get_image_editor')){
+                $image = wp_get_image_editor( $target_path );
+                if ( ! is_wp_error( $image ) ) {
+                    $image->resize( 18, 12, true );
+                    $image->save( $target_path );
+                }                
+            }
+            
     		return $filename;
 		} else {
     		$this->error(__('There was an error uploading the file, please try again!','sitepress'));
