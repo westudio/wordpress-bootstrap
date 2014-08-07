@@ -4,103 +4,89 @@
  * Template Name: All pages in one
  */
 
-get_header();
+// Build tree from `main` menu items
+$nodes = array();
+foreach (wp_get_nav_menu_items(get_nav_menu_id_by_location('main')) as $item) {
+  $node = (object) array(
+    'parent'  => $item->menu_item_parent,
+    'chilren' => array(),
+    'item'    => $item
+  );
 
+  if ($node->parent) {
+    $nodes[$node->parent]->children[] = $node;
+  }
+  $nodes[$item->ID] = $node;
+}
+
+
+?>
+<?php
+get_header();
 bootstrap_set_layout(false);
 
-$items = wp_get_nav_menu_items('main');
+foreach ($nodes as $node):
+  if ($node->parent):
+    continue;
+  endif;
 
-foreach ($items as $item):
-
-    $id = bootstrap_url_to_slug($item->url);
-    $is_current_page = $item->url == get_permalink() || (get_post_type() == $item->object && get_the_ID() == $item->object_id);
-
+  $item = $node->item;
+  $id   = bootstrap_url_to_slug($item->url);
 ?>
-        <section id="<?php echo $id ?>" class="page-wrapper">
+  <section id="<?php echo $id ?>" class="page-wrapper">
 <?php
+    bootstrap_render_item($item);
 
-    ////////////////////////////////
-    // Current page
-    ////////////////////////////////
-
-    if ($is_current_page):
-
-        include __DIR__.'/page-home.php';
-
-    ////////////////////////////////
-    // Page
-    ////////////////////////////////
-
-    elseif ($item->object == 'page'):
-
-        query_posts(array(
-            'p'         => $item->object_id,
-            'post_type' => $item->object
-        ));
-
-        the_post();
-
-        $template = get_page_template();
-
-        if (__FILE__ == $template):
-            $template = __DIR__.'/page.php';
-        endif;
-
-        rewind_posts();
-
-        include $template;
-
-        wp_reset_query();
-
-    ////////////////////////////////
-    // Post
-    ////////////////////////////////
-
-    elseif ($item->object == 'post'):
-
-        query_posts(array(
-            'p'         => $item->object_id,
-            'post_type' => $item->object
-        ));
-
-        the_post();
-
-        $template = get_single_template();
-
-        rewind_posts();
-
-        include $template;
-
-        wp_reset_query();
-
-    ////////////////////////////////
-    // Category
-    ////////////////////////////////
-
-    elseif($item->object == 'category'):
-
-        query_posts(array(
-            'cat' => $item->object_id
-        ));
-
-        if (!($template = get_category_template())):
-            $template = __DIR__.'/archive.php';
-        endif;
-
-        include $template;
-
-        wp_reset_query();
-
-    endif;
-
+  if ($node->children):
 ?>
-        </section>
+    <div class="container tabs-wrapper">
+      <ul class="nav nav-tabs" role="tablist">
 <?php
+    $first = true;
+    foreach ($node->children as $child):
+      $item = $child->item;
+      $id   = bootstrap_url_to_slug($item->url);
+?>
+        <li<?php echo ($first ? ' class="active"' : '') ?>>
+          <a href="#<?php echo $id ?>" role="table" data-toggle="tab">
+            <?php echo $item->title ?>
+          </a>
+        </li>
+<?php
+      $first = false;
+    endforeach;
+?>
+      </ul>
 
+      <div class="tab-content">
+<?php
+    $first = true;
+    foreach ($node->children as $child):
+      $item = $child->item;
+      $id   = bootstrap_url_to_slug($item->url);
+?>
+        <div id ="<?php echo $id ?>" class="tab-pane fade<?php echo ($first ? ' in active' : '') ?>">
+<?php
+          bootstrap_set('is_block', true);
+          bootstrap_render_item($item);
+          bootstrap_set('is_block', false);
+?>
+        </div>
+<?php
+      $first = false;
+    endforeach;
+?>
+      </div>
+    </div>
+<?php
+  endif;
+?>
+  </section>
+<?php
 endforeach;
+?>
 
+<?php
 bootstrap_set_layout(true);
-
 get_footer();
-
 ?>

@@ -7,49 +7,51 @@
 ?>
 <?php
 if (bootstrap_has_layout()):
-    get_header();
+  get_header();
 endif;
 ?>
 
-        <div class="container">
-            <div class="row">
+<?php if (!bootstrap_get('is_block')): ?>
+    <div class="container">
+<?php endif ?>
 
-                <div id="main" class="col-sm-8">
+      <div class="layout-main">
 
 <?php
 while (have_posts()):
     the_post();
 ?>
 
-                    <div <?php post_class('home'); ?>>
+        <div <?php post_class('page-home'); ?>>
 
-                        <div class="page-header">
-                            <h1><?php the_title(); ?></h1>
-                        </div>
+          <div class="page-header">
+            <h1 class="page-title"><?php the_title(); ?></h1>
+          </div>
 
-                        <div class="page-body">
-                            <div class="content">
-                                <?php the_content(); ?>
-                            </div>
-                        </div>
+          <div class="page-body">
+            <div class="content">
+              <?php the_content(); ?>
+            </div>
 
-                    </div><!-- /.page -->
+            <button class="btn-next-page"><?php _e('Next', 'bootstrap') ?></button>
+
+          </div>
+
+        </div><!-- /.page -->
 
 <?php
 endwhile;
 ?>
 
-                </div><!-- /#main -->
+      </div><!-- /.layout-main -->
+<?php if (!bootstrap_get('is_block')): ?>
+    </div><!-- /.container -->
+<?php endif ?>
 
-                <div id="sidebar" class="col-sm-4">
-                    <?php get_sidebar('home'); ?>
-                </div><!-- /#sidebar -->
-
-            </div><!-- /.row -->
-        </div><!--/.container -->
+    <?php get_template_part('block', 'background') ?>
 
 <?php
 if (bootstrap_has_layout()):
-    get_footer();
+  get_footer();
 endif;
 ?>

@@ -1,52 +1,56 @@
+
 <?php
 if (bootstrap_has_layout()):
-    get_header();
+  get_header();
 endif;
 ?>
 
-        <div class="container">
-            <?php bootstrap_breadcrumbs(); ?>
-        </div><!--/.container -->
+<?php if (!bootstrap_get('is_block')): ?>
+    <div class="container">
+<?php endif ?>
 
-        <div class="container">
-            <div class="row">
-
-                <div id="main" class="col-sm-8">
+      <div class="layout-main">
 
 <?php
 while (have_posts()):
     the_post();
 ?>
 
-                    <div <?php post_class(); ?>>
+        <div <?php post_class(); ?>>
 
-                        <div class="page-header">
-                            <h1><?php the_title(); ?></h1>
-                        </div>
+          <div class="page-header">
+<?php if (bootstrap_get('is_block')): ?>
+            <h2 class="page-title"><?php the_title(); ?></h2>
+<?php else: ?>
+            <h1 class="page-title"><?php the_title(); ?></h1>
+<?php endif ?>
+          </div>
 
-                        <div class="page-body">
-                            <div class="content">
-                                <?php the_content(); ?>
-                            </div>
-                        </div>
+          <?php get_template_part('block', 'carousel') ?>
 
-                    </div><!-- /.page -->
+          <div class="page-body">
+            <div class="content">
+              <?php the_content(); ?>
+            </div>
+          </div>
+
+          <div class="page-footer">
+            <?php bootstrap_pager() ?>
+          </div>
+
+        </div><!-- /.page -->
 
 <?php
 endwhile;
 ?>
 
-                </div><!-- /#main -->
-
-                <div id="sidebar" class="col-sm-4">
-                    <?php get_sidebar('page'); ?>
-                </div><!-- /#sidebar -->
-
-            </div><!-- /.row -->
-        </div><!--/.container -->
+      </div><!-- /.layout-main -->
+<?php if (!bootstrap_get('is_block')): ?>
+    </div><!-- /.container -->
+<?php endif ?>
 
 <?php
 if (bootstrap_has_layout()):
-    get_footer();
+  get_footer();
 endif;
 ?>

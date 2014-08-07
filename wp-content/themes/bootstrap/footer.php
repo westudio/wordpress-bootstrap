@@ -5,16 +5,29 @@ if (!bootstrap_has_layout()):
 endif;
 
 ?>
-    <footer id="footer">
-      <div class="footer-inner">
-        <div class="container">
-          <p class="copyright">&copy; <?php echo get_bloginfo('name'); ?> <?php echo date('Y'); ?></p>
-          <p class="credits"><?php printf(__('Website by %s', 'bootstrap'), '<a href="http://we-studio.ch" target="_blank">We studio</a>') ?></p>
-        </div> <!-- /container -->
-      </div>
-    </footer>
+  <footer class="layout-footer">
+      <div class="container">
 
-    <?php wp_footer(); ?>
+        <div class="row">
+          <div class="col-sm-6">
+            <p class="copyright"><?php printf(
+              '&copy; %s %s',
+              get_bloginfo('name'),
+              date('Y')
+            ) ?></p>
+          </div>
+          <div class="col-sm-6">
+            <p class="credits"><?php printf(
+              __('Website by %s', 'bootstrap'),
+              '<a href="http://we-studio.ch" target="_blank">We studio</a>'
+            ) ?></p>
+          </div>
+        </div>
 
-  </body>
+      </div> <!-- /container -->
+  </footer>
+
+  <?php wp_footer(); ?>
+
+</body>
 </html>

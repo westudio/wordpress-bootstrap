@@ -1,88 +1,58 @@
 <?php
 
 /**
- * Template Name: Contact Page
+ * Template Name: Contact Map Page
  */
 
 ?>
 <?php
-
-wp_enqueue_script('access_map');
-
 if (bootstrap_has_layout()):
-    get_header();
+  get_header();
 endif;
-
 ?>
 
-        <div class="container">
-            <?php bootstrap_breadcrumbs(); ?>
-        </div>
+<?php if (!bootstrap_get('is_block')): ?>
+    <div class="container">
+<?php endif ?>
 
-        <div class="map">
-            <div id="map" class="map-inner"></div>
-        </div>
-
-        <div class="container">
-            <div class="row">
-
-                <div id="main" class="col-sm-8">
+      <div class="layout-main">
 
 <?php
 while (have_posts()):
     the_post();
 ?>
 
-                    <div <?php post_class('contact'); ?>>
+        <div <?php post_class(); ?>>
 
-                        <div class="page-header">
-                            <h1><?php the_title(); ?></h1>
-                        </div>
+          <div class="page-header">
+<?php if (bootstrap_get('is_block')): ?>
+            <h2 class="page-title"><?php the_title(); ?></h2>
+<?php else: ?>
+            <h1 class="page-title"><?php the_title(); ?></h1>
+<?php endif ?>
+          </div>
 
-                        <div class="page-body">
-                            <div class="content">
-                                <?php the_content(); ?>
-                            </div>
-                        </div>
+          <?php get_template_part('block', 'map') ?>
 
-                    </div><!-- /.page -->
+          <div class="page-body">
+            <div class="content">
+              <?php the_content(); ?>
+            </div>
+          </div>
+
+        </div><!-- /.page -->
 
 <?php
 endwhile;
 ?>
 
-                </div><!-- /#main -->
-
-                <div id="sidebar" class="col-sm-4">
-                    <?php get_sidebar('contact'); ?>
-                </div><!-- /#sidebar -->
-
-            </div><!-- /.row -->
-        </div><!--/.container -->
-
-        <script>
-            jQuery(function ($) {
-                $('#map').accessmap({
-                    center: new google.maps.LatLng(46.521556, 6.624941),
-                    content: [
-                        '<strong>We studio sàrl</strong>',
-                        'Côtes-de-Montbenon 30',
-                        'CH-1003 Lausanne'
-                    ].join('<br />'),
-                    styles: [
-                        {
-                            "stylers": [
-                                { "hue": "#00b2ff" },
-                                { "saturation": -50 }
-                            ]
-                        }
-                    ]
-                });
-            });
-        </script>
+      </div><!-- /.layout-main -->
+<?php if (!bootstrap_get('is_block')): ?>
+    </div><!-- /.container -->
+<?php endif ?>
 
 <?php
 if (bootstrap_has_layout()):
-    get_footer();
+  get_footer();
 endif;
 ?>

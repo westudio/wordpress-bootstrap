@@ -4,12 +4,12 @@
 // Init
 ////////////////////////////////
 
-function bootstrap_init_ajax()
-{
-    if (bootstrap_is_ajax()) {
-        bootstrap_set_layout(false);
-    }
-}
+// function bootstrap_init_ajax()
+// {
+//     if (bootstrap_is_ajax()) {
+//         bootstrap_set_layout(false);
+//     }
+// }
 
 // add_action('init', 'bootstrap_init_ajax');
 
@@ -18,70 +18,70 @@ function bootstrap_init_ajax()
  */
 function bootstrap_register_post_types()
 {
-    register_taxonomy('project_category', 'project', array(
-        'hierarchical'            => true,
-        'label'                   => __('Categories', 'bootstrap'),
-        'rewrite'                 => array('slug' => 'projects')
-    ));
+    // register_taxonomy('project_category', 'project', array(
+    //     'hierarchical'            => true,
+    //     'label'                   => __('Categories', 'bootstrap'),
+    //     'rewrite'                 => array('slug' => 'projects')
+    // ));
 
     register_post_type(
-        'project',
+        'member',
         array(
             'labels'              => array(
-                'name'                => __('Projects', 'bootstrap'),
-                'singular_name'       => __('Project', 'bootstrap')
+                'name'                => __('Members', 'bootstrap'),
+                'singular_name'       => __('Member', 'bootstrap')
             ),
             'public'              => true,
-            'exclude_from_search' => false,
+            'exclude_from_search' => true,
             'can_export'          => false,
             'has_archive'         => true,
             'show_ui'             => true,
-            'supports'            => array('title', 'editor', 'excerpt', 'thumbnail'),
+            'supports'            => array('title', 'editor', 'excerpt', 'thumbnail', 'page-attributes'),
             'taxonomies'          => array('project_category'),
             'show_in_nav_menus'   => true,
             'show_in_menu'        => true,
-            'rewrite'             => array('slug' => 'project')
+            'rewrite'             => array('slug' => 'member')
         )
     );
 }
 
-// add_action('init', 'bootstrap_register_post_types');
+add_action('init', 'bootstrap_register_post_types');
 
 /**
  * Registers sidebars
  */
-function bootstrap_register_sidebars()
-{
-    register_sidebar(array(
-        'name'          => 'Home sidebar',
-        'id'            => 'home',
-        'description'   => 'Sidebar on home page',
-        'before_widget' => '<section id="%1$s" class="widget %2$s">',
-        'after_widget'  => '</section>',
-        'before_title'  => '<h1>',
-        'after_title'   => '</h1>'
-    ));
+// function bootstrap_register_sidebars()
+// {
+//     register_sidebar(array(
+//         'name'          => 'Home sidebar',
+//         'id'            => 'home',
+//         'description'   => 'Sidebar on home page',
+//         'before_widget' => '<section id="%1$s" class="widget %2$s">',
+//         'after_widget'  => '</section>',
+//         'before_title'  => '<h1>',
+//         'after_title'   => '</h1>'
+//     ));
 
-    register_sidebar(array(
-        'name'          => 'Page sidebar',
-        'id'            => 'page',
-        'description'   => 'Sidebar on pages',
-        'before_widget' => '<section id="%1$s" class="widget %2$s">',
-        'after_widget'  => '</section>',
-        'before_title'  => '<h1>',
-        'after_title'   => '</h1>'
-    ));
+//     register_sidebar(array(
+//         'name'          => 'Page sidebar',
+//         'id'            => 'page',
+//         'description'   => 'Sidebar on pages',
+//         'before_widget' => '<section id="%1$s" class="widget %2$s">',
+//         'after_widget'  => '</section>',
+//         'before_title'  => '<h1>',
+//         'after_title'   => '</h1>'
+//     ));
 
-    register_sidebar(array(
-        'name'          => 'Single sidebar',
-        'id'            => 'single',
-        'description'   => 'Sidebar on single posts',
-        'before_widget' => '<section id="%1$s" class="widget %2$s">',
-        'after_widget'  => '</section>',
-        'before_title'  => '<h1>',
-        'after_title'   => '</h1>'
-    ));
-}
+//     register_sidebar(array(
+//         'name'          => 'Single sidebar',
+//         'id'            => 'single',
+//         'description'   => 'Sidebar on single posts',
+//         'before_widget' => '<section id="%1$s" class="widget %2$s">',
+//         'after_widget'  => '</section>',
+//         'before_title'  => '<h1>',
+//         'after_title'   => '</h1>'
+//     ));
+// }
 
 // add_action('init', 'bootstrap_register_sidebars');
 
@@ -90,30 +90,9 @@ function bootstrap_register_sidebars()
  */
 function bootstrap_attachments($attachments)
 {
-    $attachments->register('bootstrap_attachments', array(
-        'label'       => __('Attachments', 'bootstrap'),
-        'post_type'   => array('page', 'post'),
-        'position'    => 'normal',
-        'priority'    => 'high',
-        'filetype'    => null,
-        'note'        => null,
-        'append'      => true,
-        'button_text' => __('Attach files', 'bootstrap'),
-        'modal_text'  => __('Attach', 'bootstrap'),
-        'router'      => 'browse',
-        'fields'      => array(
-            array(
-                'name'    => 'title',
-                'type'    => 'text',
-                'label'   => __('Title', 'bootstrap'),
-                'default' => 'title',
-            )
-        )
-    ));
-
     $attachments->register('bootstrap_gallery', array(
         'label'       => __('Gallery', 'bootstrap'),
-        'post_type'   => array('page', 'post', 'project'),
+        'post_type'   => array('page', 'post'),
         'position'    => 'normal',
         'priority'    => 'high',
         'filetype'    => array('image'),
@@ -134,6 +113,27 @@ function bootstrap_attachments($attachments)
                 'type'    => 'text',
                 'label'   => __('Caption', 'bootstrap'),
                 'default' => '',
+            )
+        )
+    ));
+
+    $attachments->register('bootstrap_attachments', array(
+        'label'       => __('Attachments', 'bootstrap'),
+        'post_type'   => array('page', 'post'),
+        'position'    => 'normal',
+        'priority'    => 'high',
+        'filetype'    => null,
+        'note'        => null,
+        'append'      => true,
+        'button_text' => __('Attach files', 'bootstrap'),
+        'modal_text'  => __('Attach', 'bootstrap'),
+        'router'      => 'browse',
+        'fields'      => array(
+            array(
+                'name'    => 'title',
+                'type'    => 'text',
+                'label'   => __('Title', 'bootstrap'),
+                'default' => 'title',
             )
         )
     ));
@@ -199,7 +199,7 @@ add_action('after_setup_theme', 'bootstrap_setup_i18n');
 function bootstrap_setup_menus()
 {
     register_nav_menus(array(
-        'main'   => __('Main', 'bootstrap')
+        'main' => __('Main', 'bootstrap')
     ));
 }
 
@@ -207,7 +207,7 @@ add_action('after_setup_theme', 'bootstrap_setup_menus');
 
 function bootstrap_setup_styles()
 {
-    // wp_register_style('fonts', 'http://fast.fonts.net/cssapi/XXX.css', false , BOOTSTRAP_VERSION, 'all');
+    wp_register_style('fonts', 'http://fast.fonts.net/cssapi/82f146b2-80ec-456b-87a2-45669a96e178.css', false , BOOTSTRAP_VERSION, 'all');
     wp_register_style('bootstrap', get_template_directory_uri().'/css/main.min.css', false , BOOTSTRAP_VERSION, 'all');
 }
 
@@ -227,8 +227,8 @@ add_action('init', 'bootstrap_setup_jquery');
 function bootstrap_setup_scripts()
 {
     wp_register_script('bootstrap', get_template_directory_uri().'/js/main.min.js', array('jquery'), BOOTSTRAP_VERSION, true);
-    // wp_register_script('google_map_api', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCY5DKsx5ZgPdBTF1Kk7Fzk1cKKWhStWrw&sensor=false', array(), true);
-    // wp_register_script('access_map', get_template_directory_uri().'/js/access-map.js', array('jquery', 'google_map_api'), '1.0.0', true);
+    wp_register_script('google_map_api', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCY5DKsx5ZgPdBTF1Kk7Fzk1cKKWhStWrw&sensor=false', array(), true);
+    wp_register_script('access_map', get_template_directory_uri().'/vendor/access-map/dist/access-map.min.js', array('jquery', 'google_map_api'), '1.0.0', true);
 }
 
 add_action('after_setup_theme', 'bootstrap_setup_scripts');
@@ -238,7 +238,7 @@ add_action('after_setup_theme', 'bootstrap_setup_scripts');
  */
 function bootstrap_enqueue_styles()
 {
-    // wp_enqueue_style('fonts');
+    wp_enqueue_style('fonts');
     wp_enqueue_style('bootstrap');
 }
 
@@ -250,8 +250,6 @@ add_action('wp_enqueue_scripts', 'bootstrap_enqueue_styles');
 function bootstrap_enqueue_scripts()
 {
     wp_enqueue_script('bootstrap');
-    // wp_enqueue_script('google_map_api');
-    // wp_enqueue_script('text_resize');
 
 }
 
@@ -259,9 +257,9 @@ add_action('wp_enqueue_scripts', 'bootstrap_enqueue_scripts');
 
 function bootstrap_pre_get_posts($query)
 {
-    if ($query->is_tax() || $query->get('post_type') == 'project') {
-        $query->set('posts_per_page', -1);
-    }
+    // if ($query->is_tax() || $query->get('post_type') == 'project') {
+    //     $query->set('posts_per_page', -1);
+    // }
 }
 
 add_action('pre_get_posts', 'bootstrap_pre_get_posts');

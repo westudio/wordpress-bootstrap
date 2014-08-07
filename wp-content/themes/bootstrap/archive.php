@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The template for displaying Archive pages.
+ * Template Name: Archive
  */
 
 ?>
@@ -11,53 +11,51 @@ if (bootstrap_has_layout()):
 endif;
 ?>
 
-        <div class="container">
-            <?php bootstrap_breadcrumbs(); ?>
-        </div><!--/.container -->
+<?php if (!bootstrap_get('is_block')): ?>
+    <div class="container">
+<?php endif ?>
 
-        <div class="container">
-            <div class="row">
+      <div class="layout-main">
 
-                <div id="main" class="col-sm-8">
+        <div class="page archive">
 
-                    <div class="page archive">
+          <div class="page-header">
+              <h1><?php bootstrap_title(); ?></h1>
+          </div><!-- /.page-header -->
 
-                        <div class="page-header">
-                            <h1><?php bootstrap_title(); ?></h1>
-                        </div><!-- /.page-header -->
-
-                        <div class="page-body">
+          <div class="page-body">
 
 <?php
 if (have_posts()):
-    while (have_posts()):
-        the_post();
+  while (have_posts()):
+    the_post();
 ?>
 
-                            <?php get_template_part('loop', get_post_type()); ?>
+            <?php get_template_part('loop', get_post_type()); ?>
 
 <?php
-    endwhile;
+  endwhile;
+else:
+?>
+            <div class="alert alert-info">
+              <p><?php _e('No result', 'bootstrap'); ?></p>
+            </div>
+<?php
 endif;
 ?>
 
-                        </div><!-- /.page-body -->
+          </div><!-- /.page-body -->
 
-                        <div class="page-footer">
-                            <?php bootstrap_pagination();?>
-                        </div><!-- /.page-footer -->
+          <div class="page-footer">
+            <?php bootstrap_pagination(); ?>
+          </div><!-- /.page-footer -->
 
-                    </div><!-- /.page -->
+        </div><!-- /.page -->
 
-                </div><!-- /#main -->
-
-                <div id="sidebar" class="col-sm-4">
-                    <?php get_sidebar('archive'); ?>
-                </div><!-- /#sidebar -->
-
-            </div><!-- /.row -->
-
-        </div><!--/.container -->
+      </div><!-- /.layout-main -->
+<?php if (!bootstrap_get('is_block')): ?>
+    </div><!-- /.container -->
+<?php endif ?>
 
 <?php
 if (bootstrap_has_layout()):

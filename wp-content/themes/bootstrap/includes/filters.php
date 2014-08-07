@@ -21,12 +21,12 @@ add_filter('excerpt_more', 'bootstrap_excerpt_more');
  * @param  array $args Default arguments
  * @return array
  */
-function bootstrap_page_menu_args($args)
-{
-    $args['show_home'] = true;
+// function bootstrap_page_menu_args($args)
+// {
+//     $args['show_home'] = true;
 
-    return $args;
-}
+//     return $args;
+// }
 
 // add_filter('wp_page_menu_args', 'bootstrap_page_menu_args');
 
@@ -46,7 +46,7 @@ function bootstrap_nav_menu_args($args)
     }
 
     if ($args['walker'] == '') {
-        $args['walker'] = new Bootstrap_Walker_Nav_Menu();
+        $args['walker'] = new Bootstrap_Single_Page_Walker_Nav_Menu();
     }
 
     return $args;
@@ -57,7 +57,7 @@ add_filter('wp_nav_menu_args', 'bootstrap_nav_menu_args', 10, 1);
 function bootstrap_content_thumbnail_sizes($sizes)
 {
     return array(
-        'bootstrap-6-cropped' => __('Medium', 'bootstrap')
+        'bootstrap-6-4' => __('Medium', 'bootstrap')
     );
 }
 
@@ -69,13 +69,13 @@ add_filter('image_size_names_choose', 'bootstrap_content_thumbnail_sizes');
  * @param  array $settings Default settings
  * @return array
  */
-function bootstrap_tiny_mce_before_init($settings)
-{
-    $formats = array('p', 'h4', 'h5', 'h6', 'pre');
-    $settings['theme_advanced_blockformats'] = implode(',', $formats);
+// function bootstrap_tiny_mce_before_init($settings)
+// {
+//     $formats = array('p', 'h4', 'h5', 'h6', 'pre');
+//     $settings['theme_advanced_blockformats'] = implode(',', $formats);
 
-    return $settings;
-}
+//     return $settings;
+// }
 
 // add_filter('tiny_mce_before_init', 'bootstrap_tiny_mce_before_init');
 
@@ -86,18 +86,18 @@ function bootstrap_tiny_mce_before_init($settings)
  *
  * @return array
  */
-function bootstrap_manage_edit_category_columns($columns)
-{
-    if (array_key_exists('description', $columns)) {
-        unset($columns['description']);
-    }
+// function bootstrap_manage_edit_category_columns($columns)
+// {
+//     if (array_key_exists('description', $columns)) {
+//         unset($columns['description']);
+//     }
 
-    return array_merge($columns, array(
-        'image' => __('Image', 'bootstrap')
-    ));
+//     return array_merge($columns, array(
+//         'image' => __('Image', 'bootstrap')
+//     ));
 
-    return $columns;
-}
+//     return $columns;
+// }
 
 // add_filter('manage_edit-category_columns', 'bootstrap_manage_edit_category_columns');
 
@@ -106,16 +106,16 @@ function bootstrap_manage_edit_category_columns($columns)
  *
  * @param  string $content
  */
-function bootstrap_manage_category_custom_column($content, $column, $term_id)
-{
-    switch ($column) {
-        case 'image':
-            if ($attachment_id = get_field('image', 'category_'.$term_id)) {
-                echo wp_get_attachment_image($attachment_id, 'thumbnail');
-            }
-            break;
-    }
-}
+// function bootstrap_manage_category_custom_column($content, $column, $term_id)
+// {
+//     switch ($column) {
+//         case 'image':
+//             if ($attachment_id = get_field('image', 'category_'.$term_id)) {
+//                 echo wp_get_attachment_image($attachment_id, 'thumbnail');
+//             }
+//             break;
+//     }
+// }
 
 // add_filter('manage_category_custom_column', 'bootstrap_manage_category_custom_column', 10, 3);
 
@@ -126,18 +126,18 @@ function bootstrap_manage_category_custom_column($content, $column, $term_id)
  *
  * @return array
  */
-function bootstrap_manage_edit_project_category_columns($columns)
-{
-    if (array_key_exists('description', $columns)) {
-        unset($columns['description']);
-    }
+// function bootstrap_manage_edit_project_category_columns($columns)
+// {
+//     if (array_key_exists('description', $columns)) {
+//         unset($columns['description']);
+//     }
 
-    return array_merge($columns, array(
-        'image' => __('Image', 'bootstrap')
-    ));
+//     return array_merge($columns, array(
+//         'image' => __('Image', 'bootstrap')
+//     ));
 
-    return $columns;
-}
+//     return $columns;
+// }
 
 // add_filter('manage_edit-project_category_columns', 'bootstrap_manage_edit_project_category_columns');
 
@@ -146,15 +146,15 @@ function bootstrap_manage_edit_project_category_columns($columns)
  *
  * @param  string $content
  */
-function bootstrap_manage_project_category_custom_column($content, $column, $term_id)
-{
-    switch ($column) {
-        case 'image':
-            if ($attachment = get_field('image', 'project_category_'.$term_id)) {
-                echo wp_get_attachment_image($attachment['id'], 'thumbnail');
-            }
-            break;
-    }
-}
+// function bootstrap_manage_project_category_custom_column($content, $column, $term_id)
+// {
+//     switch ($column) {
+//         case 'image':
+//             if ($attachment = get_field('image', 'project_category_'.$term_id)) {
+//                 echo wp_get_attachment_image($attachment['id'], 'thumbnail');
+//             }
+//             break;
+//     }
+// }
 
 // add_filter('manage_project_category_custom_column', 'bootstrap_manage_project_category_custom_column', 10, 3);

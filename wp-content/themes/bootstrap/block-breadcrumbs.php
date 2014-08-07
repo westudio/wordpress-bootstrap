@@ -1,20 +1,20 @@
 <?php
 if ($breadcrumbs = bootstrap_get_breadcrumbs()):
-    $last = count($breadcrumbs) - 1;
+  $last = count($breadcrumbs) - 1;
 ?>
 <ul class="breadcrumb">
 <?php
-    foreach ($breadcrumbs as $i => $item):
-        if ($i != $last):
+  foreach ($breadcrumbs as $i => $item):
+    if ($i != $last):
 ?>
-    <li><?php echo $item; ?></li>
+  <li><?php echo $item; ?></li>
 <?php
-        else:
+    else:
 ?>
-    <li class="active"><?php echo $item; ?></li>
+  <li class="active"><?php echo $item; ?></li>
 <?php
-        endif;
-    endforeach
+    endif;
+  endforeach
 ?>
 </ul>
 <?php

@@ -6,8 +6,8 @@
 
 if (!function_exists('get_previous_post_link')) {
 
-    function get_previous_post_link($format = '&laquo; %link', $link = '%title', $in_same_cat = false, $excluded_categories = '') {
-        // Ho my God ! Kill me !
+    function get_previous_post_link($format = '&laquo; %link', $link = '%title', $in_same_cat = false, $excluded_categories = '')
+    {
         ob_start();
         previous_post_link($format, $link, $in_same_cat, $excluded_categories);
         return ob_get_clean();
@@ -17,8 +17,8 @@ if (!function_exists('get_previous_post_link')) {
 
 if (!function_exists('get_next_post_link')) {
 
-    function get_next_post_link($format = '%link &raquo;', $link = '%title', $in_same_cat = false, $excluded_categories = '') {
-        // Please do it !
+    function get_next_post_link($format = '%link &raquo;', $link = '%title', $in_same_cat = false, $excluded_categories = '')
+    {
         ob_start();
         next_post_link($format, $link, $in_same_cat, $excluded_categories);
         return ob_get_clean();
@@ -27,9 +27,153 @@ if (!function_exists('get_next_post_link')) {
 }
 
 
+if (!function_exists('get_nav_menu_id_by_location')) {
+
+    function get_nav_menu_id_by_location($location)
+    {
+        $locations = get_nav_menu_locations();
+
+        if (array_key_exists($location, $locations)) {
+            return $locations[$location];
+        }
+
+        return null;
+    }
+
+}
+
 ////////////////////////////////
 // Helpers
 ////////////////////////////////
+
+function bootstrap_render_item($item)
+{
+    // Page
+    if ($item->object == 'page') {
+        bootstrap_render_page($item->object_id);
+    }
+    // Post
+    elseif ($item->object == 'post') {
+        bootstrap_render_post($item->object_id);
+    }
+    // Category
+    elseif($item->object == 'category') {
+        bootstrap_render_category($item->object_id);
+    }
+
+}
+
+function bootstrap_render_page($page_id)
+{
+    // Blog page is still a page
+    if ($page_id == get_option('page_for_posts')) {
+        return bootstrap_render_blog($page_id);
+    }
+
+    bootstrap_set('current_url', get_permalink($page_id));
+
+    query_posts(array(
+        'page_id'   => $page_id
+    ));
+
+    the_post();
+
+    $template = get_page_template();
+
+    // Avoid infinite loop
+    if (realpath(__DIR__.'/../page-all.php') == $template) {
+        $template = __DIR__.'/../page-home.php';
+    }
+
+    rewind_posts();
+
+    bootstrap_link_hack(true);
+    include $template;
+    bootstrap_link_hack(false);
+
+    wp_reset_query();
+}
+
+function bootstrap_render_post($post_id)
+{
+    bootstrap_set('current_url', get_permalink($post_id));
+
+    query_posts(array(
+        'p'         => $post_id,
+        'post_type' => 'post'
+    ));
+
+    the_post();
+
+    $template = get_single_template();
+
+    rewind_posts();
+
+    bootstrap_link_hack(true);
+    include $template;
+    bootstrap_link_hack(false);
+
+    wp_reset_query();
+}
+
+function bootstrap_render_blog($page_id = null)
+{
+    if (!$page_id) {
+        return bootstrap_render_archive('post');
+    }
+
+    bootstrap_set('current_url', get_permalink($page_id));
+
+    query_posts(array(
+        'page_id' => $page_id
+    ));
+
+    the_post();
+
+    $template = get_archive_template();
+
+    rewind_posts();
+
+    bootstrap_link_hack(true);
+    include $template;
+    bootstrap_link_hack(false);
+
+    wp_reset_query();
+}
+
+function bootstrap_render_archive($post_type)
+{
+    bootstrap_set('current_url', get_post_type_archive_link($post_type));
+
+    query_posts(array(
+        'post_type' => $post_type
+    ));
+
+    if (!($template = get_archive_template())) {
+        $template = __DIR__.'/../archive.php';
+    }
+
+    bootstrap_link_hack(true);
+    include $template;
+    bootstrap_link_hack(false);
+
+    wp_reset_query();
+}
+
+function bootstrap_render_category($category_id)
+{
+    query_posts(array(
+        'cat' => $category_id
+    ));
+
+    if (!($template = get_category_template())) {
+        $template = __DIR__.'/../archive.php';
+    }
+
+    include $template;
+
+    wp_reset_query();
+}
 
 function bootstrap_is_ajax()
 {
@@ -39,7 +183,7 @@ function bootstrap_is_ajax()
 
 function bootstrap_json($data)
 {
-    if (headers_sent()) {
+    if (!headers_sent()) {
         header('Content-Type: application/json');
     }
     echo json_encode($data);
@@ -50,8 +194,8 @@ function bootstrap_url_to_slug($url)
 {
     $slug = trim(
         str_replace(
-            array(home_url(), '/'),
-            array('',         '-'),
+            array(home_url(), '/', '#'),
+            array('',         '-', ''),
             esc_attr($url)
         ),
         '/-'
@@ -101,9 +245,36 @@ function bootstrap_get_gallery()
     return $attachments;
 }
 
+function bootstrap_get_background()
+{
+    return get_post_thumbnail_id();
+}
+
 function bootstrap_navbar_search_form()
 {
     include dirname(__FILE__) . '/../searchform-navbar.php';
+}
+
+/**
+ * Ugly hack
+ *
+ * @param boolean $enable
+ */
+function bootstrap_link_hack($enable = true)
+{
+    static $original = null;
+
+    if (!$url = bootstrap_get('current_url')) {
+        return;
+    }
+
+    if ($enable) {
+        $path = parse_url($url, PHP_URL_PATH);
+        $original = $_SERVER['REQUEST_URI'];
+        $_SERVER['REQUEST_URI'] = $path;
+    } else {
+        $_SERVER['REQUEST_URI'] = $original;
+    }
 }
 
 /**
@@ -119,7 +290,7 @@ function bootstrap_pagination($pages = null, $range = 2)
     $output = '';
     $showitems = $range * 2 + 1;
 
-    if (empty($paged)) {
+    if (!$paged) {
         $paged = 1;
     }
 
@@ -129,19 +300,31 @@ function bootstrap_pagination($pages = null, $range = 2)
         }
     }
 
-    if (1 != $pages) {
-        $output .= '<div class="pagination"><ul>';
+    if ($pages > 1) {
+        bootstrap_link_hack(true);
 
+        $output .= '<ul class="pagination">';
+
+        // First page
         if ($paged > 2 && $paged > $range + 1 && $showitems < $pages) {
             $output .= '<li><a href="'.get_pagenum_link(1).'">&laquo;</a></li>';
         }
 
+        // Previous page
         if ($paged > 1 && $showitems < $pages) {
             $output .= '<li><a href="'.get_pagenum_link($paged - 1).'">&lsaquo;</a></li>';
         }
 
+        // Page numbers
         for ($i = 1; $i <= $pages; $i++) {
-            if (1 != $pages && ( !($i >= $paged + $range + 1 || $i <= $paged - $range - 1) || $pages <= $showitems )) {
+            if (
+                1 != $pages
+                && (
+                    !($i >= $paged + $range + 1
+                    || $i <= $paged - $range - 1)
+                    || $pages <= $showitems
+                )
+            ) {
                 if ($paged == $i) {
                     $output .= '<li class="active"><span class="current">'.$i.'</span></li>';
                 } else {
@@ -150,15 +333,19 @@ function bootstrap_pagination($pages = null, $range = 2)
             }
         }
 
-      if ($paged < $pages && $showitems < $pages) {
-          $output .= '<li><a href="'.get_pagenum_link($paged + 1).'">&rsaquo;</a></li>';
-      }
+        // Next page
+        if ($paged < $pages && $showitems < $pages) {
+            $output .= '<li><a href="'.get_pagenum_link($paged + 1).'">&rsaquo;</a></li>';
+        }
 
-      if ($paged < $pages-1 && $paged + $range - 1 < $pages && $showitems < $pages) {
-          $output .= '<li><a href="'.get_pagenum_link($pages).'">&raquo;</a></li>';
-      }
+        // Last page
+        if ($paged < $pages - 1 && $paged + $range - 1 < $pages && $showitems < $pages) {
+            $output .= '<li><a href="'.get_pagenum_link($pages).'">&raquo;</a></li>';
+        }
 
-      $output .= '</ul></div>';
+        $output .= '</ul>';
+
+        bootstrap_link_hack(false);
     }
 
     echo $output;
@@ -172,17 +359,26 @@ function bootstrap_pager($in_same_category = false)
     global $wp_query;
 
     $has_links = false;
+    $output    = '<ul class="pager">';
 
-    $output = '<ul class="pager">';
+    bootstrap_link_hack(true);
 
     if (is_single()) {
 
-        if ($previous_link = get_previous_post_link('<li class="previous">%link</li>', __('Next post', 'bootstrap'), $in_same_category)) {
+        if ($previous_link = get_previous_post_link(
+            '<li class="previous">%link</li>',
+            __('Next post', 'bootstrap'),
+            $in_same_category
+        )) {
             $output .= $previous_link;
             $has_links = true;
         }
 
-        if ($next_link = get_next_post_link('<li class="next">%link</li>', __('Previous post', 'bootstrap'), $in_same_category)) {
+        if ($next_link = get_next_post_link(
+            '<li class="next">%link</li>',
+            __('Previous post', 'bootstrap'),
+            $in_same_category
+        )) {
             $output .= $next_link;
             $has_links = true;
         }
@@ -214,6 +410,8 @@ function bootstrap_pager($in_same_category = false)
     if ($has_links) {
         echo $output;
     }
+
+    bootstrap_link_hack(false);
 }
 
 /**
