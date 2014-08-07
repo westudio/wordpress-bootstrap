@@ -10,7 +10,7 @@ class Bootstrap_Walker_Nav_Menu extends Walker_Nav_Menu
      */
     function start_lvl(&$output, $depth = 0, $args = array())
     {
-        $indent = str_repeat("\t", $depth);
+        $indent = str_repeat('  ', $depth);
         $output .= $indent . '<ul class="dropdown-menu">' . PHP_EOL;
     }
 
@@ -19,49 +19,147 @@ class Bootstrap_Walker_Nav_Menu extends Walker_Nav_Menu
      */
     function start_el(&$output, $item, $depth = 0, $args = array(), $id = 0)
     {
-        $indent = ($depth) ? str_repeat("\t", $depth) : '';
+        $item_attributes = $this->get_item_attributes($item, $depth, $args, $id);
+        $link_attributes = $this->get_link_attributes($item, $depth, $args, $id);
 
-        $li_attributes = '';
-        $class_names = $value = '';
+        $output .= str_repeat('  ', $depth);
+        $output .= '<li' . $this->attributes_to_string($item_attributes) . '>';
+        $output .= $this->get_item_before($ite, $depth, $args, $id);
+        $output .= '<a' . $this->attributes_to_string($link_attributes) . '>';
+        $output .= $this->get_link_before($ite, $depth, $args, $id);
+        $output .= $this->get_link_label($item, $depth, $args, $id);
+        $output .= $this->get_link_after($ite, $depth, $args, $id);
+        $output .= '</a>';
+        $output .= $this->get_item_after($ite, $depth, $args, $id);
 
-        $classes = empty($item->classes) ? array() : (array) $item->classes;
+        $output .= apply_filters('walker_nav_menu_start_el', $item_output, $item, $depth, $args);
+    }
 
-        // managing divider: add divider class to an element to get a divider before it.
-        $divider_class_position = array_search('divider', $classes);
-        if ($divider_class_position !== false) {
-            $output .= "<li class=\"divider\"></li>\n";
-            unset($classes[$divider_class_position]);
+    protected function attributes_to_string($attributes)
+    {
+        if (!$attributes) {
+            return '';
         }
 
-        $classes[] = ($args->has_children) ? 'dropdown' : '';
-        $classes[] = ($item->current || $item->current_item_ancestor) ? 'active' : '';
+        $pairs = array();
+
+        foreach ($attributes as $key => $value) {
+            $pairs[] = $key.'="'.esc_attr($value).'"';
+        }
+
+        return ' ' . join(' ', $pairs);
+    }
+
+    protected function get_item_attributes($item, $depth, $args, $id)
+    {
+        $attributes = array();
+
+        if ($id = $this->get_item_id($item, $depth, $args, $id)) {
+            $attributes['id'] = $id;
+        }
+
+        $attributes['class'] = join(' ', $this->get_item_classes($item, $depth, $args, $id));
+
+        return $attributes;
+    }
+
+    protected function get_item_id($item, $depth, $args, $id)
+    {
+        return apply_filters('nav_menu_item_id', 'menu-item-'. $item->ID, $item, $args);
+    }
+
+    protected function get_item_classes($item, $depth, $args, $id)
+    {
+        $classes = array();
+
         $classes[] = 'menu-item-' . $item->ID;
 
-        if ($depth && $args->has_children) {
+        if ($item->current || $item->current_item_ancestor) {
+            $classes[] = 'active';
+        }
+
+        if ($args->depth != 1 && $args->has_children) {
+            $classes[] = 'dropdown';
+        }
+
+        if ($depth && $args->depth != 1 && $args->has_children) {
             $classes[] = 'dropdown-submenu';
         }
 
-        $class_names = join(' ', apply_filters('nav_menu_css_class', array_filter($classes), $item, $args));
-        $class_names = ' class="' . esc_attr($class_names) . '"';
+        return $classes;
+    }
 
-        $id = apply_filters('nav_menu_item_id', 'menu-item-'. $item->ID, $item, $args);
-        $id = strlen($id) ? ' id="' . esc_attr($id) . '"' : '';
+    protected function get_item_before($item, $depth, $args, $id)
+    {
+        return $args->before;
+    }
 
-        $output .= $indent . '<li' . $id . $value . $class_names . $li_attributes . '>';
+    protected function get_item_after($item, $depth, $args, $id)
+    {
+        return $args->after;
+    }
 
-        $attributes  = ! empty($item->attr_title) ? ' title="' . esc_attr($item->attr_title) .'"' : '';
-        $attributes .= ! empty($item->target)     ? ' target="' . esc_attr($item->target    ) .'"' : '';
-        $attributes .= ! empty($item->xfn)        ? ' rel="' . esc_attr($item->xfn       ) .'"' : '';
-        $attributes .= ! empty($item->url)        ? ' href="' . esc_attr($item->url       ) .'"' : '';
-        $attributes .= ($args->has_children)      ? ' class="dropdown-toggle" data-toggle="dropdown"' : '';
+    protected function get_link_attributes($item, $depth, $args, $id)
+    {
+        $attributes = array();
 
-        $item_output = $args->before;
-        $item_output .= '<a'. $attributes .'>';
-        $item_output .= $args->link_before . apply_filters('the_title', $item->title, $item->ID) . $args->link_after;
-        $item_output .= ($depth == 0 && $args->has_children) ? ' <b class="caret"></b></a>' : '</a>';
-        $item_output .= $args->after;
+        if (!empty($item->attr_title)) {
+            $attributes['title'] = $item->attr_title;
+        }
 
-        $output .= apply_filters('walker_nav_menu_start_el', $item_output, $item, $depth, $args);
+        if (!empty($item->target)) {
+            $attributes['target'] = $item->target;
+        }
+
+        if (!empty($item->xfn)) {
+            $attributes['rel'] = $item->xfn;
+        }
+
+        if (!empty($item->url)) {
+            $attributes['href'] = $item->url;
+        }
+
+        if ($args->depth != 1 && $args->has_children) {
+            $attributes['data-toggle'] = 'dropdown';
+        }
+
+        $attributes['class'] = join(' ', $this->get_link_classes($item, $depth, $args, $id));
+
+        return $attributes;
+    }
+
+    protected function get_link_classes($item, $depth, $args, $id)
+    {
+        $classes = array();
+
+        if ($args->depth != 1 && $args->has_children) {
+            $classes[] = 'dropdown-toggle';
+        }
+
+        return $classes;
+    }
+
+    protected function get_link_label($item, $depth, $args, $id)
+    {
+        return apply_filters('the_title', $item->title, $item->ID);
+    }
+
+    protected function get_link_before($item, $depth, $args, $id)
+    {
+        return $args->link_before;
+    }
+
+    protected function get_link_after($item, $depth, $args, $id)
+    {
+        $output = '';
+
+        if ($depth == 0 && $args->depth != 1 && $args->has_children) {
+            $output .= '&nbsp;<b class="caret"></b>';
+        }
+
+        $output .= $args->link_after;
+
+        return $output;
     }
 
     function display_element($element, &$children_elements, $max_depth, $depth=0, $args, &$output)
