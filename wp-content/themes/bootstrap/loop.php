@@ -9,7 +9,7 @@
 <article <?php post_class('media'); ?>>
 <?php if (has_post_thumbnail()): ?>
   <a href="<?php the_permalink(); ?>" class="pull-left">
-    <?php the_post_thumbnail('bootstrap-1-square', array('class' => 'media-object')) ?>
+    <?php the_post_thumbnail('bootstrap-1-1', array('class' => 'media-object')) ?>
   </a>
 <?php endif ?>
   <div class="post-body media-body">
