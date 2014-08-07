@@ -1,0 +1,74 @@
+//
+// Layout
+// --------------------------------------------------
+
+.page-wrapper {
+  padding-top: (@navbar-height + 40px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.page {
+
+  .page-header {
+    display: none;
+  }
+
+  &.page-home {
+    .page-header {
+      display: block;
+    }
+  }
+
+  &.page-home {
+
+    .page-header {
+      margin: 0;
+      padding: 0;
+      border-bottom: 0;
+      text-align: center;
+      text-transform: uppercase;
+      color: #fff;
+
+      &:after {
+        content: '';
+        display: inline-block;
+        margin: 20px 0;
+        width: 160px;
+        height: 4px;
+        background: #fff;
+      }
+
+      .page-title {
+        margin: 0;
+        font-size: 96px;
+      }
+    }
+
+    .page-body {
+      font-size: 48px;
+      text-align: center;
+      text-transform: uppercase;
+      color: #fff;
+
+      .btn-next-page {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 0;
+        width: 0;
+        height: 0;
+        text-indent: -9999px;
+        border: solid 20px #fff;
+        border-left-color: transparent;
+        border-right-color: transparent;
+        border-bottom: 0;
+        background: transparent;
+
+        &:focus {
+          outline: 0;
+        }
+      }
+    }
+  }
+}
+
