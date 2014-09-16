@@ -582,6 +582,11 @@ function bootstrap_get_breadcrumbs()
                     $breadcrumbs[] = get_the_title();
                     break;
 
+                // Blog
+                case $wp_query->is_posts_page:
+                    $breadcrumbs[] = $wp_query->queried_object->post_title;
+                    break;
+
                 // Category
                 case is_category():
                     // Type
