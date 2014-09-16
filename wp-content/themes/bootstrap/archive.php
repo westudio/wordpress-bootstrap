@@ -11,11 +11,11 @@ if (bootstrap_has_layout()):
 endif;
 ?>
 
-<?php if (!bootstrap_get('is_block')): ?>
-    <div class="container">
-<?php endif ?>
+    <div class="layout-main">
 
-      <div class="layout-main">
+<?php if (!bootstrap_get('is_block')): ?>
+      <div class="container">
+<?php endif ?>
 
         <div class="page archive">
 
@@ -52,10 +52,11 @@ endif;
 
         </div><!-- /.page -->
 
-      </div><!-- /.layout-main -->
 <?php if (!bootstrap_get('is_block')): ?>
-    </div><!-- /.container -->
+      </div><!-- /.container -->
 <?php endif ?>
+
+    </div><!-- /.layout-main -->
 
 <?php
 if (bootstrap_has_layout()):
