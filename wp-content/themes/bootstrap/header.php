@@ -45,7 +45,7 @@ endif;
 </head>
 <body <?php body_class(); ?>>
 
-  <header class="layout-header navbar navbar-default navbar-fixed-top" role="navigation">
+  <header class="layout-header navbar navbar-default navbar-static-top" role="navigation">
     <div class="container">
       <div class="navbar-header">
         <a class="navbar-brand" href="<?php echo home_url(); ?>" title="<?php echo esc_attr(get_bloginfo('name', 'display')); ?>" rel="home"><?php bloginfo('name'); ?></a>
