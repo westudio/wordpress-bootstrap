@@ -210,13 +210,21 @@ function bootstrap_url_to_slug($url)
 
 function bootstrap_get_attachments()
 {
-        $name = 'bootstrap_attachments';
-        $instance = new Attachments($name);
-        return $instance->get_attachments($name);
+    if (!class_exists('Attachments')) {
+        return array();
+    }
+
+    $name = 'bootstrap_attachments';
+    $instance = new Attachments($name);
+    return $instance->get_attachments($name);
 }
 
 function bootstrap_get_gallery()
 {
+    if (!class_exists('Attachments')) {
+        return array();
+    }
+
     // $attachments = array();
 
     // if (is_category() || is_tax('project_category')) {
