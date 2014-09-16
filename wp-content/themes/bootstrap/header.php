@@ -55,9 +55,8 @@ endif;
       <nav id="main-menu" class="collapse navbar-collapse">
         <?php
         wp_nav_menu(array(
-          'menu'       => 'main',
-          'menu_class' => 'nav navbar-nav',
-          'depth'      => 1,
+          'theme_location' => 'main',
+          'menu_class'     => 'nav navbar-nav'
         ));
         ?>
       </nav>
