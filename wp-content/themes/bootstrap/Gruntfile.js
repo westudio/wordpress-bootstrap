@@ -27,7 +27,10 @@ module.exports = function (grunt) {
       dist: {
         options: {
           banner: '<%= banner %>',
-          compress: true
+          compress: true,
+          sourceMap: true,
+          sourceMapFilename: 'css/main.min.css.map',
+          sourceMapBasepath: 'css'
         },
         src: ['less/main.less'],
         dest: 'css/main.min.css'
@@ -59,7 +62,8 @@ module.exports = function (grunt) {
       dist: {
         options: {
           banner: '<%= banner %>',
-          compress: true
+          compress: true,
+          sourceMap: true
         },
         src: [
           'vendor/bootstrap/js/transition.js',
