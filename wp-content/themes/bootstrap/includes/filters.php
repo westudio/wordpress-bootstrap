@@ -46,7 +46,7 @@ function bootstrap_nav_menu_args($args)
     }
 
     if ($args['walker'] == '') {
-        $args['walker'] = new Bootstrap_Single_Page_Walker_Nav_Menu();
+        $args['walker'] = new Bootstrap_Walker_Nav_Menu();
     }
 
     return $args;
