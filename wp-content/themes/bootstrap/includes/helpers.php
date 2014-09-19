@@ -668,13 +668,13 @@ function bootstrap_get_breadcrumbs()
                 // Month
                 case is_month():
                     $breadcrumbs[] = sprintf('<a href="%s">%s</a>', get_year_link(get_the_time('Y')), get_the_time('Y'));
-                    $breadcrumbs[] = get_the_time('F');
+                    $breadcrumbs[] = ucfirst(get_the_time('F'));
                     break;
 
                 // Day
                 case is_day():
                     $breadcrumbs[] = sprintf('<a href="%s">%s</a>', get_year_link(get_the_time('Y')), get_the_time('Y'));
-                    $breadcrumbs[] = sprintf('<a href="%s">%s</a>', get_year_link(get_the_time('Y'), get_the_time('m')), get_the_time('F'));
+                    $breadcrumbs[] = sprintf('<a href="%s">%s</a>', get_month_link(get_the_time('Y'), get_the_time('m')), ucfirst(get_the_time('F')));
                     $breadcrumbs[] = get_the_time('d');
                     break;
 
