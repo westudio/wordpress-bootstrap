@@ -42,6 +42,50 @@ if (!function_exists('get_nav_menu_id_by_location')) {
 
 }
 
+if (!function_exists('get_months')) {
+
+    /**
+     * Get months
+     *
+     * @see bootstrap_clear_months_cache()
+     * @return object[]
+     */
+    function get_months()
+    {
+        $file = bootstrap_get('cache_months');
+        if (file_exists($file)) {
+            return unserialize(file_get_contents($file));
+        }
+
+        global $wpdb;
+        $months = $wpdb->get_results(
+              "SELECT DISTINCT "
+            .   "MONTH(post_date) as month, "
+            .   "YEAR(post_date) as year "
+            . "FROM {$wpdb->posts} "
+            . "WHERE "
+            .   "post_type = 'post' "
+            .   "AND post_status = 'publish' "
+            .   "AND post_date <= NOW() "
+            . "ORDER BY post_date DESC"
+        );
+
+        array_walk($months, function ($month) {
+            $month->month = (int) $month->month;
+            $month->year  = (int) $month->year;
+        });
+
+        if (!file_exists($dir = dirname($file))) {
+            mkdir($dir, 0777, true);
+        }
+
+        file_put_contents($file, serialize($months));
+
+        return $months;
+    }
+
+}
+
 ////////////////////////////////
 // Helpers
 ////////////////////////////////

@@ -16,36 +16,36 @@
 /**
  * Registers custom post types
  */
-function bootstrap_register_post_types()
-{
-    // register_taxonomy('project_category', 'project', array(
-    //     'hierarchical'            => true,
-    //     'label'                   => __('Categories', 'bootstrap'),
-    //     'rewrite'                 => array('slug' => 'projects')
-    // ));
+// function bootstrap_register_post_types()
+// {
+//     // register_taxonomy('project_category', 'project', array(
+//     //     'hierarchical'            => true,
+//     //     'label'                   => __('Categories', 'bootstrap'),
+//     //     'rewrite'                 => array('slug' => 'projects')
+//     // ));
 
-    register_post_type(
-        'member',
-        array(
-            'labels'              => array(
-                'name'                => __('Members', 'bootstrap'),
-                'singular_name'       => __('Member', 'bootstrap')
-            ),
-            'public'              => true,
-            'exclude_from_search' => true,
-            'can_export'          => false,
-            'has_archive'         => true,
-            'show_ui'             => true,
-            'supports'            => array('title', 'editor', 'excerpt', 'thumbnail', 'page-attributes'),
-            'taxonomies'          => array('project_category'),
-            'show_in_nav_menus'   => true,
-            'show_in_menu'        => true,
-            'rewrite'             => array('slug' => 'member')
-        )
-    );
-}
+//     register_post_type(
+//         'member',
+//         array(
+//             'labels'              => array(
+//                 'name'                => __('Members', 'bootstrap'),
+//                 'singular_name'       => __('Member', 'bootstrap')
+//             ),
+//             'public'              => true,
+//             'exclude_from_search' => true,
+//             'can_export'          => false,
+//             'has_archive'         => true,
+//             'show_ui'             => true,
+//             'supports'            => array('title', 'editor', 'excerpt', 'thumbnail', 'page-attributes'),
+//             'taxonomies'          => array('project_category'),
+//             'show_in_nav_menus'   => true,
+//             'show_in_menu'        => true,
+//             'rewrite'             => array('slug' => 'member')
+//         )
+//     );
+// }
 
-add_action('init', 'bootstrap_register_post_types');
+// add_action('init', 'bootstrap_register_post_types');
 
 /**
  * Registers sidebars
@@ -117,26 +117,26 @@ function bootstrap_attachments($attachments)
         )
     ));
 
-    $attachments->register('bootstrap_attachments', array(
-        'label'       => __('Attachments', 'bootstrap'),
-        'post_type'   => array('page', 'post'),
-        'position'    => 'normal',
-        'priority'    => 'high',
-        'filetype'    => null,
-        'note'        => null,
-        'append'      => true,
-        'button_text' => __('Attach files', 'bootstrap'),
-        'modal_text'  => __('Attach', 'bootstrap'),
-        'router'      => 'browse',
-        'fields'      => array(
-            array(
-                'name'    => 'title',
-                'type'    => 'text',
-                'label'   => __('Title', 'bootstrap'),
-                'default' => 'title',
-            )
-        )
-    ));
+    // $attachments->register('bootstrap_attachments', array(
+    //     'label'       => __('Attachments', 'bootstrap'),
+    //     'post_type'   => array('page', 'post'),
+    //     'position'    => 'normal',
+    //     'priority'    => 'high',
+    //     'filetype'    => null,
+    //     'note'        => null,
+    //     'append'      => true,
+    //     'button_text' => __('Attach files', 'bootstrap'),
+    //     'modal_text'  => __('Attach', 'bootstrap'),
+    //     'router'      => 'browse',
+    //     'fields'      => array(
+    //         array(
+    //             'name'    => 'title',
+    //             'type'    => 'text',
+    //             'label'   => __('Title', 'bootstrap'),
+    //             'default' => 'title',
+    //         )
+    //     )
+    // ));
 }
 
 add_action('attachments_register', 'bootstrap_attachments');
@@ -207,7 +207,7 @@ add_action('after_setup_theme', 'bootstrap_setup_menus');
 
 function bootstrap_setup_styles()
 {
-    wp_register_style('fonts', 'http://fast.fonts.net/cssapi/82f146b2-80ec-456b-87a2-45669a96e178.css', false , BOOTSTRAP_VERSION, 'all');
+    // wp_register_style('fonts', 'http://fast.fonts.net/cssapi/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.css', false , BOOTSTRAP_VERSION, 'all');
     wp_register_style('bootstrap', get_template_directory_uri().'/css/main.min.css', false , BOOTSTRAP_VERSION, 'all');
 }
 
@@ -262,4 +262,13 @@ function bootstrap_pre_get_posts($query)
     // }
 }
 
-add_action('pre_get_posts', 'bootstrap_pre_get_posts');
+// add_action('pre_get_posts', 'bootstrap_pre_get_posts');
+
+function bootstrap_clear_months_cache()
+{
+    if (file_exists($file = bootstrap_get('cache_months'))) {
+        unlink($file);
+    }
+}
+
+add_action('save_post', 'bootstrap_clear_months_cache');
