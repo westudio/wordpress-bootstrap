@@ -16,12 +16,10 @@ foreach ($months as $month):
          && get_query_var('year') == $month->year;
 ?>
   <li<?php echo ($active ? ' class="active"' : '') ?>>
-<?php if ($active && is_month() && get_option('show_on_front') === 'page'): ?>
+<?php if ($active && get_option('show_on_front') === 'page'): ?>
     <a href="<?php echo get_permalink(get_option('page_for_posts')) ?>" class="close"><i class="glyphicon glyphicon-remove"></i></a>
 <?php endif ?>
-    <a href="<?php echo $url ?>">
-      <?php echo $label ?>
-    </a>
+    <a href="<?php echo $url ?>"><?php echo $label ?></a>
   </li>
 <?php endforeach ?>
     </ul>
