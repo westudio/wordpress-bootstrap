@@ -3,13 +3,42 @@ This is a WordPress plugin. [Official download available on WordPress.org](http:
 ## [Docs TOC](TOC.md) / Changelog
 
 <dl>
+	<dt>3.5.4</dt>
+	<dd>Fixed assumption of field keys (props bukka)</dd>
+	<dd>Improved documentation (props Lane Goldberg, Roman Kokarev, Ore Landau)</dd>
+	<dd>Added <code>rewind()</code> method to reset Attachments reference array (props joost de keijzer)</dd>
+	<dd>TinyMCE fix to support WordPress 3.9+</dd>
+	<dd>Fixed an issue where nonce was potentially wrongly flagged as sent if an instance was filtered</dd>
+	<dd>Added <code>post_parent</code> argument support for instances, setting to <code>true</code> will populate the <strong>Uploaded to</strong> column in Media</dd>
+	<dd>New filter: <code>attachments_default_instance</code> to disable/enable the default instance (default is <code>true</code>, <code>ATTACHMENTS_DEFAULT_INSTANCE</code> constant is deprecated)</dd>
+	<dd>New filter: <code>attachments_settings_screen</code> to hide/show the settings screen (default is <code>true</code>, <code>ATTACHMENTS_SETTINGS_SCREEN</code> constant is deprecated)</dd>
+	<dd>Fixed an issue where Attachments meta box(es) would not show up when creating new posts whose <code>post_type</code> had a dash in it</dd>
+	<dd>Updated Italian translation (props Luca Speranza)</dd>
+
+	<dt>3.5.3</dt>
+	<dd>Fixed a Fatal error when deleting Media that was attached to a post (props Clearsite)</dd>
+	<dd>Warning cleanup</dd>
+
+	<dt>3.5.2</dt>
+	<dd>Added ability to force an instance name</dd>
+	<dd>Documentation updates</dd>
+	<dd>Warning and Notice cleanup</dd>
+	<dd>Fixed an issue with newline character retrieval</dd>
+	<dd>Fixed assumption of array (props Jakub Zelenka)</dd>
+
+    <dt>3.5.1.1</dt>
+    <dd>Fixed an issue where Featured Images may have become inadvertently disabled, props @deborre</dd>
+
+    <dt>3.5.1</dt>
+    <dd>Fixed an issue where changing an Attachment changed all attachments</dd>
+    <dd>Fixed an issue where certain Unicode characters weren't decoded properly</dd>
 
     <dt>3.5</dt>
     <dd>Initial implementation of limiting the number of Attachments</dd>
     <dd>You can now change an Attachment asset without having to remove the entire Attachment and re-add something new</dd>
     <dd>New filter: <code>attachments_location_{my_instance}</code> (where <code><strong>{my_instance}</strong></code> is your instance name) allows for more fine-grained control over where meta boxes show up (e.g. limiting to your Home page)</dd>
     <dd>New action: <code>attachments_extension</code> facilitates Attachments extensions</dd>
-    <dd>New extension: <a href="http://mondaybynoon.com/members/plugins/attachments-ui/">Attachments UI</a> to create "code-free" Instances in the WordPress admin</dd>
+    <dd>New extension: <a href="http://mondaybynoon.com/members/plugins/attachments-ui/?utm_campaign=Attachments&utm_term=changelog">Attachments UI</a> to create "code-free" Instances in the WordPress admin</dd>
     <dd>New method <code>width( $size )</code> to retrieve the width of the current Attachment</dd>
     <dd>New method <code>height( $size )</code> to retrieve the height of the current Attachment</dd>
     <dd>New document structure, various additions to documentation</dd>
