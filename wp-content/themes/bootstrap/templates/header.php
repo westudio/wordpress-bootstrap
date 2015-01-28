@@ -23,43 +23,43 @@ endif;
 
   <link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
 
-  <!-- Icons -->
-  <link rel="shortcut icon" href="<?php echo get_template_directory_uri(); ?>/ico/favicon.ico" type="image/x-icon" />
-
-  <!-- Icons -->
-  <link rel="shortcut icon" href="<?php echo get_template_directory_uri(); ?>/ico/favicon.png" type="image/png" />
-  <!--[if IE]>
-  <link rel="shortcut icon" href="<?php echo get_template_directory_uri(); ?>/ico/favicon.ico" type="image/x-icon" />
-  <![endif]-->
+  <link rel="shortcut icon" href="<?php echo get_template_directory_uri(); ?>/img/favicon.ico" type="image/x-icon" />
 
   <!--[if lt IE 9]>
-  <script src="<?php echo get_template_directory_uri(); ?>/vendor/html5shiv/dist/html5shiv.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
   <![endif]-->
 
   <?php wp_head(); ?>
 
   <!--[if lt IE 9]>
-  <script src="<?php echo get_template_directory_uri(); ?>/vendor/respond/dest/respond.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
   <![endif]-->
 
 </head>
 <body <?php body_class(); ?>>
 
-  <header class="layout-header navbar navbar-default navbar-static-top" role="navigation">
+  <?php get_template_part('templates/top') ?>
+
+  <header class="navbar navbar-default navbar-fixed-top">
     <div class="container">
+
       <div class="navbar-header">
         <a class="navbar-brand" href="<?php echo home_url(); ?>" title="<?php echo esc_attr(get_bloginfo('name', 'display')); ?>" rel="home"><?php bloginfo('name'); ?></a>
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><?php _e('Menu', 'bootstrap'); ?></button>
-      </div><!-- /.navbar-inner -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-menu">
+          <?php _e('Menu', 'bootstrap'); ?>
+        </button>
+      </div><!-- /.navbar-header -->
 
       <nav id="main-menu" class="collapse navbar-collapse">
         <?php
         wp_nav_menu(array(
           'theme_location' => 'main',
-          'menu_class'     => 'nav navbar-nav'
+          'menu_class'     => 'nav navbar-nav',
+          'depth'          => 2,
+          'dropdown'       => true
         ));
         ?>
       </nav>
 
-    </div><!-- /container -->
-  </header>
+    </div><!-- ./container -->
+  </header><!-- /.navbar-default -->

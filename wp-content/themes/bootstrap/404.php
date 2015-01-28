@@ -5,13 +5,9 @@
  */
 
 ?>
-<?php
-if (bootstrap_has_layout()):
-  get_header();
-endif;
-?>
+<?php get_template_part('templates/header'); ?>
 
-    <div class="layout-main">
+    <div class="main">
 
 <?php if (!bootstrap_get('is_block')): ?>
       <div class="container">
@@ -33,10 +29,6 @@ endif;
       </div><!-- /.container -->
 <?php endif ?>
 
-    </div><!-- /.layout-main -->
+    </div><!-- /.main -->
 
-<?php
-if (bootstrap_has_layout()):
-  get_footer();
-endif;
-?>
+<?php get_template_part('templates/footer'); ?>

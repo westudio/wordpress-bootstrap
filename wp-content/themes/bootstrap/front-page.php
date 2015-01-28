@@ -5,9 +5,7 @@
  */
 
 if ('posts' === get_option('show_on_front')):
-    include dirname(__FILE__).'/archive.php';
+  include dirname(__FILE__).'/archive.php';
 else:
-    include dirname(__FILE__).'/page-home.php';
+  include dirname(__FILE__).'/page-home.php';
 endif;
-
-?>

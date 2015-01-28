@@ -1,17 +1,13 @@
 <?php
 
 /**
- * Template Name: Archive
+ * Archive
  */
 
 ?>
-<?php
-if (bootstrap_has_layout()):
-    get_header();
-endif;
-?>
+<?php get_template_part('templates/header'); ?>
 
-    <div class="layout-main">
+    <div class="main">
 
 <?php if (!bootstrap_get('is_block')): ?>
       <div class="container">
@@ -23,7 +19,10 @@ endif;
               <h1><?php bootstrap_title(); ?></h1>
           </div><!-- /.page-header -->
 
-          <div class="page-body">
+          <div class="row">
+            <div class="col-sm-9">
+
+              <div class="page-body">
 
 <?php
 if (have_posts()):
@@ -31,35 +30,36 @@ if (have_posts()):
     the_post();
 ?>
 
-            <?php get_template_part('loop', get_post_type()); ?>
+                <?php get_template_part('templates/loop', get_post_type()); ?>
 
 <?php
   endwhile;
 else:
 ?>
-            <div class="alert alert-info">
-              <p><?php _e('No result', 'bootstrap'); ?></p>
-            </div>
+                <div class="alert alert-info">
+                  <p><?php _e('No result', 'bootstrap'); ?></p>
+                </div>
 <?php
 endif;
 ?>
 
-          </div><!-- /.page-body -->
+              </div><!-- /.page-body -->
 
-          <div class="page-footer">
-            <?php bootstrap_pagination(); ?>
-          </div><!-- /.page-footer -->
+              <div class="page-footer">
+                <?php bootstrap_pagination(); ?>
+              </div><!-- /.page-footer -->
+
+            </div>
+            <div class="col-sm-3">
+              <?php get_template_part('templates/sidebar', 'archive') ?>
+            </div>
+          </div>
 
         </div><!-- /.page -->
 
 <?php if (!bootstrap_get('is_block')): ?>
       </div><!-- /.container -->
 <?php endif ?>
+    </div><!-- /.main -->
 
-    </div><!-- /.layout-main -->
-
-<?php
-if (bootstrap_has_layout()):
-    get_footer();
-endif;
-?>
+<?php get_template_part('templates/footer'); ?>

@@ -199,7 +199,8 @@ add_action('after_setup_theme', 'bootstrap_setup_i18n');
 function bootstrap_setup_menus()
 {
     register_nav_menus(array(
-        'main' => __('Main', 'bootstrap')
+        'main'   => __('Main', 'bootstrap'),
+        'footer' => __('Footer', 'bootstrap')
     ));
 }
 

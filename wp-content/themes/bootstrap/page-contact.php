@@ -5,13 +5,9 @@
  */
 
 ?>
-<?php
-if (bootstrap_has_layout()):
-  get_header();
-endif;
-?>
+<?php get_template_part('templates/header'); ?>
 
-    <div class="layout-main">
+    <div class="main">
 
 <?php if (!bootstrap_get('is_block')): ?>
       <div class="container">
@@ -25,6 +21,9 @@ while (have_posts()):
         <div <?php post_class(); ?>>
 
           <div class="page-header">
+
+            <?php get_template_part('templates/edit-buttons') ?>
+
 <?php if (bootstrap_get('is_block')): ?>
             <h2 class="page-title"><?php the_title(); ?></h2>
 <?php else: ?>
@@ -32,11 +31,14 @@ while (have_posts()):
 <?php endif ?>
           </div>
 
-          <?php get_template_part('block', 'map') ?>
+          <?php get_template_part('templates/map') ?>
 
           <div class="page-body">
             <div class="content">
               <?php the_content(); ?>
+
+              <?php get_template_part('templates/attachments') ?>
+
             </div>
           </div>
 
@@ -50,10 +52,6 @@ endwhile;
       </div><!-- /.container -->
 <?php endif ?>
 
-    </div><!-- /.layout-main -->
+    </div><!-- /.main -->
 
-<?php
-if (bootstrap_has_layout()):
-  get_footer();
-endif;
-?>
+<?php get_template_part('templates/footer'); ?>

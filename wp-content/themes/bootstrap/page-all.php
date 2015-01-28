@@ -22,7 +22,7 @@ foreach (wp_get_nav_menu_items(get_nav_menu_id_by_location('main')) as $item) {
 
 ?>
 <?php
-get_header();
+get_template_part('templates/header');
 bootstrap_set_layout(false);
 
 foreach ($nodes as $node):
@@ -88,5 +88,4 @@ endforeach;
 
 <?php
 bootstrap_set_layout(true);
-get_footer();
-?>
+get_template_part('templates/footer');
