@@ -2,10 +2,6 @@
 
 class acf_field_user extends acf_field
 {
-
-	var $defaults;
-	
-	
 	/*
 	*  __construct
 	*
@@ -21,9 +17,6 @@ class acf_field_user extends acf_field
 		$this->name = 'user';
 		$this->label = __("User",'acf');
 		$this->category = __("Relational",'acf');
-		
-		
-		// settings
 		$this->defaults = array(
 			'role' 			=> 'all',
 			'field_type' 	=> 'select',
@@ -149,46 +142,92 @@ class acf_field_user extends acf_field
 	
 	function create_field( $field )
 	{
-		// vars
-		$field = array_merge($this->defaults, $field);
-		$field['choices'] = array();
-		$args = array();
-		$editable_roles = get_editable_roles();
-
-
-		// roles
-		if( !$field['role'] || !is_array( $field['role'] ) || $field['role'][0] == 'all' )
-		{
-			$field['role'] = array();
-			
-
-			foreach( $editable_roles as $role => $details )
-			{			
-				// only translate the output not the value
-				$field['role'][] = $role;
-			}
+		if( ! function_exists( 'get_editable_roles' ) )
+		{ 
+			// if using front-end forms then we need to add this core file
+			require_once( ABSPATH . '/wp-admin/includes/user.php' ); 
 		}
-				
 		
-		// choices
-		foreach( $field['role'] as $role )
+		// options
+   		$options = array(
+			'post_id' => get_the_ID(),
+		);
+		
+		
+		// vars
+		$args = array();
+		
+		
+		// editable roles
+		$editable_roles = get_editable_roles();
+		
+		if( !empty($field['role']) )
 		{
-			$label = translate_user_role( $editable_roles[ $role ]['name'] );
-			
-			// get users			
-			$users = get_users(array(
-				'role' => $role	
-			));
-					
-			
-			if( $users )
+			if( ! in_array('all', $field['role']) )
 			{
+				foreach( $editable_roles as $role => $role_info )
+				{
+					if( !in_array($role, $field['role']) )
+					{
+						unset( $editable_roles[ $role ] );
+					}
+				}
+			}
+			
+		}
+		
+		// filters
+		$args = apply_filters('acf/fields/user/query', $args, $field, $options['post_id']);
+		$args = apply_filters('acf/fields/user/query/name=' . $field['_name'], $args, $field, $options['post_id'] );
+		$args = apply_filters('acf/fields/user/query/key=' . $field['key'], $args, $field, $options['post_id'] );
+		
+		
+		// get users
+		$users = get_users( $args );
+		
+		
+		if( !empty($users) && !empty($editable_roles) )
+		{
+			$field['choices'] = array();
+			
+			foreach( $editable_roles as $role => $role_info )
+			{
+				// vars
+				$this_users = array();
+				$this_json = array();
+				
+				
+				// loop over users
+				$keys = array_keys($users);
+				foreach( $keys as $key )
+				{
+					if( in_array($role, $users[ $key ]->roles) )
+					{
+						$this_users[] = $users[ $key ];
+						unset( $users[ $key ] );
+					}
+				}
+				
+				
+				// bail early if no users for this role
+				if( empty($this_users) )
+				{
+					continue;
+				}
+				
+				
+				// label
+				$label = translate_user_role( $role_info['name'] );
+				
+				
+				// append to choices
 				$field['choices'][ $label ] = array();
 				
-				foreach( $users as $user )
+				foreach( $this_users as $user )
 				{
 					$field['choices'][ $label ][ $user->ID ] = ucfirst( $user->display_name );
 				}
+				
 			}
 		}
 		
@@ -224,7 +263,6 @@ class acf_field_user extends acf_field
 	function create_options( $field )
 	{
 		// vars
-		$field = array_merge($this->defaults, $field);
 		$key = $field['name'];
 		
 		?>
