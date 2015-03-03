@@ -512,7 +512,7 @@ function bootstrap_page_title($separator = ' - ', $reverse = true)
     // Project's name
     array_unshift($items, get_bloginfo('name'));
 
-    if (is_front_page()) {
+    if (is_front_page() && ($description = trim(get_bloginfo('description')))) {
         $items[] = get_bloginfo('description');
     }
 
