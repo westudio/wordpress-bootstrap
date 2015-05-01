@@ -59,6 +59,10 @@ function wb_nav_menu_args($args)
                 $args['walker'] = new Westudio_Bootstrap_Menu_ListGroupWalker();
                 break;
 
+            case 'one-page':
+                $args['walker'] = new Westudio_Bootstrap_Menu_OnePageWalker();
+                break;
+
             default:
                 $args['walker'] = new Westudio_Bootstrap_Menu_Walker();
         }

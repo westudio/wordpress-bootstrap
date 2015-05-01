@@ -34,7 +34,6 @@ while (have_posts()):
             <?php get_template_part('partials/edit-buttons') ?>
             <div class="content">
               <?php the_content(); ?>
-              <?php get_template_part('partials/attachments') ?>
             </div>
           </div>
 
