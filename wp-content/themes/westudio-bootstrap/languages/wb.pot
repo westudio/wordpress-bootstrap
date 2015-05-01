@@ -1,0 +1,225 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Westudio Bootstrap 1.0.0\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tags/wb\n"
+"POT-Creation-Date: 2013-06-07 13:36:13+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2013-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: 404.php:28 functions.php:789
+msgid "Page not found"
+msgstr ""
+
+#: 404.php:29
+msgid "It seems than what you're looking for is no longer here."
+msgstr ""
+
+#: 404.php:30
+msgid "Perhaps searching, or one of the links below, can help."
+msgstr ""
+
+#: 404.php:43
+msgid "Most Used Categories"
+msgstr ""
+
+#: archive.php:39
+msgid "Daily Archives: %s"
+msgstr ""
+
+#: archive.php:41
+msgid "Monthly Archives: %s"
+msgstr ""
+
+#: archive.php:41
+msgctxt "monthly archives date format"
+msgid "F Y"
+msgstr ""
+
+#: archive.php:43
+msgid "Yearly Archives: %s"
+msgstr ""
+
+#: archive.php:43
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr ""
+
+#: archive.php:48
+msgid "Archives"
+msgstr ""
+
+#: block-links.php:7 block-links.php:47
+msgid "Links"
+msgstr ""
+
+#: comment.php:15
+msgid "Pingback:"
+msgstr ""
+
+#: comment.php:15 comment.php:38
+msgid "Edit"
+msgstr ""
+
+#: comment.php:25
+msgid "%s says:"
+msgstr ""
+
+#: comment.php:28
+msgid "Your comment is awaiting moderation."
+msgstr ""
+
+#. translators: 1: date, 2: time
+#: comment.php:36
+msgid "%1$s at %2$s"
+msgstr ""
+
+#: comments.php:15
+msgid ""
+"This post is password protected. Enter the password to view any comments."
+msgstr ""
+
+#: comments.php:24
+msgid "One comment on \"%2$s\""
+msgid_plural "%1$s comments on \"%2$s\""
+msgstr[0] ""
+msgstr[1] ""
+
+#: comments.php:42
+msgid "Comments are closed."
+msgstr ""
+
+#: footer.php:12
+msgid "Website by %s"
+msgstr ""
+
+#: functions.php:45
+msgid "Custom posts"
+msgstr ""
+
+#: functions.php:46
+msgid "Custom post"
+msgstr ""
+
+#: functions.php:73
+msgid "Custom column"
+msgstr ""
+
+#: functions.php:140
+msgid "Attachments"
+msgstr ""
+
+#: functions.php:147
+msgid "Attach files"
+msgstr ""
+
+#: functions.php:148 functions.php:169
+msgid "Attach"
+msgstr ""
+
+#: functions.php:154 functions.php:175
+msgid "Title"
+msgstr ""
+
+#: functions.php:161
+msgid "Gallery"
+msgstr ""
+
+#: functions.php:168
+msgid "Attach images"
+msgstr ""
+
+#: functions.php:181
+msgid "Caption"
+msgstr ""
+
+#: functions.php:249
+msgid "Main"
+msgstr ""
+
+#: functions.php:339
+msgid "Continue reading"
+msgstr ""
+
+#: functions.php:435
+msgid "home"
+msgstr ""
+
+#: functions.php:577
+msgid "Previous post"
+msgstr ""
+
+#: functions.php:578
+msgid "Next post"
+msgstr ""
+
+#: functions.php:580
+msgid "Newer posts"
+msgstr ""
+
+#: functions.php:583
+msgid "Older posts"
+msgstr ""
+
+#: functions.php:685
+msgid "Home"
+msgstr ""
+
+#: functions.php:772 search.php:26
+msgid "Results for \"%s\""
+msgstr ""
+
+#: functions.php:777
+msgid "Posts tagged \"%s\""
+msgstr ""
+
+#: functions.php:784
+msgid "Articles posted by %s"
+msgstr ""
+
+#: functions.php:804
+msgid "page %d"
+msgstr ""
+
+#: header.php:49
+msgid "Menu"
+msgstr ""
+
+#: search.php:45
+msgid "No result"
+msgstr ""
+
+#: searchform-navbar.php:3 searchform.php:3
+msgid "Search"
+msgstr ""
+
+#. Theme Name of the plugin/theme
+msgid "Bootstrap"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "We studio"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://www.we-studio.ch/"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "All pages in one"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Contact Page"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Home Page"
+msgstr ""
+
+#. Template Name of the plugin/theme
+msgid "Testing Page"
+msgstr ""

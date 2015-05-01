@@ -5,6 +5,9 @@ wp-content/plugins/hello.php
 wp-content/themes/twentyfifteen
 wp-content/themes/twentyfourteen
 wp-content/themes/twentythirteen
+wp-content/themes/westudio-bootstrap/bower_components
+wp-content/themes/westudio-bootstrap/node_modules
+wp-content/themes/westudio-bootstrap/vendor
 wp-includes
 index.php
 license.txt

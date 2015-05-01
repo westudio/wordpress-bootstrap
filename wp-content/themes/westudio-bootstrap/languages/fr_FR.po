@@ -1,0 +1,330 @@
+# Copyright (C) 2013 We studio
+msgid ""
+msgstr ""
+"Project-Id-Version: Westudio Bootstrap 0.1.0\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tags/wb\n"
+"POT-Creation-Date: 2013-06-07 13:36:13+00:00\n"
+"PO-Revision-Date: 2015-05-01 10:59+0100\n"
+"Last-Translator: Lionel Gaillard <lionel@we-studio.ch>\n"
+"Language-Team: We studio <lionel@we-studio.ch>\n"
+"Language: fr_CH\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: 404.php:28 functions.php:789
+msgid "Page not found"
+msgstr "Page non trouvée"
+
+#: 404.php:29
+msgid "It seems than what you're looking for is no longer here."
+msgstr "Il semblerait que ce que vous cherchez ne se trouve plus ici."
+
+#: 404.php:30
+msgid "Perhaps searching, or one of the links below, can help."
+msgstr "Peut-être que la recherche ou un des liens en dessous pourront vous aider."
+
+#: 404.php:43
+msgid "Most Used Categories"
+msgstr "Catégories les plus utilisées"
+
+#: archive.php:39
+msgid "Daily Archives: %s"
+msgstr "Archives par jour : %s"
+
+#: archive.php:41
+msgid "Monthly Archives: %s"
+msgstr "Archives par mois : %s"
+
+#: archive.php:41
+msgctxt "monthly archives date format"
+msgid "F Y"
+msgstr "F Y"
+
+#: archive.php:43
+msgid "Yearly Archives: %s"
+msgstr "Archives par année : %s"
+
+#: archive.php:43
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr "Y"
+
+#: archive.php:48
+msgid "Archives"
+msgstr "Archives"
+
+#: block-links.php:7 block-links.php:47
+msgid "Links"
+msgstr "Liens"
+
+#: comment.php:15
+msgid "Pingback:"
+msgstr "Pingback :"
+
+#: comment.php:15 comment.php:38
+msgid "Edit"
+msgstr "Edition"
+
+#: comment.php:25
+msgid "%s says:"
+msgstr "%s dit :"
+
+#: comment.php:28
+msgid "Your comment is awaiting moderation."
+msgstr "Votre commentaire est en attente de modération."
+
+#. translators: 1: date, 2: time
+#: comment.php:36
+msgid "%1$s at %2$s"
+msgstr "%1$s à %2$s"
+
+#: comments.php:15
+msgid ""
+"This post is password protected. Enter the password to view any comments."
+msgstr ""
+"Cet article est protégé par mot de passe. Entrez le mot de passe pour voir "
+"les commentaires."
+
+#: comments.php:24
+msgid "One comment on \"%2$s\""
+msgid_plural "%1$s comments on \"%2$s\""
+msgstr[0] "Un commentaire sur \"%2$s\""
+msgstr[1] "%1$s commentaires sur \"%2$s\""
+
+#: comments.php:42
+msgid "Comments are closed."
+msgstr "Les commentaires sont fermés"
+
+#: footer.php:12
+msgid "Website by %s"
+msgstr "Site web par %s"
+
+#: functions.php:45
+msgid "Custom posts"
+msgstr "Articles personnalisés"
+
+#: functions.php:46
+msgid "Custom post"
+msgstr "Article personnalisé"
+
+#: functions.php:73
+msgid "Custom column"
+msgstr "Colonne personnalisée"
+
+#: functions.php:140
+msgid "Attachments"
+msgstr "Pièces-jointes"
+
+#: functions.php:147
+msgid "Attach files"
+msgstr "Joindre des fichiers"
+
+#: functions.php:148 functions.php:169
+msgid "Attach"
+msgstr "Joindre"
+
+#: functions.php:154 functions.php:175
+msgid "Title"
+msgstr "Titre"
+
+#: functions.php:161
+msgid "Gallery"
+msgstr "Galerie"
+
+#: functions.php:168
+msgid "Attach images"
+msgstr "Joindre des images"
+
+#: functions.php:181
+msgid "Caption"
+msgstr "Légende"
+
+#: functions.php:249
+msgid "Main"
+msgstr "Principal"
+
+#: functions.php:339
+msgid "Continue reading"
+msgstr "Lire la suite"
+
+#: functions.php:435
+msgid "home"
+msgstr "accueil"
+
+#: functions.php:577
+msgid "Previous post"
+msgstr "Article précédent"
+
+#: functions.php:578
+msgid "Next post"
+msgstr "Article suivant"
+
+#: functions.php:580
+msgid "Newer posts"
+msgstr "Nouveaux articles"
+
+#: functions.php:583
+msgid "Older posts"
+msgstr "Anciens articles"
+
+#: functions.php:685
+msgid "Home"
+msgstr "Accueil"
+
+#: functions.php:772 search.php:26
+msgid "Results for \"%s\""
+msgstr "Résultats pour \"%s\""
+
+#: functions.php:777
+msgid "Posts tagged \"%s\""
+msgstr "Message tagés \"%s\""
+
+#: functions.php:784
+msgid "Articles posted by %s"
+msgstr "Articles publiés par % s"
+
+#: functions.php:804
+msgid "page %d"
+msgstr "page %d"
+
+#: header.php:49
+msgid "Menu"
+msgstr "Menu"
+
+#: search.php:45
+msgid "No result"
+msgstr "Aucun résultat"
+
+#: searchform-navbar.php:3 searchform.php:3
+msgid "Search"
+msgstr "Recherche"
+
+#. Theme Name of the plugin/theme
+msgid "Bootstrap"
+msgstr "Bootstrap"
+
+#. Author of the plugin/theme
+msgid "We studio"
+msgstr "We studio"
+
+#. Author URI of the plugin/theme
+msgid "http://www.we-studio.ch/"
+msgstr "http://www.we-studio.ch/"
+
+#. Template Name of the plugin/theme
+msgid "All pages in one"
+msgstr "Toutes les pages en une"
+
+#. Template Name of the plugin/theme
+msgid "Contact Page"
+msgstr "Page de contact"
+
+#. Template Name of the plugin/theme
+msgid "Home Page"
+msgstr "Page d'accueil"
+
+#. Template Name of the plugin/theme
+msgid "Testing Page"
+msgstr "Page de test"
+
+#~ msgid "We're lost, Captain"
+#~ msgstr "Nous sommes perdus, mon Capitaine"
+
+#~ msgid "Magazine Files"
+#~ msgstr "Dossiers"
+
+#~ msgid "Tag Archives: %s"
+#~ msgstr "Archives par tag : %s"
+
+#~ msgid "File led by:"
+#~ msgstr "Dossier dirigé par :"
+
+#~ msgid "They participated in this file:"
+#~ msgstr "Il ont participé à ce dossier :"
+
+#~ msgid "How to subscribe ?"
+#~ msgstr "Comment s'abonner ?"
+
+#~ msgid "subscribe.a.title"
+#~ msgstr "Comment s'abonner"
+
+#~ msgid "subscribe.a.body"
+#~ msgstr ""
+#~ "Des reportages et récits d’expéditionChaque mois, un reportage complet "
+#~ "sur un sujet d’actualité, des web documentaires... le tout réalisé et "
+#~ "écrit par des journalistes passionnés de la mer..."
+
+#~ msgid "subscribe.b.title"
+#~ msgstr "Une nouvelle expérience"
+
+#~ msgid "subscribe.b.body"
+#~ msgstr ""
+#~ "S’abonner à Océan 71, c’est aussi la possibilité de télécharger chacun "
+#~ "des dossiers au format ePub pour les lire hors ligne sur votre tablette, "
+#~ "kindle ou smartphone !"
+
+#~ msgid "File summary"
+#~ msgstr "Sommaire du dossier"
+
+#~ msgid "No chapter"
+#~ msgstr "Aucun chapitre"
+
+#~ msgid "One chapter"
+#~ msgid_plural "%d chapters"
+#~ msgstr[0] "Un chapitre"
+#~ msgstr[1] "%d chapitres"
+
+#~ msgid "Magazine's files"
+#~ msgstr "Dossiers"
+
+#~ msgid "Magazine's file"
+#~ msgstr "Dossier"
+
+#~ msgid "Chapters"
+#~ msgstr "Chapitres"
+
+#~ msgid "Chapter"
+#~ msgstr "Chapitre"
+
+#~ msgid "Reporters"
+#~ msgstr "Reporters"
+
+#~ msgid "Reporter"
+#~ msgstr "Reporter"
+
+#~ msgid "Previous chapter"
+#~ msgstr "Chapitre précédent"
+
+#~ msgid "Previous chapters"
+#~ msgstr "Chapitres précédents"
+
+#~ msgid "Next chapter"
+#~ msgstr "Chapitre suivant"
+
+#~ msgid "Last file"
+#~ msgstr "Dernier dossier"
+
+#~ msgid "Magazine"
+#~ msgstr "Magazine"
+
+#~ msgid "Journal"
+#~ msgstr "Journal"
+
+#~ msgid "All posts"
+#~ msgstr "Tous les articles"
+
+#~ msgid "Archive Journal"
+#~ msgstr "Archives Journal"
+
+#~ msgid "Magazines"
+#~ msgstr "Magazines"
+
+#~ msgid "Page no sidebar"
+#~ msgstr "Page sans sidebar"
+
+#~ msgid "Default Page"
+#~ msgstr "Page par défaut"
