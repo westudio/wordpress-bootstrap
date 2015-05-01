@@ -85,61 +85,6 @@
 
 // add_action('init', 'wb_register_sidebars');
 
-/**
- * Registers attachements
- */
-function wb_attachments($attachments)
-{
-    $attachments->register('wb_gallery', array(
-        'label'       => __('Gallery', 'wb'),
-        'post_type'   => array('page', 'post'),
-        'position'    => 'normal',
-        'priority'    => 'high',
-        'filetype'    => array('image'),
-        'note'        => null,
-        'append'      => true,
-        'button_text' => __('Attach images', 'wb'),
-        'modal_text'  => __('Attach', 'wb'),
-        'router'      => 'browse',
-        'fields'      => array(
-            array(
-                'name'    => 'title',
-                'type'    => 'text',
-                'label'   => __('Title', 'wb'),
-                'default' => '',
-            ),
-            array(
-                'name'    => 'caption',
-                'type'    => 'text',
-                'label'   => __('Caption', 'wb'),
-                'default' => '',
-            )
-        )
-    ));
-
-    // $attachments->register('wb_attachments', array(
-    //     'label'       => __('Attachments', 'wb'),
-    //     'post_type'   => array('page', 'post'),
-    //     'position'    => 'normal',
-    //     'priority'    => 'high',
-    //     'filetype'    => null,
-    //     'note'        => null,
-    //     'append'      => true,
-    //     'button_text' => __('Attach files', 'wb'),
-    //     'modal_text'  => __('Attach', 'wb'),
-    //     'router'      => 'browse',
-    //     'fields'      => array(
-    //         array(
-    //             'name'    => 'title',
-    //             'type'    => 'text',
-    //             'label'   => __('Title', 'wb'),
-    //             'default' => 'title',
-    //         )
-    //     )
-    // ));
-}
-
-add_action('attachments_register', 'wb_attachments');
 
 ////////////////////////////////
 // Setup
