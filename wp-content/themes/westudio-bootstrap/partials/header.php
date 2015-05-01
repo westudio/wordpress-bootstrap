@@ -34,14 +34,16 @@ endif;
 
   <?php get_template_part('partials/top') ?>
 
-  <header class="navbar navbar-default navbar-fixed-top">
+  <header class="header navbar navbar-default navbar-fixed-top">
     <div class="container">
 
       <div class="navbar-header">
         <a class="navbar-brand" href="<?php echo home_url(); ?>" title="<?php echo esc_attr(get_bloginfo('name', 'display')); ?>" rel="home"><?php bloginfo('name'); ?></a>
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-menu">
-          <?php _e('Menu', 'wb'); ?>
+
+        <button type="button" class="offcanvas-toggle" data-toggle="offcanvas" data-target="#offcanvas" title="<?php _e('Menu', 'bootstrap'); ?>">
+          <i class="glyphicon glyphicon-list"></i>
         </button>
+
       </div><!-- /.navbar-header -->
 
       <nav id="main-menu" class="collapse navbar-collapse">
@@ -57,3 +59,5 @@ endif;
 
     </div><!-- ./container -->
   </header><!-- /.navbar-default -->
+
+  <?php get_template_part('partials/offcanvas') ?>

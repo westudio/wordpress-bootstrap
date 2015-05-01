@@ -1,0 +1,59 @@
+@offcanvas-breakpoint: @screen-sm-min;
+@offcanvas-width:      320px;
+
+@zindex-offcanvas: (@zindex-modal-background - 5);
+
+.offcanvas {
+  position: fixed;
+  left: -@offcanvas-width;
+  top: 0;
+  z-index: @zindex-offcanvas;
+  overflow-y: auto;
+  padding: 15px;
+  width: @offcanvas-width;
+  height: 100%;
+  background: @body-bg;
+  .transition(left 0.4s);
+
+  .offcanvas-header {
+    margin-bottom: 5px;
+    &:extend(.clearfix all);
+  }
+
+  &.active {
+    left: 0;
+    .box-shadow(0 0 10px 0 rgba(0,0,0,0.33));
+  }
+
+  .dashboard {
+    color: #fff;
+    background: transparent;
+  }
+
+}
+
+.offcanvas-toggle {
+  display: block;
+  padding: 7px 15px;
+  border: 0;
+  background: transparent;
+  color: @text-color;
+
+  &:hover,
+  &:focus {
+    outline: 0;
+  }
+
+  .header & {
+    float: right;
+    margin-top: ((@navbar-height - 34px) / 2);
+  }
+
+  .navbar & {
+    margin-right: 15px;
+  }
+
+  @media (min-width: @offcanvas-breakpoint) {
+    display: none;
+  }
+}

@@ -34,6 +34,7 @@ gulp.task('scripts:compile', ['scripts:lint', 'scripts:clean'], function () {
     // 'vendor/cover/src/cover.js',
     // 'scripts/src/viewport.js',
     // 'scripts/src/inviewport.js',
+    'scripts/src/offcanvas.js',
     // 'scripts/src/sections.js',
     // 'scripts/src/sticky.js',
     // 'scripts/src/header.js',

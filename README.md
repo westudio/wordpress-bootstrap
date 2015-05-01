@@ -1,4 +1,4 @@
-wordpress-bootstrap
-===================
+westudio-bootstrap
+==================
 
-Bootstrap theme and some useful plugins for Wordpress
+Wordpress' bootstrap theme and some useful plugins
