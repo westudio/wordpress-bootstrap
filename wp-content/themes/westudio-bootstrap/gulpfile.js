@@ -3,10 +3,13 @@ var del          = require('del');
 var gulp         = require('gulp');
 var jshint       = require('gulp-jshint');
 var less         = require('gulp-less');
-var plumber      = require('gulp-plumber');
 var sourcemaps   = require('gulp-sourcemaps');
 var spawn        = require('child_process').spawn;
 var uglify       = require('gulp-uglify');
+
+function report (e) {
+  console.log(e.message);
+}
 
 gulp.task('default', [
   'scripts',
@@ -42,10 +45,9 @@ gulp.task('scripts:compile', ['scripts:lint', 'scripts:clean'], function () {
     // 'assets/scripts/src/bootstrap-gravity-forms.js',
     'assets/scripts/src/js.js'
   ])
-    .pipe(plumber())
     .pipe(sourcemaps.init({loadMaps: true}))
-      .pipe(uglify({ compress: true }))
-      .pipe(concat('main.min.js'))
+    .pipe(uglify({ compress: true })).on('error', report)
+    .pipe(concat('main.min.js'))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('assets/scripts/dist'))
   ;
@@ -55,9 +57,8 @@ gulp.task('scripts:compile', ['scripts:lint', 'scripts:clean'], function () {
 gulp.task('scripts:lint', function () {
   return gulp
     .src('assets/scripts/src/**/*.js')
-    .pipe(plumber())
-    .pipe(jshint({ esnext: true }))
-    .pipe(jshint.reporter('jshint-stylish'))
+    .pipe(jshint({ esnext: true })).on('error', report)
+    .pipe(jshint.reporter('default'))
   ;
 });
 
@@ -72,12 +73,9 @@ gulp.task('styles', ['styles:compile']);
 gulp.task('styles:compile', ['styles:clean'], function () {
   return gulp
     .src('assets/styles/src/main.less')
-    .pipe(plumber())
     .pipe(sourcemaps.init({ loadMaps: true }))
-      .pipe(less({
-        compress: true
-      }))
-      .pipe(concat('main.min.css'))
+    .pipe(less({ compress: true })).on('error', report)
+    .pipe(concat('main.min.css'))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('assets/styles/dist'))
   ;
