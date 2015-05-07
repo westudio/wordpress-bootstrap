@@ -1,11 +1,13 @@
-var concat       = require('gulp-concat');
-var del          = require('del');
-var gulp         = require('gulp');
-var jshint       = require('gulp-jshint');
-var less         = require('gulp-less');
-var sourcemaps   = require('gulp-sourcemaps');
-var spawn        = require('child_process').spawn;
-var uglify       = require('gulp-uglify');
+var concat     = require('gulp-concat');
+var gulp       = require('gulp');
+var jshint     = require('gulp-jshint');
+var less       = require('gulp-less');
+var sourcemaps = require('gulp-sourcemaps');
+var spawn      = require('child_process').spawn;
+var uglify     = require('gulp-uglify');
+var util       = require('gulp-util');
+
+var p;
 
 function report (e) {
   console.log(e.message);
@@ -16,9 +18,7 @@ gulp.task('default', [
   'styles'
 ]);
 
-gulp.task('scripts', ['scripts:compile']);
-
-gulp.task('scripts:compile', ['scripts:lint', 'scripts:clean'], function () {
+gulp.task('scripts', ['scripts:lint'], function () {
 
   gulp.src([
     'assets/vendor/bootstrap/js/transition.js',
@@ -62,15 +62,7 @@ gulp.task('scripts:lint', function () {
   ;
 });
 
-gulp.task('scripts:clean', function (done) {
-  del([
-    'assets/scripts/dist/**/*'
-  ], done);
-});
-
-gulp.task('styles', ['styles:compile']);
-
-gulp.task('styles:compile', ['styles:clean'], function () {
+gulp.task('styles', function () {
   return gulp
     .src('assets/styles/src/main.less')
     .pipe(sourcemaps.init({ loadMaps: true }))
@@ -81,31 +73,24 @@ gulp.task('styles:compile', ['styles:clean'], function () {
   ;
 });
 
-gulp.task('styles:clean', function (done) {
-  del([
-    'assets/styles/dist/*'
-  ], done);
-});
-
-gulp.task('watch', ['watch:reload']);
-
-gulp.task('watch:reload', function () {
-  var p;
-
+gulp.task('watch', function () {
   function reload () {
+    util.log('Reloading gulpfile...');
+
     if (p) {
       p.kill();
     }
 
-    p = spawn('gulp', ['watch:watching'], { stdio: 'inherit' });
+    p = spawn('gulp', ['watching'], { stdio: 'inherit' });
   }
 
   reload();
 
-  return gulp.watch(__filename, ['config:lint', reload]);
+  return gulp.watch(__filename, reload);
 });
 
-gulp.task('watch:watching', function (done) {
+gulp.task('watching', function (done) {
   gulp.watch('assets/scripts/src/**/*', ['scripts']);
   gulp.watch('assets/styles/src/**/*', ['styles']);
 });
+
