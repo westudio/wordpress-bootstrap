@@ -5,7 +5,7 @@
  */
 
 ?>
-<?php get_template_part('partials/header'); ?>
+<?php get_template_part('blocks/header'); ?>
 
     <div class="main">
 
@@ -28,10 +28,10 @@ while (have_posts()):
 <?php endif ?>
           </div>
 
-          <?php get_template_part('partials/map') ?>
+          <?php get_template_part('blocks/map') ?>
 
           <div class="page-body">
-            <?php get_template_part('partials/edit-buttons') ?>
+            <?php get_template_part('blocks/edit-buttons') ?>
             <div class="content">
               <?php the_content(); ?>
             </div>
@@ -49,4 +49,4 @@ endwhile;
 
     </div><!-- /.main -->
 
-<?php get_template_part('partials/footer'); ?>
+<?php get_template_part('blocks/footer'); ?>

@@ -5,7 +5,7 @@
  */
 
 ?>
-<?php get_template_part('partials/header'); ?>
+<?php get_template_part('blocks/header'); ?>
 
     <div class="main">
 
@@ -30,7 +30,7 @@ if (have_posts()):
     the_post();
 ?>
 
-                <?php get_template_part('partials/loop', get_post_type()); ?>
+                <?php get_template_part('blocks/loop', get_post_type()); ?>
 
 <?php
   endwhile;
@@ -51,7 +51,7 @@ endif;
 
             </div>
             <div class="col-sm-3">
-              <?php get_template_part('partials/sidebar', 'archive') ?>
+              <?php get_template_part('blocks/sidebar', 'archive') ?>
             </div>
           </div>
 
@@ -62,4 +62,4 @@ endif;
 <?php endif ?>
     </div><!-- /.main -->
 
-<?php get_template_part('partials/footer'); ?>
+<?php get_template_part('blocks/footer'); ?>

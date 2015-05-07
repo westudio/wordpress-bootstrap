@@ -1,4 +1,11 @@
-<?php get_template_part('partials/header'); ?>
+<?php
+
+/**
+ * Single post
+ */
+
+?>
+<?php get_template_part('blocks/header'); ?>
 
     <div class="main">
 
@@ -10,7 +17,7 @@ while (have_posts()):
 
         <div <?php post_class(); ?>>
 
-          <?php get_template_part('partials/carousel', 'single') ?>
+          <?php get_template_part('blocks/carousel', 'single') ?>
 
 <?php if (!$is_block): ?>
       <div class="container">
@@ -25,7 +32,7 @@ while (have_posts()):
           </div>
 
           <div class="page-body">
-            <?php get_template_part('partials/edit-buttons') ?>
+            <?php get_template_part('blocks/edit-buttons') ?>
             <div class="content">
               <?php the_content(); ?>
             </div>
@@ -47,4 +54,4 @@ endwhile;
 
     </div><!-- /.main -->
 
-<?php get_template_part('partials/footer'); ?>
+<?php get_template_part('blocks/footer'); ?>

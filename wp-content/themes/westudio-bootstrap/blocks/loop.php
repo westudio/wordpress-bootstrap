@@ -18,7 +18,7 @@
     </a>
   <?php endif; ?>
   <div class="post-body">
-    <?php get_template_part('partials/edit-buttons') ?>
+    <?php get_template_part('blocks/edit-buttons') ?>
     <?php the_excerpt() ?>
   </div><!-- /.post-body -->
 </article><!-- /.post -->

@@ -32,7 +32,7 @@ endif;
 </head>
 <body <?php body_class(); ?>>
 
-  <?php get_template_part('partials/top') ?>
+  <?php get_template_part('blocks/top') ?>
 
   <header class="header navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -69,4 +69,4 @@ endif;
     </div><!-- ./container -->
   </header><!-- /.navbar-default -->
 
-  <?php get_template_part('partials/offcanvas') ?>
+  <?php get_template_part('blocks/offcanvas') ?>

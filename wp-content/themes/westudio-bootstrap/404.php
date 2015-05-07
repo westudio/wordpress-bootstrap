@@ -5,7 +5,7 @@
  */
 
 ?>
-<?php get_template_part('partials/header'); ?>
+<?php get_template_part('blocks/header'); ?>
 
     <div class="main">
 
@@ -31,4 +31,4 @@
 
     </div><!-- /.main -->
 
-<?php get_template_part('partials/footer'); ?>
+<?php get_template_part('blocks/footer'); ?>

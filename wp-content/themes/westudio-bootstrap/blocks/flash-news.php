@@ -18,7 +18,7 @@ while (have_posts()):
   $active = $i === 0;
 ?>
     <div class="item<?php echo ($active ? ' active' : '') ?>">
-      <?php get_template_part('partials/loop', 'small') ?>
+      <?php get_template_part('blocks/loop', 'small') ?>
     </div>
 <?php
   $i++;
