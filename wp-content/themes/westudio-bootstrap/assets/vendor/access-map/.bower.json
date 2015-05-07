@@ -1,0 +1,14 @@
+{
+  "name": "access-map",
+  "homepage": "https://github.com/Ascarius/access-map",
+  "version": "1.0.0",
+  "_release": "1.0.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.0.0",
+    "commit": "7e31e0f14c455883320c91810c6517706a1826c4"
+  },
+  "_source": "git://github.com/Ascarius/access-map.git",
+  "_target": "~1.0.0",
+  "_originalSource": "access-map"
+}

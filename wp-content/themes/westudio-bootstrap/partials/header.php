@@ -17,7 +17,7 @@ endif;
 
   <link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
 
-  <link rel="shortcut icon" href="<?php echo get_template_directory_uri(); ?>/images/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="<?php echo get_template_directory_uri(); ?>/assets/images/favicon.ico" type="image/x-icon" />
 
   <!--[if lt IE 9]>
   <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -38,9 +38,18 @@ endif;
     <div class="container">
 
       <div class="navbar-header">
-        <a class="navbar-brand" href="<?php echo home_url(); ?>" title="<?php echo esc_attr(get_bloginfo('name', 'display')); ?>" rel="home"><?php bloginfo('name'); ?></a>
+        <a
+          class="navbar-brand"
+          href="<?php echo home_url(); ?>"
+          title="<?php echo esc_attr(get_bloginfo('name', 'display')); ?>"
+          rel="home"><?php bloginfo('name'); ?></a>
 
-        <button type="button" class="offcanvas-toggle" data-toggle="offcanvas" data-target="#offcanvas" title="<?php _e('Menu', 'bootstrap'); ?>">
+        <button
+          type="button"
+          class="offcanvas-toggle"
+          data-toggle="offcanvas"
+          data-target="#offcanvas"
+          title="<?php _e('Menu', 'bootstrap'); ?>">
           <i class="glyphicon glyphicon-list"></i>
         </button>
 

@@ -1,8 +1,12 @@
-
   <div id="offcanvas" class="offcanvas">
 
     <div class="offcanvas-header">
-      <button class="close offcanvas-close" data-toggle="offcanvas" data-target="#offcanvas"><i class="glyphicon glyphicon-remove"></i></button>
+      <button
+        class="close offcanvas-close"
+        data-toggle="offcanvas"
+        data-target="#offcanvas">
+        <i class="glyphicon glyphicon-remove"></i>
+      </button>
     </div>
 
     <nav>

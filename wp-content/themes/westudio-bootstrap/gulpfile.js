@@ -18,43 +18,43 @@ gulp.task('scripts', ['scripts:compile']);
 gulp.task('scripts:compile', ['scripts:lint', 'scripts:clean'], function () {
 
   gulp.src([
-    'vendor/bootstrap/js/transition.js',
-    'vendor/bootstrap/js/alert.js',
-    // 'vendor/bootstrap/js/button.js',
-    'vendor/bootstrap/js/carousel.js',
-    'vendor/bootstrap/js/collapse.js',
-    'vendor/bootstrap/js/dropdown.js',
-    // 'vendor/bootstrap/js/modal.js',
-    // 'vendor/bootstrap/js/tooltip.js',
-    // 'vendor/bootstrap/js/popover.js',
-    // 'vendor/bootstrap/js/scrollspy.js',
-    // 'vendor/bootstrap/js/tab.js',
-    // 'vendor/bootstrap/js/affix.js',
-    // 'vendor/jquery.scrollTo/jquery.scrollTo.js',
-    // 'vendor/cover/src/cover.js',
-    // 'scripts/src/viewport.js',
-    // 'scripts/src/inviewport.js',
-    'scripts/src/offcanvas.js',
-    // 'scripts/src/sections.js',
-    // 'scripts/src/sticky.js',
-    // 'scripts/src/header.js',
-    // 'scripts/src/nav.js',
-    // 'scripts/src/bootstrap-gravity-forms.js',
-    'scripts/src/js.js'
+    'assets/vendor/bootstrap/js/transition.js',
+    'assets/vendor/bootstrap/js/alert.js',
+    // 'assets/vendor/bootstrap/js/button.js',
+    'assets/vendor/bootstrap/js/carousel.js',
+    'assets/vendor/bootstrap/js/collapse.js',
+    'assets/vendor/bootstrap/js/dropdown.js',
+    // 'assets/vendor/bootstrap/js/modal.js',
+    // 'assets/vendor/bootstrap/js/tooltip.js',
+    // 'assets/vendor/bootstrap/js/popover.js',
+    // 'assets/vendor/bootstrap/js/scrollspy.js',
+    // 'assets/vendor/bootstrap/js/tab.js',
+    // 'assets/vendor/bootstrap/js/affix.js',
+    // 'assets/vendor/jquery.scrollTo/jquery.scrollTo.js',
+    // 'assets/vendor/cover/src/cover.js',
+    // 'assets/scripts/src/viewport.js',
+    // 'assets/scripts/src/inviewport.js',
+    'assets/scripts/src/offcanvas.js',
+    // 'assets/scripts/src/sections.js',
+    // 'assets/scripts/src/sticky.js',
+    // 'assets/scripts/src/header.js',
+    // 'assets/scripts/src/nav.js',
+    // 'assets/scripts/src/bootstrap-gravity-forms.js',
+    'assets/scripts/src/js.js'
   ])
     .pipe(plumber())
     .pipe(sourcemaps.init({loadMaps: true}))
       .pipe(uglify({ compress: true }))
       .pipe(concat('main.min.js'))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('scripts/dist'))
+    .pipe(gulp.dest('assets/scripts/dist'))
   ;
 
 });
 
 gulp.task('scripts:lint', function () {
   return gulp
-    .src('scripts/src/**/*.js')
+    .src('assets/scripts/src/**/*.js')
     .pipe(plumber())
     .pipe(jshint({ esnext: true }))
     .pipe(jshint.reporter('jshint-stylish'))
@@ -63,7 +63,7 @@ gulp.task('scripts:lint', function () {
 
 gulp.task('scripts:clean', function (done) {
   del([
-    'scripts/dist/**/*'
+    'assets/scripts/dist/**/*'
   ], done);
 });
 
@@ -71,7 +71,7 @@ gulp.task('styles', ['styles:compile']);
 
 gulp.task('styles:compile', ['styles:clean'], function () {
   return gulp
-    .src('styles/src/main.less')
+    .src('assets/styles/src/main.less')
     .pipe(plumber())
     .pipe(sourcemaps.init({ loadMaps: true }))
       .pipe(less({
@@ -79,13 +79,13 @@ gulp.task('styles:compile', ['styles:clean'], function () {
       }))
       .pipe(concat('main.min.css'))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('styles/dist'))
+    .pipe(gulp.dest('assets/styles/dist'))
   ;
 });
 
 gulp.task('styles:clean', function (done) {
   del([
-    'styles/dist/*'
+    'assets/styles/dist/*'
   ], done);
 });
 
@@ -108,6 +108,6 @@ gulp.task('watch:reload', function () {
 });
 
 gulp.task('watch:watching', function (done) {
-  gulp.watch('scripts/src/**/*', ['scripts']);
-  gulp.watch('styles/src/**/*', ['styles']);
+  gulp.watch('assets/scripts/src/**/*', ['scripts']);
+  gulp.watch('assets/styles/src/**/*', ['styles']);
 });
