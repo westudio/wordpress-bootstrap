@@ -8,9 +8,6 @@ var spawn      = require('child_process').spawn;
 var uglify     = require('gulp-uglify');
 var util       = require('gulp-util');
 
-var connected = false;
-var port      = 8000;
-
 function report (e) {
     util.log(e.message);
 }
@@ -26,7 +23,7 @@ gulp.task('scripts', ['scripts:lint'], function () {
     // 'assets/vendor/bootstrap/js/button.js',
     'assets/vendor/bootstrap/js/carousel.js',
     'assets/vendor/bootstrap/js/collapse.js',
-    'assets/vendor/bootstrap/js/dropdown.js',
+    // 'assets/vendor/bootstrap/js/dropdown.js',
     // 'assets/vendor/bootstrap/js/modal.js',
     // 'assets/vendor/bootstrap/js/tooltip.js',
     // 'assets/vendor/bootstrap/js/popover.js',
@@ -75,9 +72,17 @@ gulp.task('styles', function () {
   ;
 });
 
+gulp.task('templates', function () {
+    return gulp
+        .src('index.php')
+        .pipe(livereload())
+    ;
+});
+
 gulp.task('watch', function (done) {
   livereload.listen();
-  gulp.watch('assets/scripts/src/**/*', ['scripts']);
-  gulp.watch('assets/styles/src/**/*', ['styles']);
+  gulp.watch('assets/scripts/src/**/*.js', ['scripts']);
+  gulp.watch('assets/styles/src/**/*.less', ['styles']);
+  gulp.watch(['*.php', 'src/**/*.php', 'blocks/*.php'], ['templates']);
 });
 
