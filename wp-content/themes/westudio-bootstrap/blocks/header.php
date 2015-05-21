@@ -32,8 +32,6 @@ endif;
 </head>
 <body <?php body_class(); ?>>
 
-  <?php get_template_part('blocks/top') ?>
-
   <header class="header navbar navbar-default navbar-fixed-top">
     <div class="container">
 
@@ -50,7 +48,7 @@ endif;
           data-toggle="offcanvas"
           data-target="#offcanvas"
           title="<?php _e('Menu', 'bootstrap'); ?>">
-          <i class="glyphicon glyphicon-list"></i>
+          <i class="glyphicon glyphicon-menu-hamburger"></i>
         </button>
 
       </div><!-- /.navbar-header -->
