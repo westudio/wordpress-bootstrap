@@ -1,3 +1,4 @@
+*.log
 .DS_Store
 wp-admin
 wp-content/plugins/akismet
