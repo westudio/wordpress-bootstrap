@@ -7,27 +7,22 @@ class WPML_String_Translation
 
 	function __construct()
 	{
-		global $icl_st_string_translation_statuses;
 		require WPML_ST_PATH . '/inc/functions.php';
 		require WPML_ST_PATH . '/inc/wpml-string-shortcode.php';
 		include WPML_ST_PATH . '/inc/slug-translation.php';
 
-		add_action( 'plugins_loaded', array( 'WPML_Slug_Translation', 'setup' ) );
-
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'init', array( 'WPML_Slug_Translation', 'init' ) );
+		
+		add_filter('pre_update_option_blogname', array($this, 'pre_update_option_blogname'), 5, 2);
+		add_filter('pre_update_option_blogdescription', array($this, 'pre_update_option_blogdescription'), 5, 2);
 
 		//Handle Admin Notices
-		if(!( in_array( $GLOBALS['pagenow'], array( 'wp-login.php', 'wp-register.php' ) ) )) {
-			add_action( 'plugins_loaded', array( __CLASS__, '_st_warnings' ) );
+		if(isset($GLOBALS['pagenow']) && !( in_array( $GLOBALS['pagenow'], array( 'wp-login.php', 'wp-register.php' ) ) )) {
+            add_action( 'plugins_loaded', array( __CLASS__, '_st_warnings' ) );
 		}
 
 		add_action( 'icl_ajx_custom_call', array( $this, 'ajax_calls' ), 10, 2 );
-	}
-
-	function __destruct()
-	{
-
 	}
 
 	function init()
@@ -44,7 +39,7 @@ class WPML_String_Translation
 		if ( is_admin() ) {
 			require_once WPML_ST_PATH . '/inc/auto-download-locales.php';
 			global $WPML_ST_MO_Downloader;
-			$WPML_ST_MO_Downloader = new WPML_ST_MO_Downloader;
+			$WPML_ST_MO_Downloader = new WPML_ST_MO_Downloader();
 		}
 
 		$this->plugin_localization();
@@ -216,7 +211,6 @@ class WPML_String_Translation
 
 	function ajax_calls( $call, $data )
 	{
-		global $sitepress;
 		switch ( $call ) {
 
 			case 'icl_st_save_translation':
@@ -245,18 +239,6 @@ class WPML_String_Translation
 				$arr = explode( ',', $data[ 'value' ] );
 				__icl_unregister_string_multi( $arr );
 				break;
-			/*
-			case 'icl_st_send_strings':
-				$arr = explode(',',$data['strings']);
-				icl_translation_send_strings($arr, explode('#',$data['languages']));
-				echo '1';
-				break;
-			case 'icl_st_send_strings_all':
-				icl_translation_send_untranslated_strings(explode(',',$data['languages']));
-				echo '1';
-				break;
-			*/
-			// OBSOLETE?
 			case 'icl_st_option_writes_form':
 				if ( !empty( $data[ 'icl_admin_options' ] ) ) {
 					icl_register_admin_options( $data[ 'icl_admin_options' ] );
@@ -280,7 +262,7 @@ class WPML_String_Translation
 							unset( $data[ 'icl_admin_options' ][ $k ] );
 						}
 					}
-
+					$error = 0;
 					$message = __( 'Include the following PHP in your code. <em>functions.php</em> would be a good place.', 'wpml-string-translation' )
 						. "<textarea wrap=\"soft\">&lt;?php
         if (function_exists('wpml_register_admin_strings')) {
@@ -291,7 +273,7 @@ class WPML_String_Translation
 					$error   = 1;
 					$message = __( 'Error: no strings selected', 'wpml-string-translation' );
 				}
-				echo json_encode( array( 'error' => 0, 'message' => $message ) );
+				echo json_encode( array( 'error' => $error, 'message' => $message ) );
 				break;
 
 
@@ -343,15 +325,8 @@ class WPML_String_Translation
 		return $links;
 	}
 
-	function localization_type_ui()
-	{
-		global $sitepress_settings;
-
-		$theme_localization_stats  = get_theme_localization_stats();
-		$plugin_localization_stats = get_plugin_localization_stats();
-
+	function localization_type_ui() {
 		include WPML_ST_PATH . '/menu/theme-localization-ui.php';
-
 	}
 
 	function tl_rescan()
@@ -364,7 +339,10 @@ class WPML_String_Translation
 			$mo_files = icl_st_get_mo_files( TEMPLATEPATH );
 			foreach ( (array)$mo_files as $m ) {
 				$i = preg_match( '#[-]?([a-z_]+)\.mo$#i', $m, $matches );
-				if ( $i && $lang = $wpdb->get_var( "SELECT code FROM {$wpdb->prefix}icl_locale_map WHERE locale='" . $matches[ 1 ] . "'" ) ) {
+				if ( $i && $lang = $wpdb->get_var( $wpdb->prepare("SELECT code
+																   FROM {$wpdb->prefix}icl_locale_map
+																   WHERE locale= %s " , $matches[ 1 ] ) )
+				) {
 					$tr_pairs = icl_st_load_translations_from_mo( $m );
 					foreach ( $tr_pairs as $original => $translation ) {
 						foreach ( $sitepress_settings[ 'st' ][ 'theme_localization_domains' ] as $tld ) {
@@ -373,7 +351,10 @@ class WPML_String_Translation
 								break;
 							}
 						}
-						if ( !$wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}icl_string_translations WHERE string_id=%d AND language=%s", $string_id, $lang  ) ) ) {
+						if (!empty($string_id) &&
+						    !$wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}icl_string_translations
+														      WHERE string_id=%d AND language=%s", $string_id, $lang  ) )
+						) {
 							icl_add_string_translation( $string_id, $lang, $translation, ICL_STRING_TRANSLATION_COMPLETE );
 						}
 					}
@@ -388,7 +369,7 @@ class WPML_String_Translation
 
 	function tl_rescan_p()
 	{
-		global $wpdb, $sitepress_settings;
+		global $wpdb;
 
 		set_time_limit( 0 );
 		if ( preg_replace( '#M$#', '', ini_get( 'memory_limit' ) ) < 128 )
@@ -421,11 +402,13 @@ class WPML_String_Translation
 				$mo_files = icl_st_get_mo_files( $plugin_path );
 				foreach ( $mo_files as $m ) {
 					$i = preg_match( '#[-]([a-z_]+)\.mo$#i', $m, $matches );
-					if ( $i && $lang = $wpdb->get_var( "SELECT code FROM {$wpdb->prefix}icl_locale_map WHERE locale='" . $matches[ 1 ] . "'" ) ) {
+					if ( $i && $lang = $wpdb->get_var( $wpdb->prepare( "SELECT code FROM {$wpdb->prefix}icl_locale_map WHERE locale = %s", $matches[ 1 ] ) ) ) {
 						$tr_pairs = icl_st_load_translations_from_mo( $m );
 						foreach ( $tr_pairs as $original => $translation ) {
 							$string_id = icl_get_string_id( $original, 'plugin ' . basename( $plugin_path ) );
-							if ( !$wpdb->get_var( "SELECT id FROM {$wpdb->prefix}icl_string_translations WHERE string_id={$string_id} AND language='{$lang}'" ) ) {
+							if ( !$wpdb->get_var(
+								$wpdb->prepare("SELECT id FROM {$wpdb->prefix}icl_string_translations WHERE string_id=%d AND language=%s",$string_id, $lang )
+							) ) {
 								icl_add_string_translation( $string_id, $lang, $translation, ICL_STRING_TRANSLATION_COMPLETE );
 							}
 						}
@@ -498,7 +481,7 @@ class WPML_String_Translation
 
 			if ( is_dir( $file ) ) {
 				$dh = opendir( $file );
-				while ( false !== ( $f = readdir( $dh ) ) ) {
+				while ( $dh && false !== ( $f = readdir( $dh ) ) ) {
 					if ( 0 === strpos( $f, '.' ) )
 						continue;
 					$this->plugin_po_file_download( $file . '/' . $f, $recursion + 1 );
@@ -508,7 +491,7 @@ class WPML_String_Translation
 			}
 		}
 
-		if ( !$recursion ) {
+		if ( ! $recursion ) {
 			$po = "";
 			$po .= '# This file was generated by WPML' . PHP_EOL;
 			$po .= '# WPML is a WordPress plugin that can turn any WordPress site into a full featured multilingual content management system.' . PHP_EOL;
@@ -517,11 +500,20 @@ class WPML_String_Translation
 			$po .= 'msgstr ""' . PHP_EOL;
 			$po .= '"Content-Type: text/plain; charset=utf-8\n"' . PHP_EOL;
 			$po .= '"Content-Transfer-Encoding: 8bit\n"' . PHP_EOL;
-			$po .= '"Project-Id-Version: \n"' . PHP_EOL;
+			$po_title = 'WPML_EXPORT';
+			if ( isset( $_GET[ 'context' ] ) ) {
+				$po_title .= '_' . $_GET[ 'context' ];
+			}
+			$po .= '"Project-Id-Version:' . $po_title . '\n"' . PHP_EOL;
 			$po .= '"POT-Creation-Date: \n"' . PHP_EOL;
 			$po .= '"PO-Revision-Date: \n"' . PHP_EOL;
 			$po .= '"Last-Translator: \n"' . PHP_EOL;
 			$po .= '"Language-Team: \n"' . PHP_EOL;
+			$translation_language = 'en';
+			if ( isset( $_GET[ 'translation_language' ] ) ) {
+				$translation_language = $_GET[ 'translation_language' ];
+			}
+			$po .= '"Language:' . $translation_language . '\n"' . PHP_EOL;
 			$po .= '"MIME-Version: 1.0\n"' . PHP_EOL;
 
 			$po .= $__wpml_st_po_file_content;
@@ -568,6 +560,35 @@ class WPML_String_Translation
 		$string_id = $_POST[ 'string_id' ];
 		echo $icl_st_string_translation_statuses[ ( $wpdb->get_var( $wpdb->prepare( "SELECT status FROM {$wpdb->prefix}icl_strings WHERE id=%d", $string_id ) ) ) ];
 		exit;
+	}
+	
+	function pre_update_option_blogname($value, $old_value) {
+		return $this->pre_update_option_settings("Blog Title", $value, $old_value);
+	}
+	
+	function pre_update_option_blogdescription($value, $old_value) {
+		return $this->pre_update_option_settings("Tagline", $value, $old_value);
+	}
+	
+	function pre_update_option_settings($option, $value, $old_value) {
+		global $sitepress, $sitepress_settings;
+		
+		$current_language = $sitepress->get_current_language();
+		$strings_language = $sitepress_settings['st']['strings_language'];
+		if ($current_language == $strings_language) {
+			return $value;
+		}
+		
+		WPML_Config::load_config_run();
+		$result = icl_update_string_translation($option, $current_language, $value, ICL_STRING_TRANSLATION_COMPLETE);
+		if ($result) {
+			// returning old_value in place of value will stop update_option() processing. 
+			// do not remove it!
+			return $old_value;
+		}
+		
+		return $value;
+		
 	}
 
 }

@@ -5,13 +5,125 @@
  * @package wpml-core
  */
 
+function wpml_site_uses_icl() {
+    //site_id
+    //access_key
+    //icl_account_email
+
+    $site_id           = false;
+    $access_key        = false;
+    $icl_account_email = false;
+
+    global $sitepress;
+    if ( isset( $sitepress ) ) {
+        $site_id           = $sitepress->get_setting( 'site_id' );
+        $access_key        = $sitepress->get_setting( 'access_key' );
+        $icl_account_email = $sitepress->get_setting( 'icl_account_email' );
+    } else {
+        $sitepress_settings = get_option( 'icl_sitepress_settings' );
+        if ( $sitepress_settings ) {
+            $site_id           = isset( $sitepress_settings[ 'site_id' ] ) ? $sitepress_settings[ 'site_id' ] : false;
+            $access_key        = isset( $sitepress_settings[ 'access_key' ] ) ? $sitepress_settings[ 'access_key' ] : false;
+            $icl_account_email = isset( $sitepress_settings[ 'icl_account_email' ] ) ? $sitepress_settings[ 'icl_account_email' ] : false;
+        }
+    }
+
+    return ( $site_id || $access_key || $icl_account_email );
+}
+
+function repair_el_type_collate() {
+	global $wpdb;
+
+	$correct_collate = $wpdb->get_var (
+		"SELECT collation_name
+          FROM information_schema.COLUMNS
+          WHERE TABLE_NAME = '{$wpdb->posts}'
+                AND COLUMN_NAME = 'post_type'
+                    AND table_schema = (SELECT DATABASE())
+          LIMIT 1"
+	);
+
+	// translations
+	$table_name = $wpdb->prefix . 'icl_translations';
+	$sql
+	            = "
+             ALTER TABLE `{$table_name}`
+                CHANGE `element_type` `element_type` VARCHAR( 36 ) NOT NULL DEFAULT 'post_post' COLLATE {$correct_collate}
+            ";
+	if ( $wpdb->query ( $sql ) === false ) {
+		throw new Exception( $wpdb->last_error );
+	}
+}
+
+/**
+ * @param string $key
+ * @param bool   $default
+ *
+ * @return bool|mixed
+ */
+function icl_get_setting( $key, $default = false ) {
+	global $sitepress;
+
+	if ( isset( $sitepress ) && method_exists( $sitepress, 'get_setting' ) ) {
+		return $sitepress->get_setting( $key, $default );
+	} else {
+		//We don't have an instance of SitePress class: let's try with $sitepress_settings
+		global $sitepress_settings;
+
+		if ( ! isset( $sitepress_settings ) ) {
+			//We don't have an instance of $sitepress_settings variable.
+			//This means that probably we are in a stage where this instance can't be created
+			//Therefore, let's directly read the settings from the DB
+			$sitepress_settings = get_option( 'icl_sitepress_settings' );
+		}
+
+		return isset( $sitepress_settings[ $key ] ) ? $sitepress_settings[ $key ] : $default;
+	}
+}
+
+/**
+ * @param string $key
+ * @param mixed  $value
+ * @param bool   $save_now Must call icl_save_settings() to permanently store the value
+ */
+function icl_set_setting( $key, $value, $save_now = false ) {
+	global $sitepress;
+	if ( isset( $sitepress ) ) {
+		$sitepress->set_setting( $key, $value, $save_now );
+	} else {
+		//We don't have an instance of SitePress class: let's try with $sitepress_settings
+		global $sitepress_settings;
+
+		if ( ! isset( $sitepress_settings ) ) {
+			//We don't have an instance of $sitepress_settings variable.
+			//This means that probably we are in a stage where this instance can't be created
+			//Therefore, let's directly read the settings from the DB
+			$sitepress_settings = get_option( 'icl_sitepress_settings' );
+		}
+		$sitepress_settings[$key] = $value;
+
+		//We need to save settings anyway, in this case
+		update_option( 'icl_sitepress_settings', $sitepress_settings );
+
+		do_action( 'icl_save_settings', $sitepress_settings );
+	}
+}
+
+function icl_save_settings() {
+	global $sitepress;
+	$sitepress->save_settings();
+}
 
 /**
  * Add settings link to plugin page.
-*/
+ *
+ * @param $links
+ * @param $file
+ *
+ * @return array
+ */
 function icl_plugin_action_links($links, $file) {
     $this_plugin = basename(ICL_PLUGIN_PATH) . '/sitepress.php';
-    global $sitepress_settings;
     if($file == $this_plugin) {
         $links[] = '<a href="admin.php?page='.basename(ICL_PLUGIN_PATH).'/menu/languages.php">' . __('Configure', 'sitepress') . '</a>';
     }
@@ -87,7 +199,11 @@ function icl_get_post_children_recursive($post, $type = 'page'){
     
     $post = (array)$post;
     
-    $children = $wpdb->get_col($wpdb->prepare("SELECT ID FROM {$wpdb->posts} WHERE post_type=%s AND post_parent IN (".join(',', $post).")", $type));
+    $children = $wpdb->get_col($wpdb->prepare("SELECT ID
+                                               FROM {$wpdb->posts}
+                                               WHERE post_type=%s
+                                                AND post_parent IN (" . wpml_prepare_in($post, '%d') . ")",
+                                               $type));
     
     if(!empty($children)){
         $children = array_merge($children, icl_get_post_children_recursive($children));
@@ -102,7 +218,10 @@ function icl_get_tax_children_recursive($id, $taxonomy = 'category'){
     
     $id = (array)$id;    
     
-    $children = $wpdb->get_col($wpdb->prepare("SELECT term_id FROM {$wpdb->term_taxonomy} x WHERE x.taxonomy=%s AND parent IN (".join(',', $id).")", $taxonomy));
+    $children = $wpdb->get_col($wpdb->prepare("SELECT term_id
+                                               FROM {$wpdb->term_taxonomy} x
+                                               WHERE x.taxonomy=%s
+                                                AND parent IN (" . wpml_prepare_in($id, '%d') .")", $taxonomy ) );
     
     if(!empty($children)){
         $children = array_merge($children, icl_get_tax_children_recursive($children));
@@ -113,7 +232,6 @@ function icl_get_tax_children_recursive($id, $taxonomy = 'category'){
 }
 
 function _icl_trash_restore_prompt(){
-    global $sitepress;
     if(isset($_GET['lang'])){
         $post = get_post(intval($_GET['post']));
         if(isset($post->post_status) && $post->post_status == 'trash'){
@@ -164,7 +282,8 @@ function icl_is_post_edit(){
     static $is;
     if(is_null($is)){
         global $pagenow;
-        $is = ($pagenow == 'post-new.php' || ($pagenow == 'post.php' && isset($_GET['action']) && $_GET['action']=='edit'));    
+	    $filtered_action = filter_input(INPUT_GET, 'action' );
+        $is = ($pagenow == 'post-new.php' || ($pagenow == 'post.php' && ( 0 === strcmp( $filtered_action, 'edit' ) ) ) );
     }
     return $is;
 }
@@ -179,12 +298,202 @@ function icl_is_post_edit(){
  */
 function icl_makes_duplicates( $master_post_id )
 {
+	$post = get_post($master_post_id);
+	$post_type = $post->post_type;
+
+	if($post->post_status == 'auto-draft' || $post->post_type == 'revision') {
+		return;
+	}
+
 	global $sitepress, $iclTranslationManagement;
 	if ( !isset( $iclTranslationManagement ) ) {
 		$iclTranslationManagement = new TranslationManagement;
 	}
-	$post_type = get_post_type( $master_post_id );
 	if ( $sitepress->is_translated_post_type( $post_type ) ) {
 		$iclTranslationManagement->make_duplicates_all( $master_post_id );
 	}
+}
+
+/**
+ * Build duplicated posts from a master post only in case of the duplicate not being present at the time.
+ *
+ * @param  string                $master_post_id The ID of the post to duplicate from. Master post doesn't need to be in the default language.
+ *
+ * @uses SitePress
+ */
+function icl_makes_duplicates_public( $master_post_id ) {
+
+	global $sitepress;
+
+	$master_post = get_post( $master_post_id );
+
+	if ( $master_post->post_status == 'auto-draft' || $master_post->post_type == 'revision' ) {
+		return;
+	}
+
+	$active_langs = $sitepress->get_active_languages();
+
+	foreach ( $active_langs as $lang_to => $one ) {
+
+		$trid = $sitepress->get_element_trid( $master_post->ID, 'post_' . $master_post->post_type );
+		$lang_from = $sitepress->get_source_language_by_trid( $trid );
+
+		if ( $lang_from == $lang_to ) {
+			continue;
+		}
+
+		$post_array[ 'post_author' ]    = $master_post->post_author;
+		$post_array[ 'post_date' ]      = $master_post->post_date;
+		$post_array[ 'post_date_gmt' ]  = $master_post->post_date_gmt;
+		$post_array[ 'post_content' ]   = addslashes_gpc( apply_filters( 'icl_duplicate_generic_string', $master_post->post_content, $lang_to, array( 'context' => 'post', 'attribute' => 'content', 'key' => $master_post->ID ) ) );
+		$post_array[ 'post_title' ]     = addslashes_gpc( apply_filters( 'icl_duplicate_generic_string', $master_post->post_title, $lang_to, array( 'context' => 'post', 'attribute' => 'title', 'key' => $master_post->ID ) ) );
+		$post_array[ 'post_excerpt' ]   = addslashes_gpc( apply_filters( 'icl_duplicate_generic_string', $master_post->post_excerpt, $lang_to, array( 'context' => 'post', 'attribute' => 'excerpt', 'key' => $master_post->ID ) ) );
+		$post_array[ 'post_status' ]    = $master_post->post_status;
+		$post_array[ 'post_category' ]  = $master_post->post_category;
+		$post_array[ 'comment_status' ] = $master_post->comment_status;
+		$post_array[ 'ping_status' ]    = $master_post->ping_status;
+		$post_array[ 'post_name' ]      = $master_post->post_name;
+		$post_array[ 'menu_order' ]     = $master_post->menu_order;
+		$post_array[ 'post_type' ]      = $master_post->post_type;
+		$post_array[ 'post_mime_type' ] = $master_post->post_mime_type;
+
+		if ( $master_post->post_parent ) {
+			$parent                      = icl_object_id( $master_post->post_parent, $master_post->post_type, false, $lang_to );
+			$post_array[ 'post_parent' ] = $parent;
+		}
+
+		$id = wp_insert_post( $post_array );
+
+		$sitepress->set_element_language_details( $id, 'post_' . $post_array[ 'post_type' ], $trid, $lang_to, $lang_from, false );
+	}
+}
+
+
+/**
+ * Wrapper function for deprecated like_escape() and recommended wpdb::esc_like()
+ * 
+ * @global wpdb $wpdb
+ * @param string $text
+ * @return string
+ */
+function wpml_like_escape($text) {
+	global $wpdb;
+	
+	if (method_exists($wpdb, 'esc_like')) {
+		return $wpdb->esc_like($text);
+	}
+
+	/** @noinspection PhpDeprecationInspection */
+	return like_escape($text);
+}
+
+/**
+ * @param $url
+ * Removes the subdirectory in which WordPress is installed from a url.
+ * If WordPress is not installed in a subdirectory, then then input is returned unaltered.
+ * @return string
+ */
+function wpml_strip_subdir_from_url( $url ) {
+    global $sitepress;
+
+    remove_filter( 'home_url', array( $sitepress, 'home_url' ), 1, 4 );
+
+    //Remove potentially existing subdir slug before checking the url
+    $subdir       = parse_url( home_url(), PHP_URL_PATH );
+    $subdir_slugs = explode( '/', $subdir );
+
+    add_filter( 'home_url', array( $sitepress, 'home_url' ), 1, 4 );
+
+    $url_path  = parse_url( $url, PHP_URL_PATH );
+    $url_slugs = explode( '/', $url_path );
+
+    foreach ( (array) $url_slugs as $key => $slug ) {
+        if ( ! trim( $slug ) ) {
+            unset( $url_slugs[ $key ] );
+        }
+    }
+
+    foreach ( (array) $subdir_slugs as $key => $slug ) {
+        if ( ! trim( $slug ) ) {
+            unset( $subdir_slugs[ $key ] );
+        }
+    }
+
+    if ( ! empty( $subdir_slugs ) && ! empty( $url_slugs ) ) {
+        foreach ( $subdir_slugs as $key => $slug ) {
+            if ( isset( $url_slugs[ $key ] ) && $slug == $url_slugs[ $key ] ) {
+                unset( $url_slugs[ $key ] );
+            }
+        }
+
+        $url_path_new = join( '/', $url_slugs );
+
+        $url = str_replace( $url_path, $url_path_new, $url );
+    }
+
+    return $url;
+}
+
+/**
+ * Changes array of items into string of items, separated by comma and sql-escaped 
+ * 
+ * @see https://coderwall.com/p/zepnaw 
+ * 
+ * @global wpdb $wpdb
+ * @param array $items items to be joined into string
+ * @param string $format %s or %d
+ * @return string Items separated by comma and sql-escaped 
+ */
+function wpml_prepare_in(array $items, $format = '%s') { 
+	global $wpdb;
+	
+	$how_many = count($items);
+	$placeholders = array_fill(0, $how_many, $format);
+	$prepared_format = implode(",", $placeholders);
+	$prepared_in = $wpdb->prepare($prepared_format, $items);
+	
+	return $prepared_in;
+}
+
+function wpml_missing_filter_input_notice() {
+    ?>
+    <div class="message error">
+        <h3><?php _e( "WPML can't be functional because it requires a disabled PHP extension!", 'sitepress' ) ?></h3>
+
+        <p><?php _e( "To ensure and improve the security of your website, WPML makes use of the ", 'sitepress' ) ?><a
+                href="http://php.net/manual/en/book.filter.php">PHP Data Filtering</a> extension.<br><br>
+            <?php _e(
+                "The filter extension is enabled by default as of PHP 5.2.0. Before this time an experimental PECL extension was
+            used, however, the PECL version is no longer recommended to be used or updated. (source: ",
+                'sitepress'
+            ) ?><a
+                href="http://php.net/manual/en/filter.installation.php">PHP Manual Function Reference Variable and
+                Type Related Extensions Filter Installing/Configuring</a>)<br>
+            <br>
+            <?php _e(
+                "The filter extension is enabled by default as of PHP 5.2, therefore it must have been disable by either you or your host.",
+                'sitepress'
+            ) ?>
+            <br><?php _e(
+                "To enable it, either you or your host will need to open your website's php.ini file and either:",
+                'sitepress'
+            ) ?><br>
+        <ol>
+            <li><?php _e(
+                    "Remove the 'filter_var' string from the 'disable_functions' directive or...",
+                    'sitepress'
+                ) ?>
+            </li>
+            <li><?php _e( "Add the following line:", 'sitepress' ) ?> <code
+                    class="inline-code">extension=filter.so</code></li>
+        </ol>
+        <?php $ini_location = php_ini_loaded_file();
+        if( $ini_location !== false ){
+            ?>
+                <strong><?php echo __("Your php.ini file is located at", 'sitepress') . ' ' . $ini_location ?>.</strong>
+            <?php
+        }
+        ?>
+    </div>
+<?php
 }

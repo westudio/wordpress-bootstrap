@@ -1,3 +1,22 @@
+**1.4.6**
+
+* **Improvements**
+	* Compatibility with WPML Core
+
+**1.4.5**
+
+* **Improvements**
+	* Compatibility with WPML Core
+
+**1.4.4**
+
+* **Improvements**
+	* New way to define plugin url is now tolerant for different server settings
+* **Fix**
+	* Fixed possible SQL injections
+	* Fixed corrupted WPML settings when new page is added
+	* Minor syntax fixes
+
 **1.4.3**
 
 * **Fix**
@@ -7,6 +26,7 @@
 	* Handled case where ICL_PLUGIN_PATH constant is not defined (i.e. when plugin is activated before WPML core)
 	* Removed unneeded closing php tag followed by line breaks
 	* Fixed Korean locale in .mo file name
+
 
 **1.4.2**
 

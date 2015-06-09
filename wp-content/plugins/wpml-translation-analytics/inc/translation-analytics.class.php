@@ -322,11 +322,12 @@ class WPML_Translation_Analytics{
         );
     
         foreach($jobs as $job){
-            $job->elements = $wpdb->get_results(
+            $job->elements = $wpdb->get_results( $wpdb->prepare(
                 "SELECT * FROM {$wpdb->prefix}icl_translate
-                    WHERE job_id = $job->job_id  AND field_translate = 1
-                    ORDER BY tid ASC"
-            );
+                    WHERE job_id = %d  AND field_translate = 1
+                    ORDER BY tid ASC", 
+												$job->job_id
+            ));
         $job->original_post_type = $wpdb->get_var($wpdb->prepare("
         SELECT element_type
         FROM {$wpdb->prefix}icl_translations

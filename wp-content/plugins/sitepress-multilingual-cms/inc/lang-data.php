@@ -4,13 +4,16 @@
  * @return mixed
  */
 function icl_get_languages_names() {
-	static $__icl_lang_names = null;
+	static $__icl_lang_names_cached = null;
 
-	if ( $__icl_lang_names === null ) {
+	if ( $__icl_lang_names_cached === null ) {
 		require ICL_PLUGIN_PATH . '/res/languages.csv.php';
 
-		return unserialize( $__icl_lang_names );
+		$__icl_lang_names_cached = unserialize( $__icl_lang_names );
 	}
+	
+	return $__icl_lang_names_cached;
+	
 }
 
 
@@ -124,7 +127,6 @@ function icl_get_languages_codes() {
 			'Mongolian'             => 'mn',
 			'Moldavian'             => 'mo',
 			'Marathi'               => 'mr',
-			'Malay'                 => 'ms',
 			'Maltese'               => 'mt',
 			'Burmese'               => 'my',
 			'Nauru'                 => 'na',

@@ -4,6 +4,7 @@
 $active_languages = $sitepress->get_active_languages();
 $default_language = $sitepress->get_default_language();
 $default_language_details = $sitepress->get_language_details( $default_language );
+$secondary_languages = array();
 
 foreach ( $active_languages as $lang ) {
 	if ( $lang[ 'code' ] != $default_language_details[ 'code' ] ) {
@@ -212,7 +213,8 @@ if ( $icl_menus_sync->is_preview ) {
 								<td><?php echo $lang_details[ 'display_name' ]; ?></td>
 								<td><?php
 									printf( __( 'Untranslated string %s', 'sitepress' ), '<strong>' . $name . '</strong>' );
-									?>&nbsp;<?php printf(__('The selected strings can now be translated using the <a%s>string translation</a> screen', 'wpml-string-translation'), ' href="admin.php?page='.WPML_ST_FOLDER.'/menu/string-translation.php&context=admin_texts_theme_'.get_option('template').'"');?></td>
+									$context_menu_name = $icl_menus_sync->menus[ $menu_id ][ "name" ] . " menu";
+									?>&nbsp;<?php printf(__('The selected strings can now be translated using the <a%s>string translation</a> screen', 'wpml-string-translation'), ' href="admin.php?page='.WPML_ST_FOLDER.'/menu/string-translation.php&context='. $context_menu_name .'"');?></td>
 							</tr>
 						<?php
 						}
@@ -256,7 +258,7 @@ if ( $icl_menus_sync->is_preview ) {
 		<input id="icl_msync_submit" class="button-primary" type="submit" value="<?php _e( 'Apply changes' ) ?>" <?php echo $icl_menu_sync_submit_disabled; ?> />&nbsp;
 		<input id="icl_msync_cancel" class="button-secondary" type="button" value="<?php _e( 'Cancel' ) ?>"/>
 	</p>
-
+        <?php wp_nonce_field( '_icl_nonce_menu_sync', '_icl_nonce_menu_sync' ); ?>
 	</form>
 
 <?php
@@ -270,10 +272,12 @@ if ( $icl_menus_sync->is_preview ) {
 			<tr>
 				<th><?php echo $default_language_details[ 'display_name' ]; ?></th>
 				<?php
-				foreach ( $secondary_languages as $lang ) {
-					?>
-					<th><?php echo $lang[ 'display_name' ]; ?></th>
-				<?php
+				if ( ! empty( $secondary_languages ) ) {
+					foreach ( $secondary_languages as $lang ) {
+						?>
+						<th><?php echo $lang[ 'display_name' ]; ?></th>
+					<?php
+					}
 				}
 				?>
 			</tr>
@@ -341,6 +345,7 @@ if ( $icl_menus_sync->is_preview ) {
 			}
 			?>
 		</p>
+        <?php wp_nonce_field( '_icl_nonce_menu_sync', '_icl_nonce_menu_sync' ); ?>
 	</form>
 
 	<?php

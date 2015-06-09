@@ -1,3 +1,41 @@
+<?php
+global $wpdb;
+
+$types = array();
+foreach ( $GLOBALS[ 'wp_post_types' ] as $key => $val ) {
+    if ( $val->public && !in_array( $key, array( 'attachment' ) ) ) {
+        $types[ ] = $key;
+    }
+}
+
+$this->get_broken_links();
+$total_posts_pages = $wpdb->get_var(
+    "
+            SELECT COUNT(*) FROM {$wpdb->posts}
+            WHERE post_type IN (" . wpml_prepare_in( $types ) . ")
+                AND post_status NOT IN ('auto-draft')
+                AND ID NOT IN
+                            (
+                                SELECT m.post_id FROM {$wpdb->postmeta} m
+                                JOIN {$wpdb->posts} p ON m.post_id = p.ID
+                                WHERE m.meta_key = '_alp_processed'
+                                    AND p.post_type IN (" . wpml_prepare_in( $types ) . ")
+                                    AND p.post_status NOT IN ('auto-draft')
+                            )
+        "
+);
+
+$total_posts_pages_processed = (int) $wpdb->get_var(
+    "
+            SELECT COUNT(m.meta_id) FROM {$wpdb->postmeta} m
+            JOIN {$wpdb->posts} p ON p.ID = m.post_id
+            WHERE m.meta_key = '_alp_processed'
+                AND p.post_type IN (" . wpml_prepare_in( $types ) . ")
+                AND p.post_status NOT IN ('auto-draft')
+        "
+);
+?>
+
 <div class="wrap">
 
     <div id="icon-wpml" class="icon32"><br /></div>

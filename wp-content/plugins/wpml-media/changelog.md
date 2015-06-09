@@ -1,3 +1,29 @@
+**2.1.7**
+
+* **Compatibility**
+	* Achieved compatibility with Media Library Assistant plugin
+* **Fix**
+	* Media Translation now supports wildcard when quering for media by its mime type. 
+	* Fixed thumbnails of images in seconary language
+	* Added support for Trash in Media Library
+
+**2.1.6**
+
+* **Compatibility**
+	* Fixed compatybility with Types plugin - execution of save_post hooks respects now other plugins
+* **Fix**
+	* Fixed issue with hundreds of duplicated images
+	* Fixed: Language_filter_upload_page() doesn't support multiple mime types and mime types with wildcards
+
+**2.1.5**
+
+* **Improvements**
+	* New way to define plugin url is now tolerant for different server settings
+* **Fix**
+    * Fixed media item list in different languages: if some plugin adds its own parameter to URL, lang parameter was not concatenated correctly
+    * Removed references to global $wp_query in query filtering functions
+    * When you import posts, WPML created unnecessary media attachments. It is fixed now. 
+
 **2.1.4**
 
 * **Fix**

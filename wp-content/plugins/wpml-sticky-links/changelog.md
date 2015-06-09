@@ -1,3 +1,21 @@
+**1.3.6**
+
+* **Improvements**
+	* Added warning when activating plugin without WPML Core. 
+
+**1.3.5**
+
+* **Improvements**
+	* Compatibility with WPML Core
+
+**1.3.4**
+
+* **Improvements**
+	* New way to define plugin url is now tolerant for different server settings
+* **Fix**
+	* Fixed sticky links in widgets
+	* Fixed possible SQL injections
+
 **1.3.3**
 
 * **Fix**

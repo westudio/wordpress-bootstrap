@@ -1,4 +1,7 @@
-<?php 
+<?php
+    /** @var SitePress $sitepress */
+    /** @var TranslationManagement $iclTranslationManagement */
+
     if(!isset($job_checked) && isset($_GET['job_id']) && $_GET['job_id'] > 0){
         include WPML_TM_PATH . '/menu/translation-editor.php';
         return;
@@ -52,7 +55,7 @@
     }
         
 ?>
-<div class="wrap">
+<div class="wrap icl_tm_wrap">
     <div id="icon-wpml" class="icon32"><br /></div>
     <h2><?php echo __('Translations queue', 'wpml-translation-management') ?></h2>    
     
@@ -140,22 +143,24 @@
     <?php endif; ?>
 
     <?php 
-    // pagination  
+    // pagination
+    $paged = filter_input(INPUT_GET, 'paged', FILTER_SANITIZE_NUMBER_INT);
+    $paged = $paged ? $paged : 1;
     $page_links = paginate_links( array(
         'base' => add_query_arg('paged', '%#%' ),
         'format' => '',
         'prev_text' => '&laquo;',
         'next_text' => '&raquo;',
         'total' => $wp_query->max_num_pages,
-        'current' => $_GET['paged'],
+        'current' => $paged,
         'add_args' => isset($icl_translation_filter)?$icl_translation_filter:array() 
     ));         
     ?> 
     <div class="tablenav">    
         <?php if ( $page_links ) { ?>
         <div class="tablenav-pages"><?php $page_links_text = sprintf( '<span class="displaying-num">' . __( 'Displaying %s&#8211;%s of %s', 'wpml-translation-management' ) . '</span>%s',
-            number_format_i18n( ( $_GET['paged'] - 1 ) * $wp_query->query_vars['posts_per_page'] + 1 ),
-            number_format_i18n( min( $_GET['paged'] * $wp_query->query_vars['posts_per_page'], $wp_query->found_posts ) ),
+            number_format_i18n( ( $paged - 1 ) * $wp_query->query_vars['posts_per_page'] + 1 ),
+            number_format_i18n( min( $paged * $wp_query->query_vars['posts_per_page'], $wp_query->found_posts ) ),
             number_format_i18n( $wp_query->found_posts ),
             $page_links
         ); echo $page_links_text; ?>
@@ -223,13 +228,32 @@
                 <td width="60"><?php echo $job->job_id; ?></td>
                 <td><?php echo apply_filters('the_title', $job->post_title ); ?></td>
                 <td><?php echo $job->lang_text ?></td>
-                <td nowrap="nowrap">
-                    <?php if ($job->original_doc_id) { ?>
-						<a class="button-secondary" href="<?php echo apply_filters('icl_job_edit_url',admin_url('admin.php?page=' . WPML_TM_FOLDER . '/menu/translations-queue.php&job_id=' . $job->job_id),$job->job_id); ?>"><?php _e('edit', 'wpml-translation-management'); ?></a>
-					<?php
-					echo TranslationManagement::tm_post_link($job->original_doc_id, __('View original', 'wpml-translation-management'), true);} ?>
-                </td>
-                <td><?php if($job->translator_id && $job->status == ICL_TM_WAITING_FOR_TRANSLATOR): ?><div class="icl_tj_your_job" title="<?php echo esc_html(__('This job is assigned specifically to you.','wpml-translation-management')) ?>">!</div><?php endif; ?></td>
+                <td>
+		            <?php
+		            if ( $job->original_doc_id ) {
+			            $translation_queue_page = admin_url( 'admin.php?page=' . WPML_TM_FOLDER . '/menu/translations-queue.php&job_id=' . $job->job_id );
+			            $icl_job_edit_url       = apply_filters( 'icl_job_edit_url', $translation_queue_page, $job->job_id );
+
+			            ?>
+			            <a class="button-secondary" href="<?php echo $icl_job_edit_url; ?>">
+				            <?php
+				            if ( $job->translator_id > 0
+				                 && in_array( $job->status, array( ICL_TM_WAITING_FOR_TRANSLATOR, ICL_TM_IN_PROGRESS, ICL_TM_COMPLETE ) )
+				            ) {
+					            _e( 'Edit', 'wpml-translation-management' );
+				            } else {
+					            _e( 'Take this job and edit', 'wpml-translation-management' );
+				            }
+				            ?>
+			            </a>
+			            <?php
+			            $tm_post_link = TranslationManagement::tm_post_link( $job->original_doc_id, __( 'View original', 'wpml-translation-management' ), true );
+				    echo "<br/>";
+				    echo $tm_post_link;
+		            }
+		            ?>
+	            </td>
+	            <td><?php if($job->translator_id && $job->status == ICL_TM_WAITING_FOR_TRANSLATOR): ?><div class="icl_tj_your_job" title="<?php echo esc_html(__('This job is assigned specifically to you.','wpml-translation-management')) ?>">!</div><?php endif; ?></td>
                 <td><?php 
                     echo $iclTranslationManagement->status2text($job->status);
                     if($job->needs_update) _e(' - (needs update)', 'wpml-translation-management');

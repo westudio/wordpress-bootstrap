@@ -3,16 +3,16 @@
 Plugin Name: WPML Media
 Plugin URI: https://wpml.org/
 Description: Add multilingual support for Media files
-Author: ICanLocalize
-Author URI: https://wpml.org
-Version: 2.1.4
+Author: OnTheGoSystems
+Author URI: http://www.onthegosystems.com/
+Version: 2.1.9
 */
 
 if (defined('WPML_MEDIA_VERSION')) {
 	return;
 }
 
-define('WPML_MEDIA_VERSION', '2.1.4');
+define('WPML_MEDIA_VERSION', '2.1.9');
 define('WPML_MEDIA_PATH', dirname(__FILE__));
 
 require WPML_MEDIA_PATH . '/inc/constants.inc';

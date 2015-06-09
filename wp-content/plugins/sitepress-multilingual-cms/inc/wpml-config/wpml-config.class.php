@@ -1,7 +1,11 @@
 <?php
+
+require ICL_PLUGIN_PATH . "/inc/taxonomy-term-translation/wpml-term-language-synchronization.class.php";
+
 class WPML_Config
 {
 	static $wpml_config_files = array();
+    static $active_plugins = array();
 
 	public static function load_config()
 	{
@@ -17,6 +21,7 @@ class WPML_Config
 			'themes.php',
 			ICL_PLUGIN_FOLDER . '/menu/languages.php',
 			ICL_PLUGIN_FOLDER . '/menu/theme-localization.php',
+			ICL_PLUGIN_FOLDER . '/menu/translation-options.php',
 		);
 		if (defined('WPML_ST_FOLDER')) {
 			$white_list_pages[] = WPML_ST_FOLDER . '/menu/string-translation.php';
@@ -61,6 +66,9 @@ class WPML_Config
 			$plugins = get_site_option( 'active_sitewide_plugins' );
 			if ( !empty( $plugins ) ) {
 				foreach ( $plugins as $p => $dummy ) {
+                    if(!self::check_on_config_file($dummy)){
+                        continue;
+                    }
 					$plugin_slug = dirname( $p );
 					$config_file = WP_PLUGIN_DIR . '/' . $plugin_slug . '/wpml-config.xml';
 					if ( trim( $plugin_slug, '\/.' ) && file_exists( $config_file ) ) {
@@ -74,6 +82,10 @@ class WPML_Config
 		$plugins = get_option( 'active_plugins' );
 		if ( !empty( $plugins ) ) {
 			foreach ( $plugins as $p ) {
+                if(!self::check_on_config_file($p)){
+                    continue;
+                }
+
 				$plugin_slug = dirname( $p );
 				$config_file = WP_PLUGIN_DIR . '/' . $plugin_slug . '/wpml-config.xml';
 				if ( trim( $plugin_slug, '\/.' ) && file_exists( $config_file ) ) {
@@ -84,8 +96,13 @@ class WPML_Config
 
 		// Get the must-use plugins
 		$mu_plugins = wp_get_mu_plugins();
+
 		if ( !empty( $mu_plugins ) ) {
 			foreach ( $mu_plugins as $mup ) {
+                if(!self::check_on_config_file($mup)){
+                    continue;
+                }
+
 				$plugin_dir_name  = dirname( $mup );
 				$plugin_base_name = basename( $mup, ".php" );
 				$plugin_sub_dir   = $plugin_dir_name . '/' . $plugin_base_name;
@@ -99,8 +116,65 @@ class WPML_Config
 		return self::$wpml_config_files;
 	}
 
+    static function check_on_config_file( $name ){
+
+        if(empty(self::$active_plugins)){
+            if ( ! function_exists( 'get_plugins' ) ) {
+                require_once ABSPATH . 'wp-admin/includes/plugin.php';
+            }
+            self::$active_plugins = get_plugins();
+        }
+        $config_index_file_data = maybe_unserialize(get_option('wpml_config_index'));
+        $config_files_arr = maybe_unserialize(get_option('wpml_config_files_arr'));
+
+        if(!$config_index_file_data || !$config_files_arr){
+            return true;
+        }
+
+
+        if(isset(self::$active_plugins[$name])){
+            $plugin_info = self::$active_plugins[$name];
+            $plugin_slug = dirname( $name );
+            $name = $plugin_info['Name'];
+            $config_data = $config_index_file_data->plugins;
+            $config_files_arr = $config_files_arr->plugins;
+            $config_file = WP_PLUGIN_DIR . '/' . $plugin_slug . '/wpml-config.xml';
+            $type = 'plugin';
+
+        }else{
+            $config_data = $config_index_file_data->themes;
+            $config_files_arr = $config_files_arr->themes;
+            $config_file = get_template_directory() . '/wpml-config.xml';
+            $type = 'theme';
+        }
+
+        foreach($config_data as $item){
+            if($name == $item->name && isset($config_files_arr[$item->name])){
+                if($item->override_local || !file_exists( $config_file )){
+                    end(self::$wpml_config_files);
+                    $key = key(self::$wpml_config_files)+1;
+                    self::$wpml_config_files[$key] = new stdClass();
+                    self::$wpml_config_files[$key]->config = icl_xml2array($config_files_arr[$item->name]);
+                    self::$wpml_config_files[$key]->type = $type;
+                    self::$wpml_config_files[$key]->admin_text_context = basename( dirname( $config_file ) );;
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+        }
+
+        return true;
+
+    }
+
 	static function load_theme_wpml_config()
 	{
+        $theme_data = wp_get_theme();
+        if(!self::check_on_config_file($theme_data->get('Name'))){
+            return self::$wpml_config_files;
+        }
+
 		if ( get_template_directory() != get_stylesheet_directory() ) {
 			$config_file = get_stylesheet_directory() . '/wpml-config.xml';
 			if ( file_exists( $config_file ) ) {
@@ -129,55 +203,60 @@ class WPML_Config
 			);
 
 			foreach ( self::$wpml_config_files as $file ) {
-				$config = icl_xml2array( file_get_contents( $file ) );
+                if(is_object($file)){
+                    $config = $file->config;
+                    $type = $file->type;
+                    $admin_text_context = $file->admin_text_context;
+                } else {
+                    $config = icl_xml2array ( file_get_contents ( $file ) );
+                    $type = ( dirname ( $file ) === get_template_directory ()
+                              || dirname ( $file ) === get_stylesheet_directory () ) ? 'theme' : 'plugin';
+                    $admin_text_context = basename ( dirname ( $file ) );
+                }
 
 				if ( isset( $config[ 'wpml-config' ] ) ) {
 
 					//custom-fields
-					if ( isset( $config[ 'wpml-config' ][ 'custom-fields' ] ) ) {
+					if ( isset( $config[ 'wpml-config' ][ 'custom-fields' ][ 'custom-field' ] ) ) {
 						if ( isset( $config[ 'wpml-config' ][ 'custom-fields' ][ 'custom-field' ][ 'value' ] ) ) { //single
 							$config_all[ 'wpml-config' ][ 'custom-fields' ][ 'custom-field' ][ ] = $config[ 'wpml-config' ][ 'custom-fields' ][ 'custom-field' ];
 						} else {
-							foreach ( $config[ 'wpml-config' ][ 'custom-fields' ][ 'custom-field' ] as $cf ) {
+							foreach ( (array) $config[ 'wpml-config' ][ 'custom-fields' ][ 'custom-field' ] as $cf ) {
 								$config_all[ 'wpml-config' ][ 'custom-fields' ][ 'custom-field' ][ ] = $cf;
 							}
 						}
 					}
 
 					//custom-types
-					if ( isset( $config[ 'wpml-config' ][ 'custom-types' ] ) ) {
+					if ( isset( $config[ 'wpml-config' ][ 'custom-types' ][ 'custom-type' ] ) ) {
 						if ( isset( $config[ 'wpml-config' ][ 'custom-types' ][ 'custom-type' ][ 'value' ] ) ) { //single
 							$config_all[ 'wpml-config' ][ 'custom-types' ][ 'custom-type' ][ ] = $config[ 'wpml-config' ][ 'custom-types' ][ 'custom-type' ];
 						} else {
-							foreach ( $config[ 'wpml-config' ][ 'custom-types' ][ 'custom-type' ] as $cf ) {
+							foreach ( (array) $config[ 'wpml-config' ][ 'custom-types' ][ 'custom-type' ] as $cf ) {
 								$config_all[ 'wpml-config' ][ 'custom-types' ][ 'custom-type' ][ ] = $cf;
 							}
 						}
 					}
 
 					//taxonomies
-					if ( isset( $config[ 'wpml-config' ][ 'taxonomies' ] ) ) {
+					if ( isset( $config[ 'wpml-config' ][ 'taxonomies' ][ 'taxonomy' ] ) ) {
 						if ( isset( $config[ 'wpml-config' ][ 'taxonomies' ][ 'taxonomy' ][ 'value' ] ) ) { //single
 							$config_all[ 'wpml-config' ][ 'taxonomies' ][ 'taxonomy' ][ ] = $config[ 'wpml-config' ][ 'taxonomies' ][ 'taxonomy' ];
 						} else {
-							foreach ( $config[ 'wpml-config' ][ 'taxonomies' ][ 'taxonomy' ] as $cf ) {
+							foreach ( (array) $config[ 'wpml-config' ][ 'taxonomies' ][ 'taxonomy' ] as $cf ) {
 								$config_all[ 'wpml-config' ][ 'taxonomies' ][ 'taxonomy' ][ ] = $cf;
 							}
 						}
 					}
 
 					//admin-texts
-					if ( isset( $config[ 'wpml-config' ][ 'admin-texts' ] ) ) {
-
-						$type               = ( dirname( $file ) == get_template_directory() || dirname( $file ) == get_stylesheet_directory() ) ? 'theme' : 'plugin';
-						$admin_text_context = basename( dirname( $file ) );
-
-						if ( !is_numeric( key( @current( $config[ 'wpml-config' ][ 'admin-texts' ] ) ) ) ) { //single
+					if ( isset( $config[ 'wpml-config' ][ 'admin-texts' ][ 'key' ] ) ) {
+						if ( ! is_numeric( key( @current( $config[ 'wpml-config' ][ 'admin-texts' ] ) ) ) ) { //single
 							$config[ 'wpml-config' ][ 'admin-texts' ][ 'key' ][ 'type' ]    = $type;
 							$config[ 'wpml-config' ][ 'admin-texts' ][ 'key' ][ 'context' ] = $admin_text_context;
 							$config_all[ 'wpml-config' ][ 'admin-texts' ][ 'key' ][ ]       = $config[ 'wpml-config' ][ 'admin-texts' ][ 'key' ];
 						} else {
-							foreach ( $config[ 'wpml-config' ][ 'admin-texts' ][ 'key' ] as $cf ) {
+							foreach ( (array) $config[ 'wpml-config' ][ 'admin-texts' ][ 'key' ] as $cf ) {
 								$cf[ 'type' ]                                             = $type;
 								$cf[ 'context' ]                                          = $admin_text_context;
 								$config_all[ 'wpml-config' ][ 'admin-texts' ][ 'key' ][ ] = $cf;
@@ -186,7 +265,7 @@ class WPML_Config
 					}
 
 					//language-switcher-settings
-					if ( isset( $config[ 'wpml-config' ][ 'language-switcher-settings' ] ) ) {
+					if ( isset( $config[ 'wpml-config' ][ 'language-switcher-settings' ][ 'key' ] ) ) {
 						if ( !is_numeric( key( $config[ 'wpml-config' ][ 'language-switcher-settings' ][ 'key' ] ) ) ) { //single
 							$config_all[ 'wpml-config' ][ 'language-switcher-settings' ][ 'key' ][ ] = $config[ 'wpml-config' ][ 'language-switcher-settings' ][ 'key' ];
 						} else {
@@ -382,11 +461,11 @@ class WPML_Config
 	 *
 	 * @return array
 	 */
-	protected static function parse_taxonomies( $config )
-	{
+	protected static function parse_taxonomies( $config ) {
 		global $sitepress, $iclTranslationManagement;
-		$cf = array();
-		$taxonomies_sync_option = array();
+
+		$cf                     = array();
+		$taxonomies_sync_option = $sitepress->get_setting( 'taxonomies_sync_option', array() );
 
 		if ( !empty( $config[ 'wpml-config' ][ 'taxonomies' ] ) ) {
 			if ( !is_numeric( key( current( $config[ 'wpml-config' ][ 'taxonomies' ] ) ) ) ) {
@@ -396,21 +475,24 @@ class WPML_Config
 			}
 
 			foreach ( $cf as $c ) {
-
-				$translate  																			= intval( $c[ 'attr' ][ 'translate' ] );
-				$iclTranslationManagement->settings[ 'taxonomies_readonly_config' ][ $c[ 'value' ] ]	= $translate;
-				$taxonomies_sync_option[ 'taxonomies_sync_option' ][ $c[ 'value' ] ]					= $translate;
+				$sync_existing_setting = isset( $taxonomies_sync_option[ $c[ 'value' ] ] ) ? $taxonomies_sync_option[ $c[ 'value' ] ] : false;
+				$translate                                                                           = intval( $c[ 'attr' ][ 'translate' ] );
+				$iclTranslationManagement->settings[ 'taxonomies_readonly_config' ][ $c[ 'value' ] ] = $translate;
+				$taxonomies_sync_option[ $c[ 'value' ] ]                                             = $translate;
 
 				// this has just changed. save.
-				if ( $translate == 1 ) {
+				if ( $translate == 1 && !$sync_existing_setting ) {
 					$sitepress->verify_taxonomy_translations( $c[ 'value' ] );
 					$iclTranslationManagement->save_settings();
 				}
 			}
 
-			$sitepress->save_settings( $taxonomies_sync_option );
+			$sitepress->set_setting( '$taxonomies_sync_option', $taxonomies_sync_option );
 
-			add_filter( 'get_translatable_taxonomies', array( $iclTranslationManagement, '_override_get_translatable_taxonomies' ) );
+			add_filter(
+				'get_translatable_taxonomies',
+				array( $iclTranslationManagement, '_override_get_translatable_taxonomies' )
+			);
 		}
 
 		// taxonomies - check what's been removed
@@ -486,9 +568,9 @@ class WPML_Config
 							$arr[ $a[ 'attr' ][ 'name' ] ][ $key[ 'attr' ][ 'name' ] ] = self::read_admin_texts_recursive( $key[ 'key' ], $admin_text_context, $type, $arr_context, $arr_type );
 						} else {
 							$arr[ $a[ 'attr' ][ 'name' ] ][ $key[ 'attr' ][ 'name' ] ] = 1;
-							$arr_context[ $a[ 'attr' ][ 'name' ] ] = $admin_text_context;
-							$arr_type[ $a[ 'attr' ][ 'name' ] ] = $type;
 						}
+						$arr_context[ $a[ 'attr' ][ 'name' ] ] = $admin_text_context;
+						$arr_type[ $a[ 'attr' ][ 'name' ] ] = $type;
 					}
 				}
 
@@ -513,7 +595,7 @@ class WPML_Config
 
 							// wildcard? register all matching options in wp_options
 							global $wpdb;
-							$src     = str_replace( '*', '%', esc_sql( $key ) );
+							$src     = str_replace( '*', '%', wpml_like_escape( $key ) );
 							$matches = $wpdb->get_results( "SELECT option_name, option_value FROM {$wpdb->options} WHERE option_name LIKE '{$src}'" );
 							foreach ( $matches as $match ) {
 								icl_register_string( 'admin_texts_' . $type . '_' . $admin_text_context, $match->option_name, $match->option_value );

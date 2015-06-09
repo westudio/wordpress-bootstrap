@@ -1,5 +1,9 @@
 <?php
-if (!defined('ICL_SITEPRESS_DEV_VERSION') && (version_compare( get_option( 'icl_sitepress_version' ), ICL_SITEPRESS_VERSION, '=' ) || ( isset( $_REQUEST[ 'action' ] ) && $_REQUEST[ 'action' ] == 'error_scrape' ) || ! isset( $wpdb ) )) {
+
+$filtered_action = filter_input( INPUT_POST, 'action' );
+$filtered_action = $filtered_action ? $filtered_action : filter_input( INPUT_GET, 'action' );
+
+if (!defined('ICL_SITEPRESS_DEV_VERSION') && (version_compare( get_option( 'icl_sitepress_version' ), ICL_SITEPRESS_VERSION, '=' ) || ( 0 === strcmp( $filtered_action, 'error_scrape') ) || ! isset( $wpdb ) )) {
 	return;
 }
 
@@ -15,7 +19,7 @@ add_action('plugins_loaded', 'icl_plugin_upgrade' , 1);
 
 
 function icl_plugin_upgrade(){
-    global $wpdb, $sitepress_settings, $sitepress;
+    global $wpdb;
     
     $iclsettings = get_option('icl_sitepress_settings');    
     
@@ -64,14 +68,19 @@ function icl_plugin_upgrade(){
         }
         foreach($post_types as $type=>$ids){
             if(!empty($ids)){
-                $wpdb->query("UPDATE {$wpdb->prefix}icl_translations SET element_type='post_{$type}' WHERE element_type='post' AND element_id IN(".join(',',$ids).")");    // @since 3.1.5 - mysql_* function deprecated in php 5.5+
+								$q = "UPDATE {$wpdb->prefix}icl_translations SET element_type=%s WHERE element_type='post' AND element_id IN(".join(',',$ids).")";
+								$q_prepared = $wpdb->prepare($q, 'post_'.$type);
+                $wpdb->query($q_prepared);    // @since 3.1.5 - mysql_* function deprecated in php 5.5+
             }
         }
         
         // fix categories & tags in icl_translations
         $res = $wpdb->get_results("SELECT term_taxonomy_id, taxonomy FROM {$wpdb->term_taxonomy}"); 
         foreach($res as $row) { 
-            $icltr = $wpdb->get_row("SELECT translation_id, element_type FROM {$wpdb->prefix}icl_translations WHERE element_id='{$row->term_taxonomy_id}' AND element_type LIKE 'tax\\_%'");
+            $icltr = $wpdb->get_row(
+										$wpdb->prepare("SELECT translation_id, element_type FROM {$wpdb->prefix}icl_translations WHERE element_id=%d AND element_type LIKE %s", 
+										array( $row->term_taxonomy_id, wpml_like_escape('tax_') . '%' ))
+														);
             if('tax_' . $row->taxonomy != $icltr->element_type){
                 $wpdb->update($wpdb->prefix . 'icl_translations', array('element_type'=>'tax_'.$row->taxonomy), array('translation_id'=>$icltr->translation_id));
             }
@@ -91,34 +100,24 @@ function icl_plugin_upgrade(){
         $sql = "ALTER TABLE {$wpdb->prefix}icl_translation_status ADD COLUMN `_prevstate` longtext";
         $wpdb->query($sql);
     }
-    
-    icl_upgrade_version('2.0.5');
-    
-    icl_upgrade_version('2.2.2');
-    
-    icl_upgrade_version('2.3.0');
-    
-    icl_upgrade_version('2.3.1');
-    
-    icl_upgrade_version('2.3.3');
-    
-    icl_upgrade_version('2.4.0');
-    
-    icl_upgrade_version('2.5.0');
-    
-    icl_upgrade_version('2.5.2');
-    
-    icl_upgrade_version('2.6.0');
-    
-    icl_upgrade_version('2.7');
-    
-    icl_upgrade_version('2.9');
-    
-    icl_upgrade_version('2.9.3');
-    
-	icl_upgrade_version('3.1');
 
-	icl_upgrade_version('3.1.5');
+	icl_upgrade_version( '2.0.5' );
+	icl_upgrade_version( '2.2.2' );
+	icl_upgrade_version( '2.3.0' );
+	icl_upgrade_version( '2.3.1' );
+	icl_upgrade_version( '2.3.3' );
+	icl_upgrade_version( '2.4.0' );
+	icl_upgrade_version( '2.5.0' );
+	icl_upgrade_version( '2.5.2' );
+	icl_upgrade_version( '2.6.0' );
+	icl_upgrade_version( '2.6.2' );
+	icl_upgrade_version( '2.7' );
+	icl_upgrade_version( '2.9' );
+	icl_upgrade_version( '2.9.3' );
+	icl_upgrade_version( '3.1' );
+	icl_upgrade_version( '3.1.5' );
+	icl_upgrade_version( '3.1.8' );
+	icl_upgrade_version( '3.1.9.5' );
 
 	//Forcing upgrade logic when ICL_SITEPRESS_DEV_VERSION is defined
 	//This allow to run the logic between different alpha/beta/RC versions

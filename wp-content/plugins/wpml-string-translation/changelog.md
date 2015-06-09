@@ -1,3 +1,87 @@
+**2.1.4**
+
+* **Fix**
+	* Fixed a security issue
+	
+**2.1.3**
+
+* **Fix**
+	* Fixed issues with broken URL rewrite and translatable custom post types
+	
+**2.1.2**
+
+* **Works with WPML 3.1.9.4 on WordPress 4**
+	
+**2.1.1**
+
+* **Additional fixes to URLs with non-English characters**
+	
+**2.1**
+
+* **Security update**
+	
+**2.0.14**
+
+* **Fix**
+	* Fixed a menu synchronisation issue with custom links string
+	
+**2.0.13**
+
+* **Fix**
+	* Fixed an issue that prevented _n and _nx gettext tags from being properly parsed and imported.
+
+**2.0.12**
+
+* **Fix**
+	* Fixed 'translate_string' filter which now takes arguments in the right order and returns the right value when WPML/ST are not active
+
+**2.0.11**
+
+* **Fix**
+	* Removed PHP Warnings during image uploading
+
+**2.0.10**
+
+* **Improvements**
+	* Speed improvements in functions responsible for downloading and scanning .mo files.
+	* Added support for _n() strings
+* **Fix**
+	* Fixed fatal error when bulk updating plugins
+	* Removed infinite loop in Appearance > Menu on secondary language when updating menus
+	* Fixed: when user was editing translated post, admin language changed to this language when he saved. 
+
+**2.0.9**
+
+* **Fix**
+	* the previously fixed dependency bug still didn't cover the case of String Translation being activate by users before WPML and was still causing an issue, making the plugin not visible. This should be now fixed.
+
+**2.0.8**
+
+* **Fix**
+	* Fixed dependency bug: plugin should avoid any functionality when WPML is not active
+
+**2.0.7**
+
+* **Improvements**
+	* New way to translate strings from plugins and themes: being on plugin/theme configuration screen, switch language using switcher in admin bar and provide translation.
+* **Compatibility**
+	* "woocommerce_email_from_name" and "woocommerce_email_from_address" are translatable now
+* **Fix**
+	* Removed PHP notices
+
+
+**2.0.6**
+
+* **Improvements**
+	* New way to define plugin url is now tolerant for different server settings
+* **Fix**
+	* Minor syntax fixes
+	* Fixed possible SQL injections
+	* If string data was stored as serialized array, indexed by numbers, position 0 was not displayed on front-end. 
+	* Fixed issues with caching values in icl_translate()
+	* WordPress sometimes displayed wrong blog name when configured in Multisite mode. It is also fixed. 
+
+
 **2.0.5**
 
 * **Fix**

@@ -74,22 +74,10 @@ function icl_sitepress_activate() {
 		}
 
 		if ( $add_languages_translations ) {
-			foreach ( $langs_names as $lang => $val ) {
-				if ( strpos( $lang, 'Norwegian Bokm' ) === 0 ) {
-					$lang                = 'Norwegian Bokmål';
-					$lang_codes[ $lang ] = 'nb';
-				}
-				foreach ( $val[ 'tr' ] as $k => $display ) {
-					if ( strpos( $k, 'Norwegian Bokm' ) === 0 ) {
-						$k = 'Norwegian Bokmål';
-					}
-					if ( ! trim( $display ) ) {
-						$display = $lang;
-					}
-					if ( ! ( $wpdb->get_var( "SELECT id FROM {$table_name} WHERE language_code='{$lang_codes[$lang]}' AND display_language_code='{$lang_codes[$k]}'" ) ) ) {
-						$wpdb->insert( $wpdb->prefix . 'icl_languages_translations', array( 'language_code' => $lang_codes[ $lang ], 'display_language_code' => $lang_codes[ $k ], 'name' => $display ) );
-					}
-				}
+      $languages_translation_sql = file_get_contents(ICL_PLUGIN_PATH . "/res/table-icl_languages_translation.sql");
+      $languages_translation_sql = sprintf($languages_translation_sql, $table_name);
+      if ( $wpdb->query( $languages_translation_sql ) === false ) {
+				throw new Exception( $wpdb->last_error );
 			}
 		}
 
@@ -106,8 +94,8 @@ function icl_sitepress_activate() {
                 `source_language_code` VARCHAR( 7 ),
                 UNIQUE KEY `el_type_id` (`element_type`,`element_id`),
                 UNIQUE KEY `trid_lang` (`trid`,`language_code`),
-                KEY `trid` (`trid`)
-                
+                KEY `trid` (`trid`),
+                KEY `id_type_language` (`element_id`, `element_type`, `language_code`)
             ) {$charset_collate}";
 			if ( $wpdb->query( $sql ) === false ) {
 				throw new Exception( $wpdb->last_error );
@@ -230,8 +218,8 @@ function icl_sitepress_activate() {
                  CREATE TABLE IF NOT EXISTS `{$table_name}` (
                   `id` bigint(20) unsigned NOT NULL auto_increment,
                   `language` varchar(7) NOT NULL,
-                  `context` varchar(160) NOT NULL,
-                  `name` varchar(160) NOT NULL,
+                  `context` varchar(160) CHARACTER SET UTF8 NOT NULL,
+                  `name` varchar(160) CHARACTER SET UTF8 NOT NULL,
                   `value` text NOT NULL,
                   `status` TINYINT NOT NULL,
                   PRIMARY KEY  (`id`),
@@ -407,10 +395,16 @@ function icl_sitepress_activate() {
 	//Set new caps for all administrator role
 	icl_enable_capabilities();
 
+
+    //Set cron job to update WPML config index file from CDN
+    wp_schedule_event( time(), 'daily', 'update_wpml_config_index' );
 }
 
 function icl_sitepress_deactivate() {
 	icl_disable_capabilities();
+        wp_clear_scheduled_hook( 'update_wpml_config_index' );
+	require_once ICL_PLUGIN_PATH . '/inc/cache.php';
+	icl_cache_clear();
 }
 
 function icl_enable_capabilities() {
@@ -467,7 +461,7 @@ if ( isset( $_GET[ 'activate' ] ) ) {
 	global $wpdb;
 	if ( isset( $wpdb ) ) {
 		$table_name = $wpdb->prefix . 'icl_languages';
-		if ( strtolower( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'" ) ) != strtolower( $table_name ) ) {
+		if ( mb_strtolower( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'" ) ) != mb_strtolower( $table_name ) ) {
 			add_action( 'admin_notices', 'icl_cant_create_table' );
 			function icl_cant_create_table() {
 				echo '<div class="error"><ul><li><strong>';

@@ -125,7 +125,7 @@ class CreateZipFile {
 	/**
 	 * Function to return the zip file
 	 *
-	 * @return zipfile (archive)
+	 * @return string (archive)
 	 * @access public
 	 * @return void
 	 */

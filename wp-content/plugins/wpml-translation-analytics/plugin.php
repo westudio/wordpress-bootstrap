@@ -4,13 +4,13 @@ Plugin Name: WPML Translation Analytics
 Plugin URI: https://wpml.org/
 Description: Shows the status of translation projects and displays warnings when 
     completion time may not be met. <a href="https://wpml.org">Documentation</a>.
-Author: ICanLocalize
-Author URI: https://wpml.org
-Version: 1.0.4
+Author: OnTheGoSystems
+Author URI: http://www.onthegosystems.com/
+Version: 1.0.7
 */
 if(defined('WPML_TRANSLATION_ANALYTICS_VERSION')) return;
 
-define('WPML_TRANSLATION_ANALYTICS_VERSION', '1.0.4');
+define('WPML_TRANSLATION_ANALYTICS_VERSION', '1.0.7');
 define('WPML_TRANSLATION_ANALYTICS_PATH', dirname(__FILE__));
 
 require WPML_TRANSLATION_ANALYTICS_PATH . '/inc/constants.inc';

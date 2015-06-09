@@ -74,7 +74,11 @@ function icl_upgrade_2_0_0_steps($step, $stepper){
 
             //loop existing translations
 			if ( isset( $types ) ) {
-				$res = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}icl_translations WHERE element_type IN('".join("','", $types)."') AND source_language_code IS NULL LIMIT " . $limit . "  OFFSET " . $offset); // @since 3.1.5 - mysql_* function deprecated in php 5.5+
+				$res = $wpdb->get_results( $wpdb->prepare(
+								"SELECT * FROM {$wpdb->prefix}icl_translations
+                                 WHERE element_type IN(" . wpml_prepare_in( $types ) . " )
+                                    AND source_language_code IS NULL LIMIT %d  OFFSET %d", array($limit, $offset)
+												)); 
 				foreach( $res as $row){
 					$processing = TRUE;
 					// grab translations
@@ -272,5 +276,3 @@ function icl_ajx_upgrade_2_0_0($call, $request){
             ));    
     }
 }
-
-?>
