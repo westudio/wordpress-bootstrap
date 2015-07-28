@@ -159,7 +159,7 @@ function wb_setup_jquery()
     }
 }
 
-add_action('init', 'wb_setup_jquery');
+add_action('wp_enqueue_scripts', 'wb_setup_jquery');
 
 function wb_setup_scripts()
 {
