@@ -8,6 +8,7 @@
 /wp-content/themes/twentythirteen
 /wp-content/themes/westudio-bootstrap/node_modules
 /wp-content/themes/westudio-bootstrap/assets/vendor
+/wp-content/uploads/*
 /wp-includes
 /index.php
 /license.txt
