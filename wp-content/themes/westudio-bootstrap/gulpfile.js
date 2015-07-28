@@ -12,7 +12,7 @@ function report (e) {
     util.log(e.message);
 }
 
-gulp.task('default', ['watch']);
+gulp.task('default', ['build']);
 
 gulp.task('build', ['scripts', 'styles']);
 
