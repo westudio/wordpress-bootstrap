@@ -32,15 +32,15 @@ class Westudio_Bootstrap_Menu_Walker extends Walker_Nav_Menu
         $output .= PHP_EOL;
         $output .= str_repeat('  ', $depth);
         $output .= '<li' . $this->attributes_to_string($item_attributes) . '>';
-        $output .=   $this->get_item_before($ite, $depth, $args, $id);
+        $output .=   $this->get_item_before($item, $depth, $args, $id);
         $output .=     '<a' . $this->attributes_to_string($link_attributes) . '>';
-        $output .=       $this->get_link_before($ite, $depth, $args, $id);
+        $output .=       $this->get_link_before($item, $depth, $args, $id);
         $output .=       $this->get_link_label($item, $depth, $args, $id);
-        $output .=       $this->get_link_after($ite, $depth, $args, $id);
+        $output .=       $this->get_link_after($item, $depth, $args, $id);
         $output .=     '</a>';
-        $output .=   $this->get_item_after($ite, $depth, $args, $id);
+        $output .=   $this->get_item_after($item, $depth, $args, $id);
 
-        $output .= apply_filters('walker_nav_menu_start_el', $item_output, $item, $depth, $args);
+        $output .= apply_filters('walker_nav_menu_start_el', $output, $item, $depth, $args);
     }
 
     /**

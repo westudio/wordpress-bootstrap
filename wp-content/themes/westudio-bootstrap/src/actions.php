@@ -148,7 +148,7 @@ function wb_setup_styles()
     wp_register_style('wb', get_template_directory_uri().'/assets/styles/dist/main.min.css', false , WB_VERSION, 'all');
 }
 
-add_action('after_setup_theme', 'wb_setup_styles');
+add_action('wp_enqueue_scripts', 'wb_setup_styles');
 
 function wb_setup_jquery()
 {
@@ -168,7 +168,7 @@ function wb_setup_scripts()
     wp_register_script('access_map', get_template_directory_uri().'/assets/vendor/access-map/dist/access-map.min.js', array('jquery', 'google_map_api'), '1.0.0', true);
 }
 
-add_action('after_setup_theme', 'wb_setup_scripts');
+add_action('wp_enqueue_scripts', 'wb_setup_scripts');
 
 /**
  * Enqueues CSS files
