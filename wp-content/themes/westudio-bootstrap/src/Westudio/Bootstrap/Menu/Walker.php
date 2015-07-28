@@ -40,7 +40,7 @@ class Westudio_Bootstrap_Menu_Walker extends Walker_Nav_Menu
         $output .=     '</a>';
         $output .=   $this->get_item_after($item, $depth, $args, $id);
 
-        $output .= apply_filters('walker_nav_menu_start_el', $output, $item, $depth, $args);
+        return apply_filters('walker_nav_menu_start_el', $output, $item, $depth, $args);
     }
 
     /**
